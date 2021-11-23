@@ -1,0 +1,49 @@
+{
+    "name": "@hug/ngx-schematics-utilities",
+    "version": "1.0.0",
+    "description": "",
+    "homepage": "https://github.com/DSI-HUG/ngx-schematics-utilities",
+    "license": "GPL-3.0-only",
+    "author": "HUG - Hôpitaux Universitaires Genève",
+    "contributors": [
+        "badisi (https://github.com/badisi)"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DSI-HUG/ngx-schematics-utilities.git"
+    },
+    "keywords": [
+        "angular"
+    ],
+    "main": "src/index.js",
+    "types": "src/index.d.ts",
+    "scripts": {
+        "build": "node ./build",
+        "test": "ts-node --project=tsconfig.spec.json ./node_modules/.bin/jasmine --config=./jasmine.json",
+        "lint": "eslint ./src"
+    },
+    "peerDependencies": {
+        "@angular-devkit/core": ">= 11",
+        "@angular-devkit/schematics": ">= 11",
+        "@angular/cli": ">= 11",
+        "@schematics/angular": ">= 11"
+    },
+    "dependencies": {
+        "@badisi/latest-version": "^2.1.0",
+        "colors": "^1.4.0",
+        "ora": "^6.0.1",
+        "semver": "^7.3.5"
+    },
+    "devDependencies": {
+        "@hug/eslint-config": "^3.1.5",
+        "@types/jasmine": "^3.10.2",
+        "@types/node": "^16.11.7",
+        "@types/semver": "^7.3.9",
+        "cpy": "^8.1.2",
+        "eslint": "^7.32.0",
+        "jasmine": "^3.10.0",
+        "jasmine-spec-reporter": "^7.0.0",
+        "ts-node": "^10.4.0",
+        "typescript": "<4.5.0"
+    }
+}

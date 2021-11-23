@@ -1,0 +1,33 @@
+name: Publish library to NPM
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  ci_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+          registry-url: https://registry.npmjs.org/
+      - name: Make sure npm is latest
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm clean-install
+      - name: Lint
+        run: npm run lint
+      - name: Test library
+        run: npm run test:lib -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - name: Test schematics
+        run: npm run test:schematics
+      - name: Build
+        run: npm run build
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish ./dist --access public

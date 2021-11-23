@@ -1,0 +1,12 @@
+{
+    "root": true,
+    "extends": [
+        "@hug/eslint-config/moderate"
+    ],
+    "parserOptions": {
+        "project": [
+            "tsconfig.json",
+            "tsconfig.spec.json"
+        ]
+    }
+}

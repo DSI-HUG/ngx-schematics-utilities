@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "rootDir": "src",
+        "baseUrl": ".",
+        "outDir": "./dist/src",
+        "lib": [
+            "es2020",
+            "dom"
+        ],
+        "declaration": true,
+        "esModuleInterop": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "sourceMap": false,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "target": "es2019",
+        "types": [
+            "jasmine",
+            "node"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
