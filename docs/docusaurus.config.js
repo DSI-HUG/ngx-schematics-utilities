@@ -9,7 +9,7 @@ const config = {
     title: 'ngx-schematics-utilities',
     tagline: 'Useful utilities for Angular Schematics',
     baseUrl: '/',
-    url: 'https://DSI-HUG.github.io/ngx-schematics-utilities',
+    url: 'https://DSI-HUG.github.io',
     organizationName: 'DSI-HUG',
     projectName: 'ngx-schematics-utilities',
     deploymentBranch: 'gh-pages',
@@ -65,8 +65,8 @@ const config = {
                                 to: '/'
                             },
                             {
-                                label: 'Utilities',
-                                to: '/utilities/rules'
+                                label: 'APIs',
+                                to: '/apis/core'
                             }
                         ]
                     },
