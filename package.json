@@ -32,8 +32,8 @@
     "main": "src/index.js",
     "types": "src/index.d.ts",
     "scripts": {
-        "start:doc": "npm run start --prefix=docs",
-        "build:doc": "npm run build --prefix=docs",
+        "start:docs": "npm run start --prefix=docs",
+        "build:docs": "npm run build --prefix=docs",
         "build:lib": "node ./build",
         "test": "ts-node --project=specs/tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/jasmine --config=./jasmine.json",
         "lint": "eslint ./src"
