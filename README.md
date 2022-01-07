@@ -41,6 +41,9 @@ They can create files, refactor existing files, or move files around.
 
 This library provide a large set of utilities that can be used while developing a schematic.
 
+
+## Getting started
+
 👉 Learn about it on the [docs site][docs-site].
 
 
