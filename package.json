@@ -1,7 +1,7 @@
 {
     "name": "@hug/ngx-schematics-utilities",
     "version": "1.0.0",
-    "description": "",
+    "description": "Useful utilities for Angular Schematics",
     "homepage": "https://github.com/DSI-HUG/ngx-schematics-utilities",
     "license": "GPL-3.0-only",
     "author": "HUG - Hôpitaux Universitaires Genève",
@@ -13,13 +13,29 @@
         "url": "https://github.com/DSI-HUG/ngx-schematics-utilities.git"
     },
     "keywords": [
-        "angular"
+        "schematics",
+        "utilities",
+        "utils",
+        "tools",
+        "helpers",
+        "devkit",
+        "angular",
+        "Angular CLI",
+        "Angular DevKit",
+        "sdk",
+        "blueprints",
+        "scaffolding",
+        "template",
+        "tooling",
+        "code generation"
     ],
     "main": "src/index.js",
     "types": "src/index.d.ts",
     "scripts": {
-        "build": "node ./build",
-        "test": "ts-node --project=tsconfig.spec.json ./node_modules/.bin/jasmine --config=./jasmine.json",
+        "start:doc": "npm run start --prefix=docs",
+        "build:doc": "npm run build --prefix=docs",
+        "build:lib": "node ./build",
+        "test": "ts-node --project=specs/tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/jasmine --config=./jasmine.json",
         "lint": "eslint ./src"
     },
     "peerDependencies": {
@@ -31,19 +47,20 @@
     "dependencies": {
         "@badisi/latest-version": "^2.1.0",
         "colors": "^1.4.0",
-        "ora": "^6.0.1",
+        "ora": "5.4.1",
         "semver": "^7.3.5"
     },
     "devDependencies": {
-        "@hug/eslint-config": "^3.1.5",
+        "@hug/eslint-config": "^4.0.1",
         "@types/jasmine": "^3.10.2",
-        "@types/node": "^16.11.7",
+        "@types/node": "^17.0.8",
         "@types/semver": "^7.3.9",
         "cpy": "^8.1.2",
-        "eslint": "^7.32.0",
-        "jasmine": "^3.10.0",
+        "eslint": "^8.6.0",
+        "jasmine": "^4.0.1",
         "jasmine-spec-reporter": "^7.0.0",
         "ts-node": "^10.4.0",
+        "tsconfig-paths": "^3.12.0",
         "typescript": "<4.5.0"
     }
 }

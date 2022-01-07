@@ -3,7 +3,7 @@ import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import latestVersion from '@badisi/latest-version';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 
-interface KeyValueItem {
+export interface KeyValueItem {
     key: string;
     value?: string;
 }
@@ -26,7 +26,7 @@ const modifyPackageJson = (tree: Tree, path: string, items: KeyValueItem[], remo
     });
 };
 
-const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' | 'peerDependencies', deps: string[] | KeyValueItem[], remove = false): Promise<void> => {
+const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' | 'peerDependencies', deps: (string | KeyValueItem)[], remove = false): Promise<void> => {
     const jsonValues: KeyValueItem[] = [];
     // eslint-disable-next-line no-loops/no-loops
     for (const dep of deps) {
@@ -44,31 +44,17 @@ const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' |
     modifyPackageJson(tree, type, jsonValues, remove);
 };
 
-// --- REMOVE DEPS ---
-
-export const removePackageJsonDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps, true);
-
-export const removePackageJsonDevDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps, true);
-
-export const removePackageJsonPeerDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps, true);
-
-// --- ADD DEPS ---
-
-export const addPackageJsonDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
-
-export const addPackageJsonDevDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
-
-export const addPackageJsonPeerDependencies = (deps: string[] | KeyValueItem[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);
-
 // --- INSTALL DEPS ---
 
-export const packageInstallTask = (callback?: (taskId: TaskId | undefined) => void, force = false): Rule =>
+/**
+ * Triggers a package installation task using the user's preferred package manager.
+ * By default the installation will only occur if any packages were previously added or removed to/from the `package.json` file.
+ * This default behavior can be bypassed by setting the `force` parameter to `true`.
+ * @param {(taskId?: TaskId) => void} [callback] A callback function that will be called with the id of the newly created task.
+ * @param {boolean} [force=false] Whether the installation should be made only if changes exists or made no matter what.
+ * @returns {Rule}
+ */
+export const packageInstallTask = (callback?: (taskId?: TaskId) => void, force = false): Rule =>
     (_tree: Tree, context: SchematicContext): void => {
         let taskId;
         if (packageJsonDepsModified || force) {
@@ -79,3 +65,55 @@ export const packageInstallTask = (callback?: (taskId: TaskId | undefined) => vo
             callback(taskId);
         }
     };
+
+// --- REMOVE DEPS ---
+
+/**
+ * Removes items from the `dependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @returns {Rule}
+ */
+export const removePackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps, true);
+
+/**
+ * Removes items from the `devDependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @returns {Rule}
+ */
+export const removePackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps, true);
+
+/**
+ * Removes items from the `peerDependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @returns {Rule}
+ */
+export const removePackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps, true);
+
+// --- ADD DEPS ---
+
+/**
+ * Adds items to the `dependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
+export const addPackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
+
+/**
+ * Adds items to the `devDependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
+export const addPackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
+
+/**
+ * Adds items to the `peerDependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
+export const addPackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);

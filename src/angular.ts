@@ -14,56 +14,7 @@ import { satisfies } from 'semver';
 
 import { commitChanges, getTsSourceFile } from './file';
 
-export const ensureIsAngularProject = (): Rule =>
-    (tree: Tree): void => {
-        if (!tree.exists('angular.json')) {
-            throw new SchematicsException('Project is not an Angular project.');
-        }
-    };
-
-export const isAngularVersion = (range: string, rule: Rule): Rule => {
-    try {
-        const angularPkgJsonPath = require.resolve(join('@angular/core', 'package.json'), { paths: ['.'] });
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const ngVersion = (require(angularPkgJsonPath) as { version: string }).version;
-        return (satisfies(ngVersion, range)) ? rule : noop();
-    } catch {
-        return noop();
-    }
-};
-
-export const addAngularJsonAssets = (value: string): Rule =>
-    (tree: Tree): void => {
-        const angularJson = new JSONFile(tree, 'angular.json');
-        const architectPath = ['projects', getDefaultProjectName(tree), 'architect'];
-
-        ['build', 'test'].forEach(configName => {
-            const assetsPath = [...architectPath, configName, 'options', 'assets'];
-            const assets = angularJson.get(assetsPath) as string[];
-            if (!assets.includes(value)) {
-                assets.push(value);
-                if (JSON.stringify(angularJson.get(assetsPath)) !== JSON.stringify(assets)) {
-                    angularJson.modify(assetsPath, assets);
-                }
-            }
-        });
-    };
-
-export const getDefaultProjectName = (tree: Tree): string => {
-    const angularJson = new JSONFile(tree, 'angular.json');
-    const defaultProjectName = angularJson.get(['defaultProject']) as string;
-    if (!defaultProjectName) {
-        throw new SchematicsException('Cannot find "defaultProject" property in angular.json file.');
-    }
-    return defaultProjectName;
-};
-
-export const getDefaultProjectOutputPath = (tree: Tree): string => {
-    const angularJson = new JSONFile(tree, 'angular.json');
-    return angularJson.get(['projects', getDefaultProjectName(tree), 'architect', 'build', 'options', 'outputPath']) as string;
-};
-
-export const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: string, metadataField: string, classifiedName: string): Change => {
+const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: string, metadataField: string, classifiedName: string): Change => {
     const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
     const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
     const arrayLiteral = (ngModuleImports[0] as PropertyAssignment).initializer as ArrayLiteralExpression;
@@ -83,6 +34,87 @@ export const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePat
     return new NoopChange();
 };
 
+// --- RULE(s) ----
+
+/**
+ * Ensures that the project, where the schematic is currently running on, is actually an
+ * Angular project or throws an exception otherwise.. The test is done by ensuring the
+ * existence of an `angular.json` file.
+ * @throws {SchematicsException} An exception if an `angular.json` file was not found.
+ * @returns {Rule}
+ */
+export const ensureIsAngularProject = (): Rule =>
+    (tree: Tree): void => {
+        if (!tree.exists('angular.json')) {
+            throw new SchematicsException('Project is not an Angular project.');
+        }
+    };
+
+/**
+ * Executes a rule only if the current installed Angular version satisfies a given range.
+ * @param {string} range An Angular version range that must be satisfied.
+ * @param {Rule} rule The rule to execute.
+ * @returns {Rule}
+ */
+export const isAngularVersion = (range: string, rule: Rule): Rule =>
+    async (): Promise<Rule> => {
+        try {
+            const angularPkgJsonPath = require.resolve(join('@angular/core', 'package.json'), { paths: ['.'] });
+            const ngVersion = (await import(angularPkgJsonPath) as { version: string }).version;
+            return (satisfies(ngVersion, range)) ? rule : noop();
+        } catch {
+            return noop();
+        }
+    };
+
+/**
+ * Adds a new asset to the `build` and `test` sections of the `angular.json` file.
+ * @param {string} value The asset to add.
+ * @returns {Rule}
+ */
+export const addAngularJsonAsset = (value: string): Rule =>
+    (tree: Tree): void => {
+        const angularJson = new JSONFile(tree, 'angular.json');
+        const architectPath = ['projects', getDefaultProjectName(tree), 'architect'];
+
+        ['build', 'test'].forEach(configName => {
+            const assetsPath = [...architectPath, configName, 'options', 'assets'];
+            const assets = angularJson.get(assetsPath) as string[];
+            if (!assets.includes(value)) {
+                assets.push(value);
+                angularJson.modify(assetsPath, assets);
+            }
+        });
+    };
+
+/**
+ * Removes an asset from the `build` and `test` sections of the `angular.json` file.
+ * @param {string} value The asset to remove.
+ * @returns {Rule}
+ */
+export const removeAngularJsonAsset = (value: string): Rule =>
+    (tree: Tree): void => {
+        const angularJson = new JSONFile(tree, 'angular.json');
+        const architectPath = ['projects', getDefaultProjectName(tree), 'architect'];
+
+        ['build', 'test'].forEach(configName => {
+            const assetsPath = [...architectPath, configName, 'options', 'assets'];
+            const assets = angularJson.get(assetsPath) as string[];
+            const valueIndex = assets.indexOf(value);
+            if (valueIndex !== -1) {
+                assets.splice(valueIndex, 1);
+                angularJson.modify(assetsPath, assets);
+            }
+        });
+    };
+
+/**
+ * Inserts a declaration (ex. Component, Pipe, Directive) into an NgModule declarations and also imports that declaration.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the declaration to insert.
+ * @param {string} importPath The path of the file containing the declaration to insert.
+ * @returns {Rule}
+ */
 export const addDeclarationToNgModule = (filePath: string, classifiedName: string, importPath: string): Rule =>
     (tree: Tree): void => {
         const sourceFile = getTsSourceFile(tree, filePath);
@@ -90,14 +122,34 @@ export const addDeclarationToNgModule = (filePath: string, classifiedName: strin
         commitChanges(tree, filePath, changes);
     };
 
+/**
+ * Removes a declaration (ex. Component, Pipe, Directive) from an NgModule declarations.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the declaration to remove.
+ * @returns {Rule}
+ */
+export const removeDeclarationFromNgModule = (filePath: string, classifiedName: string): Rule =>
+    (tree: Tree): void => {
+        const sourceFile = getTsSourceFile(tree, filePath);
+        const change = removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'declarations', classifiedName);
+        commitChanges(tree, filePath, [change]);
+    };
+
+/**
+ * Inserts an import (ex. NgModule) into an NgModule imports and also imports that import.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the import to insert.
+ * @param {string} importPath The path of the file containing the import to insert.
+ * @returns {Rule}
+ */
 export const addImportToNgModule = (filePath: string, classifiedName: string, importPath: string): Rule =>
     (tree: Tree): void => {
         let sourceFile = getTsSourceFile(tree, filePath);
 
-        // Fix: manage module import with `forRoot`
-        const matches = new RegExp(/(.*).forRoot\(/gm).exec(classifiedName);
+        // Fix: manage module import with `forRoot` or `forChild`
+        const matches = new RegExp(/(.*)\.(forRoot|forChild)\(/gm).exec(classifiedName);
         if (matches?.length) {
-            const realClassifiedName = matches[1];
+            const realClassifiedName = matches[1].trim();
 
             // Remove any entry first
             commitChanges(tree, filePath, [
@@ -117,7 +169,26 @@ export const addImportToNgModule = (filePath: string, classifiedName: string, im
         }
     };
 
+/**
+ * Removes an import (ex. NgModule) from an NgModule imports.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the import to remove.
+ * @returns {Rule}
+ */
+export const removeImportFromNgModule = (filePath: string, classifiedName: string): Rule =>
+    (tree: Tree): void => {
+        const sourceFile = getTsSourceFile(tree, filePath);
+        const change = removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'imports', classifiedName);
+        commitChanges(tree, filePath, [change]);
+    };
 
+/**
+ * Inserts an export (ex. Component, Pipe, Directive) into an NgModule exports and also imports that export.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the export to insert.
+ * @param {string} importPath The path of the file containing the export to insert.
+ * @returns {Rule}
+ */
 export const addExportToNgModule = (filePath: string, classifiedName: string, importPath: string): Rule =>
     (tree: Tree): void => {
         const sourceFile = getTsSourceFile(tree, filePath);
@@ -125,6 +196,26 @@ export const addExportToNgModule = (filePath: string, classifiedName: string, im
         commitChanges(tree, filePath, changes);
     };
 
+/**
+ * Removes an export (ex. Component, Pipe, Directive) from an NgModule exports.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the export to remove.
+ * @returns {Rule}
+ */
+export const removeExportFromNgModule = (filePath: string, classifiedName: string): Rule =>
+    (tree: Tree): void => {
+        const sourceFile = getTsSourceFile(tree, filePath);
+        const change = removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'exports', classifiedName);
+        commitChanges(tree, filePath, [change]);
+    };
+
+/**
+ * Inserts a provider (ex. Service) into an NgModule providers and also imports that provider.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the provider to insert.
+ * @param {string} importPath The path of the file containing the provider to insert.
+ * @returns {Rule}
+ */
 export const addProviderToNgModule = (filePath: string, classifiedName: string, importPath: string): Rule =>
     (tree: Tree): void => {
         const sourceFile = getTsSourceFile(tree, filePath);
@@ -132,9 +223,56 @@ export const addProviderToNgModule = (filePath: string, classifiedName: string, 
         commitChanges(tree, filePath, changes);
     };
 
-export const addRouteDeclarationToNgModule = (filePath: string, fileToAdd: string, routeLiteral: string): Rule =>
+/**
+ * Removes a provider (ex. Service) from an NgModule providers.
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} classifiedName The classified name of the provider to remove.
+ * @returns {Rule}
+ */
+export const removeProviderFromNgModule = (filePath: string, classifiedName: string): Rule =>
     (tree: Tree): void => {
         const sourceFile = getTsSourceFile(tree, filePath);
-        const change = addRouteDeclarationToModule(sourceFile, fileToAdd, routeLiteral);
+        const change = removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'providers', classifiedName);
         commitChanges(tree, filePath, [change]);
     };
+
+/**
+ * Inserts a route declaration to a router module (i.e. as a RouterModule declaration).
+ * @param {string} filePath The path of the file containing the NgModule to modify.
+ * @param {string} routeLiteral The Route object to insert.
+ * @returns {Rule}
+ */
+export const addRouteDeclarationToNgModule = (filePath: string, routeLiteral: string): Rule =>
+    (tree: Tree): void => {
+        const sourceFile = getTsSourceFile(tree, filePath);
+        const change = addRouteDeclarationToModule(sourceFile, filePath, routeLiteral);
+        commitChanges(tree, filePath, [change]);
+    };
+
+// --- HELPER(s) ----
+
+/**
+ * Gets the default project name defined in the `angular.json` file.
+ * @param {Tree} tree The current schematic's project tree.
+ * @throws {SchematicsException} An exception if a `defaultProject` property was not found in the `angular.json` file.
+ * @returns {string} The default project name.
+ */
+export const getDefaultProjectName = (tree: Tree): string => {
+    const angularJson = new JSONFile(tree, 'angular.json');
+    const defaultProjectName = angularJson.get(['defaultProject']) as string;
+    if (!defaultProjectName) {
+        throw new SchematicsException('Cannot find "defaultProject" property in angular.json file.');
+    }
+    return defaultProjectName;
+};
+
+/**
+ * Gets the default project output path defined in the `angular.json` file.
+ * @param {Tree} tree The current schematic's project tree.
+ * @throws {SchematicsException} An exception if a `defaultProject` property was not found in the `angular.json` file.
+ * @returns {string} The default project output path.
+ */
+export const getDefaultProjectOutputPath = (tree: Tree): string => {
+    const angularJson = new JSONFile(tree, 'angular.json');
+    return angularJson.get(['projects', getDefaultProjectName(tree), 'architect', 'build', 'options', 'outputPath']) as string;
+};

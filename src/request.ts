@@ -2,14 +2,20 @@ import { JsonObject } from '@angular-devkit/core';
 import { IncomingMessage } from 'http';
 import { get } from 'https';
 
-export const getDataFromUrl = async (url: string): Promise<Buffer> =>
+/**
+ * Returns the response data of a given url as a buffer object.
+ * @async
+ * @param {string|URL} url The url where to get the data from.
+ * @returns {Promise<Buffer>} A `Buffer` object.
+ */
+export const getDataFromUrl = async (url: string | URL): Promise<Buffer> =>
     new Promise((resolve, reject) => {
-        const { hostname, pathname } = new URL(url);
+        const { hostname, pathname } = (typeof url === 'string') ? new URL(url) : url;
         // eslint-disable-next-line consistent-return
         const req = get({ hostname, path: pathname }, (res: IncomingMessage) => {
             if (res.statusCode === 200) {
                 const rawData: Uint8Array[] = [];
-                res.on('data', chunk => rawData.push(chunk));
+                res.on('data', (chunk: Uint8Array) => rawData.push(chunk));
                 res.once('end', () => {
                     res.setTimeout(0);
                     res.removeAllListeners();
@@ -34,7 +40,13 @@ export const getDataFromUrl = async (url: string): Promise<Buffer> =>
         req.once('error', err => abort(err));
     });
 
-export const getJsonFromUrl = async (url: string): Promise<JsonObject> => {
+/**
+ * Returns the response data of a given url as a JSON object.
+ * @async
+ * @param {string|URL} url The url where to get the data from.
+ * @returns {Promise<JsonObject>} A `JsonObject` object.
+ */
+export const getJsonFromUrl = async (url: string | URL): Promise<JsonObject> => {
     const data = await getDataFromUrl(url);
     return JSON.parse(data.toString('utf-8')) as JsonObject;
 };

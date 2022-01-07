@@ -1,0 +1,9 @@
+{
+    "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+    "schematics": {
+        "deployFilesSchematic": {
+            "description": "deployFilesSchematic",
+            "factory": "./file.spec#deployFilesSchematic"
+        }
+    }
+}

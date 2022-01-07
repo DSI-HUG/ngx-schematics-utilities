@@ -6,7 +6,7 @@
     "parserOptions": {
         "project": [
             "tsconfig.json",
-            "tsconfig.spec.json"
+            "specs/tsconfig.json"
         ]
     }
 }

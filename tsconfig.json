@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "rootDir": "src",
         "baseUrl": ".",
         "outDir": "./dist/src",
         "lib": [
@@ -30,7 +29,15 @@
         "types": [
             "jasmine",
             "node"
-        ]
+        ],
+        "paths": {
+            "@hug/ngx-schematics-utilities": [
+                "src"
+            ],
+            "@hug/ngx-schematics-utilities/*": [
+                "src/*"
+            ]
+        }
     },
     "include": [
         "src/**/*"
