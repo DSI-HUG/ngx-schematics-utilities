@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
 const config = {
     title: 'ngx-schematics-utilities',
     tagline: 'Useful utilities for Angular Schematics',
-    baseUrl: '/',
-    url: 'https://DSI-HUG.github.io',
+    url: 'https://dsi-hug.github.io',
+    baseUrl: '/ngx-schematics-utilities/',
     organizationName: 'DSI-HUG',
     projectName: 'ngx-schematics-utilities',
     deploymentBranch: 'gh-pages',
@@ -26,7 +26,7 @@ const config = {
                 docs: {
                     routeBasePath: '/',
                     sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl: 'https://github.com/DSI-HUG/ngx-schematics-utilities/docs/edit/master/'
+                    editUrl: 'https://github.com/DSI-HUG/ngx-schematics-utilities/edit/main/docs/docs/'
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css')
