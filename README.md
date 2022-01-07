@@ -35,11 +35,14 @@
 
 <hr>
 
-[Schematics][schematics] are generators that transform an existing filesystem.
+#### Schematics
 
-They can create files, refactor existing files, or move files around.
+> Schematics are generators that transform an existing filesystem.
+> They can create files, refactor existing files, or move files around.
 
 This library provide a large set of utilities that can be used while developing a schematic.
+
+[More info][schematics]
 
 
 ## Getting started
