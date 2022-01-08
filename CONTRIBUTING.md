@@ -299,7 +299,7 @@ The content of the commit message body should contain:
 
 
 
-[coc]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/CODE_OF_CONDUCT.md
+[coc]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CODE_OF_CONDUCT.md
 [github]: https://github.com/DSI-HUG/ngx-schematics-utilities
 [issue-templates]: https://github.com/DSI-HUG/ngx-schematics-utilities/issues/new/choose
 [github-pr]: https://github.com/DSI-HUG/ngx-schematics-utilities/pulls

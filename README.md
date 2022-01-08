@@ -19,7 +19,7 @@
     <a href="https://npmcharts.com/compare/@hug/ngx-schematics-utilities?minimal=true">
         <img src="https://img.shields.io/npm/dw/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm donwloads" />
     </a>
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/LICENSE">
+    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/license-GPLv3-ff69b4.svg" alt="license GPLv3" />
     </a>
 </p>
@@ -28,7 +28,7 @@
     <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/actions?query=workflow:CI%20tests">
         <img src="https://github.com/DSI-HUG/ngx-schematics-utilities/workflows/CI%20tests/badge.svg" alt="build status" />
     </a>
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/CONTRIBUTING.md#-submitting-a-pull-request-pr">
+    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CONTRIBUTING.md#-submitting-a-pull-request-pr">
         <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" />
     </a>
 </p>
@@ -75,9 +75,9 @@ Please read and follow the [Code of Conduct][codeofconduct], and help us keep th
 
 
 
-[developer]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/DEVELOPER.md
-[contributing]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/CONTRIBUTING.md
-[codeofconduct]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/master/CODE_OF_CONDUCT.md
+[developer]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/DEVELOPER.md
+[contributing]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CONTRIBUTING.md
+[codeofconduct]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CODE_OF_CONDUCT.md
 [dsi-hug]: https://github.com/DSI-HUG
 [schematics]: https://angular.io/guide/schematics
 [docs-site]: https://DSI-HUG.github.io/ngx-schematics-utilities
