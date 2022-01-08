@@ -66,6 +66,32 @@ export const packageInstallTask = (callback?: (taskId?: TaskId) => void, force =
         }
     };
 
+// --- ADD DEPS ---
+
+/**
+ * Adds items to the `dependencies` section of `package.json` file.
+ * @param {(string|KeyValueItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
+export const addPackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
+
+/**
+* Adds items to the `devDependencies` section of `package.json` file.
+* @param {(string|KeyValueItem)[]} deps List of items to be added.
+* @returns {Rule}
+*/
+export const addPackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
+
+/**
+* Adds items to the `peerDependencies` section of `package.json` file.
+* @param {(string|KeyValueItem)[]} deps List of items to be added.
+* @returns {Rule}
+*/
+export const addPackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);
+
 // --- REMOVE DEPS ---
 
 /**
@@ -91,29 +117,3 @@ export const removePackageJsonDevDependencies = (deps: (string | KeyValueItem)[]
  */
 export const removePackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps, true);
-
-// --- ADD DEPS ---
-
-/**
- * Adds items to the `dependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be added.
- * @returns {Rule}
- */
-export const addPackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
-
-/**
- * Adds items to the `devDependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be added.
- * @returns {Rule}
- */
-export const addPackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
-
-/**
- * Adds items to the `peerDependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be added.
- * @returns {Rule}
- */
-export const addPackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
-    (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);

@@ -23,51 +23,6 @@ export default (options: any): Rule =>
   ]);
 ```
 
-### `removePackageJsonDependencies`
-
-Removes items from the **dependencies** section of **package.json** file.
-
-```ts {6}
-import { removePackageJsonDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule } from '@angular-devkit/schematics';
-
-export default (options: any): Rule =>
-  schematic('my-schematic', [
-    removePackageJsonDependencies([ '@my/dep', { key: 'my-dep', value: '1.0.0' } ]),
-    packageInstallTask()
-  ]);
-```
-
-### `removePackageJsonDevDependencies`
-
-Removes items from the `devDependencies` section of `package.json` file.
-
-```ts {6}
-import { removePackageJsonDevDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule } from '@angular-devkit/schematics';
-
-export default (options: any): Rule =>
-  schematic('my-schematic', [
-    removePackageJsonDevDependencies([ '@my/dev-dep', { key: 'my-dev-dep', value: '1.0.0' } ]),
-    packageInstallTask()
-  ]);
-```
-
-### `removePackageJsonPeerDependencies`
-
-Removes items from the `peerDependencies` section of `package.json` file.
-
-```ts {6}
-import { removePackageJsonPeerDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule } from '@angular-devkit/schematics';
-
-export default (options: any): Rule =>
-  schematic('my-schematic', [
-    removePackageJsonPeerDependencies([ '@my/peer-dep', { key: 'my-peer-dep', value: '1.0.0' } ]),
-    packageInstallTask()
-  ]);
-```
-
 ### `addPackageJsonDependencies`
 
 Adds items to the `dependencies` section of `package.json` file.
@@ -109,6 +64,51 @@ import { Rule } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   schematic('my-schematic', [
     addPackageJsonPeerDependencies([ '@my/peer-dep', { key: 'my-peer-dep', value: '1.0.0' } ]),
+    packageInstallTask()
+  ]);
+```
+
+### `removePackageJsonDependencies`
+
+Removes items from the **dependencies** section of **package.json** file.
+
+```ts {6}
+import { removePackageJsonDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removePackageJsonDependencies([ '@my/dep', { key: 'my-dep', value: '1.0.0' } ]),
+    packageInstallTask()
+  ]);
+```
+
+### `removePackageJsonDevDependencies`
+
+Removes items from the `devDependencies` section of `package.json` file.
+
+```ts {6}
+import { removePackageJsonDevDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removePackageJsonDevDependencies([ '@my/dev-dep', { key: 'my-dev-dep', value: '1.0.0' } ]),
+    packageInstallTask()
+  ]);
+```
+
+### `removePackageJsonPeerDependencies`
+
+Removes items from the `peerDependencies` section of `package.json` file.
+
+```ts {6}
+import { removePackageJsonPeerDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removePackageJsonPeerDependencies([ '@my/peer-dep', { key: 'my-peer-dep', value: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
