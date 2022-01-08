@@ -57,13 +57,13 @@ See the [developer docs][developer].
 
 ## Contributing
 
-#### Want to Help?
+#### > Want to Help?
 
 Want to file a bug, contribute some code or improve documentation? Excellent!
 
 But please read up first on the guidelines for [contributing][contributing], and learn about submission process, coding rules and more.
 
-#### Code of Conduct
+#### > Code of Conduct
 
 Please read and follow the [Code of Conduct][codeofconduct], and help us keep this project open and inclusive.
 
