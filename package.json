@@ -46,7 +46,7 @@
     },
     "dependencies": {
         "@badisi/latest-version": "^2.1.0",
-        "colors": "^1.4.0",
+        "colors": "1.4.0",
         "ora": "5.4.1",
         "semver": "^7.3.5"
     },
