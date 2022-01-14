@@ -45,7 +45,7 @@
 
 ## Getting started
 
-This library provide a large set of utilities that can be used while developing a schematic.
+This library provide a large set of utilities that can be used while developing a schematic for Angular.
 
 👉 Learn about it on the [docs site][docs-site].
 
