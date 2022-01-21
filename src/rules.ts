@@ -9,7 +9,7 @@ interface BufferOutput {
 }
 
 /**
- * Executes a set of rules by outputing first to the console the name of the associated schematic and its options.
+ * Executes a set of rules by outputing first the name of the associated schematic and its options to the console.
  * The schematic name will be prefixed by the word "SCHEMATIC" printed in magenta and the given options will
  * follow inlined, stringified and printed in gray.
  * @param {string} name Name of the schematic to display.
