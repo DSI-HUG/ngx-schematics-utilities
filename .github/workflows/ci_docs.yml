@@ -3,7 +3,7 @@ name: Deploy docs to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [docs/**]
+    paths: [projects/docs/**]
 
 jobs:
   ci_docs:
@@ -20,7 +20,7 @@ jobs:
       - name: Make sure npm is latest
         run: npm install -g npm@latest
       - name: Build docs
-        working-directory: docs
+        working-directory: projects/docs
         run: |
           npm clean-install
           npm run build
@@ -28,7 +28,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build
+          publish_dir: ./projects/docs/build
           # Assign commit authorship to the official GH-Actions bot for deploys to `gh-pages` branch:
           # https://github.com/actions/checkout/issues/13#issuecomment-724415212
           # The GH actions bot is used by default if you didn't specify the two fields.

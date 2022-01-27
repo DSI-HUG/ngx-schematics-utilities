@@ -32,11 +32,11 @@
     "main": "src/index.js",
     "types": "src/index.d.ts",
     "scripts": {
-        "start:docs": "npm run start --prefix=docs",
-        "build:docs": "npm run build --prefix=docs",
+        "start:docs": "npm run start --prefix=projects/docs",
+        "build:docs": "npm run build --prefix=projects/docs",
         "build:lib": "node ./build",
-        "test": "ts-node --project=specs/tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/jasmine --config=./jasmine.json",
-        "lint": "eslint ./src"
+        "test": "ts-node --project=projects/specs/tsconfig.json --require=tsconfig-paths/register node_modules/.bin/jasmine --config=jasmine.json",
+        "lint": "eslint projects/lib projects/specs"
     },
     "peerDependencies": {
         "@angular-devkit/core": ">= 11",

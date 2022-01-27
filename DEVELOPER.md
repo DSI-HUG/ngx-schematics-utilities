@@ -43,7 +43,7 @@ npm run build:lib
 
 ## Building the documentation
 
-> The document will be built in the `./docs/build` directory.
+> The document will be built in the `./projects/docs/build` directory.
 
 ```sh
 npm run build:docs
@@ -53,7 +53,7 @@ npm run build:docs
 
 This project comes with automatic continuous delivery (CD) using *GitHub Actions*.
 
-1. Make any changes in the `./docs` directory
+1. Make any changes in the `./projects/docs` directory
 2. Push the changes
 3. Watch the results in: [Actions](https://github.com/DSI-HUG/ngx-schematics-utilities/actions)
 

@@ -2,11 +2,5 @@
     "root": true,
     "extends": [
         "@hug/eslint-config/moderate"
-    ],
-    "parserOptions": {
-        "project": [
-            "tsconfig.json",
-            "specs/tsconfig.json"
-        ]
-    }
+    ]
 }

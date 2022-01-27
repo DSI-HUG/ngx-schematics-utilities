@@ -32,14 +32,14 @@
         ],
         "paths": {
             "@hug/ngx-schematics-utilities": [
-                "src"
+                "projects/lib"
             ],
             "@hug/ngx-schematics-utilities/*": [
-                "src/*"
+                "projects/lib/*"
             ]
         }
     },
     "include": [
-        "src/**/*"
+        "projects/lib/**/*"
     ]
 }

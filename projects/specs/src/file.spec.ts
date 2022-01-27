@@ -59,14 +59,14 @@ describe('file', () => {
     });
 
     it('rule: deployFiles - missing template options', async () => {
-        const options = {};
+        const options = { source: '../files' };
         /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
         const test$ = runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
         await expectAsync(test$).toBeRejectedWithError('myParam is not defined');
     });
 
     it('rule: deployFiles - with template options', async () => {
-        const options = { templateOptions: { myParam: 'MyParam' } };
+        const options = { templateOptions: { myParam: 'MyParam' }, source: '../files' };
         /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
         await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
         expect(tree.exists('./test-file')).toBeTruthy();
@@ -84,7 +84,7 @@ describe('file', () => {
     });
 
     it('rule: deployFiles - to another destination', async () => {
-        const options = { templateOptions: { myParam: 'MyParam' }, destination: './otherFolder' };
+        const options = { templateOptions: { myParam: 'MyParam' }, destination: './otherFolder', source: '../files' };
         /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
         await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
         expect(tree.exists('./test-file')).toBeFalsy();
@@ -100,7 +100,7 @@ describe('file', () => {
         expect(tree.readContent(filePath)).not.toEqual('MyParam\n');
 
         /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
-        const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder' };
+        const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder', source: '../files' };
         await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
         expect(tree.readContent(filePath)).toEqual('MyParam\n');
         expect(tree.files.length).toEqual(nbFiles + 1);
