@@ -14,7 +14,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // By default: deploy schematic './files' folder into project root folder
+    // By default: deploy schematic `./files` folder into project root folder
     deployFiles(),
 
     // Use defaults but also apply computation to `*.template` files
@@ -105,10 +105,10 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // ES : `import { environment } from './environments/environment';`
+    // ES format : `import { environment } from './environments/environment';`
     addImportToFile('src/main.ts', 'environment', './environments/environment'),
 
-    // Default : `import packageJson from 'package.json';`
+    // Default format : `import packageJson from 'package.json';`
     addImportToFile('src/main.ts', 'packageJson', 'package.json', true)
   ]);
 ```
