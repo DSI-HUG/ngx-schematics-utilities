@@ -48,7 +48,11 @@ const copyAssets = () => cpy(
 const customizePackageJson = async () => {
     const pkgJsonPath = pathResolve(DIST_PATH, 'package.json');
     const pkgJson = JSON.parse(readFileSync(pkgJsonPath, { encoding: 'utf8' }));
-    delete pkgJson.scripts;
+    Object.keys(pkgJson.scripts).forEach(key => {
+        if (key !== 'postinstall') {
+            delete pkgJson.scripts[key];
+        }
+    });
     delete pkgJson.devDependencies;
     writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 4), { encoding: 'utf8' });
 };
