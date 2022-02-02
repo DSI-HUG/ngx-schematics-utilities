@@ -1,11 +1,7 @@
 import { MergeStrategy, SchematicContext } from '@angular-devkit/schematics';
-import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import { getSchematicSchemaOptions } from '@hug/ngx-schematics-utilities';
-import { join } from 'path';
 
-const collectionPath = join(__dirname, './collection.json');
-
-const runner = new SchematicTestRunner('ngx-schematics-utilities', collectionPath);
+import { runner } from './common';
 
 const context = ({
     schematic: { collection: { description: { name: 'ngx-schematics-utilities' } } },

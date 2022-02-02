@@ -1,46 +1,12 @@
 import { Rule } from '@angular-devkit/schematics';
-import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
-    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies,
-    KeyValueItem, removePackageJsonDependencies, removePackageJsonDevDependencies,
-    removePackageJsonPeerDependencies
+    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, KeyValueItem,
+    removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
 } from '@hug/ngx-schematics-utilities';
-import { Schema as ApplicationOptions, Style } from '@schematics/angular/application/schema';
 import { JSONFile } from '@schematics/angular/utility/json-file';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
-import { join } from 'path';
 
-const workspaceOptions: WorkspaceOptions = {
-    name: 'workspace',
-    newProjectRoot: 'projects',
-    version: '0.0.0'
-};
-
-const appName = 'app-test';
-
-const appOptions: ApplicationOptions = {
-    name: appName,
-    projectRoot: '',
-    inlineStyle: false,
-    inlineTemplate: false,
-    routing: true,
-    style: Style.Scss,
-    skipTests: false,
-    skipPackageJson: false
-};
-
-const collectionPath = join(__dirname, './collection.json');
-
-const runner = new SchematicTestRunner('ngx-schematics-utilities', collectionPath);
-
-const getCleanAppTree = async (): Promise<UnitTestTree> => {
-    const workspaceTree = await runner
-        .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
-        .toPromise();
-    return await runner
-        .runExternalSchematicAsync('@schematics/angular', 'application', appOptions, workspaceTree)
-        .toPromise();
-};
+import { getCleanAppTree, runner } from './common';
 
 // ---- HELPER(s) ----
 
@@ -83,31 +49,33 @@ const test = async (
 
 // ---- TEST(s) ----
 
-describe('package-json', () => {
-    let tree: UnitTestTree;
+[false, true].forEach(useWorkspace => {
+    describe(`package-json - (${useWorkspace ? 'using workspace project' : 'using flat project'})`, () => {
+        let tree: UnitTestTree;
 
-    beforeEach(async () => {
-        tree = await getCleanAppTree();
-    });
+        beforeEach(async () => {
+            tree = await getCleanAppTree(useWorkspace);
+        });
 
-    it('rule: add/remove packageJson dependencies', async () => {
+        it('rule: add/remove packageJson dependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-        for (const deps of [['@my/dep', { key: 'my-dep', value: '1.2.3' }]]) {
-            await test(tree, deps, addPackageJsonDependencies, removePackageJsonDependencies, 'dependencies');
-        }
-    });
+            for (const deps of [['@my/dep', { key: 'my-dep', value: '1.2.3' }]]) {
+                await test(tree, deps, addPackageJsonDependencies, removePackageJsonDependencies, 'dependencies');
+            }
+        });
 
-    it('rule: add/remove packageJson devDependencies', async () => {
+        it('rule: add/remove packageJson devDependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-        for (const deps of [['@my/dev-dep', { key: 'my-dev-dep', value: '1.2.3' }]]) {
-            await test(tree, deps, addPackageJsonDevDependencies, removePackageJsonDevDependencies, 'devDependencies');
-        }
-    });
+            for (const deps of [['@my/dev-dep', { key: 'my-dev-dep', value: '1.2.3' }]]) {
+                await test(tree, deps, addPackageJsonDevDependencies, removePackageJsonDevDependencies, 'devDependencies');
+            }
+        });
 
-    it('rule: add/remove packageJson peerDependencies', async () => {
+        it('rule: add/remove packageJson peerDependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-        for (const deps of [['@my/peer-dep', { key: 'my-peer-dep', value: '1.2.3' }]]) {
-            await test(tree, deps, addPackageJsonPeerDependencies, removePackageJsonPeerDependencies, 'peerDependencies');
-        }
+            for (const deps of [['@my/peer-dep', { key: 'my-peer-dep', value: '1.2.3' }]]) {
+                await test(tree, deps, addPackageJsonPeerDependencies, removePackageJsonPeerDependencies, 'peerDependencies');
+            }
+        });
     });
 });
