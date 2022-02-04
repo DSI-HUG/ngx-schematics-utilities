@@ -4,27 +4,63 @@ title: Angular
 
 ## Rules
 
-### `ensureIsAngularProject`
+### `ensureIsAngularWorkspace`
 
-Ensures that the project, where the schematic is currently running on, is actually an Angular project or throws an exception otherwise.
+Ensures that the workspace, where the schematic is currently running on, is actually an Angular workspace or throws an exception otherwise.
 
 :::note Note
 The test is done by ensuring the existence of an `angular.json` file.
 :::
 
 ```ts {6}
+import { ensureIsAngularWorkspace, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    ensureIsAngularWorkspace()
+  ]);
+```
+
+### `ensureIsAngularProject`
+
+Ensures that a project is actually an Angular project or throws an exception otherwise.
+
+```ts {7,10}
 import { ensureIsAngularProject, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    ensureIsAngularProject()
+    // By default: uses the default project name specified in the `angular.json` file
+    ensureIsAngularProject(),
+
+    // Use a specific project name
+    ensureIsAngularProject('ProjectName')
+  ]);
+```
+
+### `ensureIsAngularLibrary`
+
+Ensures that a project is actually an Angular library or throws an exception otherwise.
+
+```ts {7,10}
+import { ensureIsAngularLibrary, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    // By default: uses the default project name specified in the `angular.json` file
+    ensureIsAngularLibrary(),
+
+    // Use a specific project name
+    ensureIsAngularLibrary('ProjectName')
   ]);
 ```
 
 ### `isAngularVersion`
 
-Executes a rule only if the current installed Angular version satisfies a given range.
+Executes a rule only if the current Angular version installed in the project satisfies a given range.
 
 ```ts {6-8}
 import { isAngularVersion, schematic } from '@hug/ngx-schematics-utilities';
@@ -40,29 +76,37 @@ export default (options: any): Rule =>
 
 ### `addAngularJsonAsset`
 
-Adds a new asset to the `build` and `test` sections of the `angular.json` file.
+Adds a new asset to a project `build` and `test` sections of the `angular.json` file.
 
-```ts {6}
+```ts {7,10}
 import { addAngularJsonAsset, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addAngularJsonAsset('src/manifest.webmanifest')
+    // By default: uses the default project name specified in the `angular.json` file
+    addAngularJsonAsset('src/manifest.webmanifest'),
+
+    // Use a specific project name
+    addAngularJsonAsset('src/manifest.webmanifest', 'ProjectName')
   ]);
 ```
 
 ### `removeAngularJsonAsset`
 
-Removes an asset from the `build` and `test` sections of the `angular.json` file.
+Removes an asset from a project `build` and `test` sections of the `angular.json` file.
 
-```ts {6}
+```ts {7,10}
 import { removeAngularJsonAsset, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeAngularJsonAsset('src/manifest.webmanifest')
+    // By default: uses the default project name specified in the `angular.json` file
+    removeAngularJsonAsset('src/manifest.webmanifest'),
+
+    // Use a specific project name
+    removeAngularJsonAsset('src/manifest.webmanifest', 'ProjectName')
   ]);
 ```
 
@@ -249,17 +293,39 @@ export default (options: any): Rule =>
   };
 ```
 
-### `getDefaultProjectOutputPath`
+### `getProjectOutputPath`
 
-Gets the default project output path defined in the `angular.json` file.
+Gets a project output path as defined in the `angular.json` file.
 
-```ts {6}
-import { getDefaultProjectOutputPath } from '@hug/ngx-schematics-utilities';
+```ts {7,10}
+import { getProjectOutputPath } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   (tree: Tree): Rule => {
-    const projectOutputPath = getDefaultProjectOutputPath(tree);
+    // By default: uses the default project name specified in the `angular.json` file
+    const defaultProjectOutputPath = getProjectOutputPath(tree);
+
+    // Use a specific project name
+    const projectOutputPath = getProjectOutputPath(tree, 'ProjectName');
+
+    return schematic('my-schematic', [
+      ...
+    ]);
+  };
+```
+
+### `getProjectFromWorkspace`
+
+Gets a project definition object from the current Angular workspace.
+
+```ts {6}
+import { getProjectFromWorkspace } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  async (tree: Tree): Rule => {
+    const project = await getProjectFromWorkspace(tree);
     return schematic('my-schematic', [
       ...
     ]);
