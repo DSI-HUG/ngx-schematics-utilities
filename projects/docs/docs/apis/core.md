@@ -27,7 +27,7 @@ export default (options: any): Rule =>
 Outputs a message to the console.
 
 :::note Note
-By default, the Angular schematic's logger will misplace messages with breaking indentations.
+By default, the Angular schematic's logger will misplace messages with breaking indentations.<br/>
 This method makes sure that messages are always displayed at the beginning of the current console line.
 :::
 

@@ -9,7 +9,7 @@ title: Package.json
 Triggers a package installation task using the user's preferred package manager.
 
 :::note Note
-By default the installation will only occur if any packages were previously added or removed to/from the `package.json` file.
+By default the installation will only occur if any packages were previously added or removed to/from the `package.json` file.<br/>
 This default behavior can be bypassed by setting the `force` parameter to `true`.
 :::
 

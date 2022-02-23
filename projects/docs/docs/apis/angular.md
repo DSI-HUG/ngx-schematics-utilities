@@ -281,7 +281,7 @@ export default (options: any): Rule => {
 Gets the default project name defined in the `angular.json` file.
 
 ```ts {6}
-import { getDefaultProjectName } from '@hug/ngx-schematics-utilities';
+import { getDefaultProjectName, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -298,7 +298,7 @@ export default (options: any): Rule =>
 Gets a project output path as defined in the `angular.json` file.
 
 ```ts {7,10}
-import { getProjectOutputPath } from '@hug/ngx-schematics-utilities';
+import { getProjectOutputPath, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -320,11 +320,11 @@ export default (options: any): Rule =>
 Gets a project definition object from the current Angular workspace.
 
 ```ts {6}
-import { getProjectFromWorkspace } from '@hug/ngx-schematics-utilities';
+import { getProjectFromWorkspace, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
-  async (tree: Tree): Rule => {
+  (tree: Tree): Rule => {
     const project = await getProjectFromWorkspace(tree);
     return schematic('my-schematic', [
       ...
