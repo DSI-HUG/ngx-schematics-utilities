@@ -64,8 +64,8 @@ import { customMatchers } from './jasmine.matchers';
             const rule = application()
                 .rule(({ project }: ChainableProjectContext) => {
                     expect(project?.name).toEqual(appTest1.name);
-                    expect(project?.root).toEqual(appTest1.projectRoot as string);
-                    expect(project?.sourceRoot).toEqual(`${appTest1.projectRoot ? `${appTest1.projectRoot}/` : ''}src`);
+                    expect(join(project?.root)).toEqual(join(appTest1.projectRoot as string));
+                    expect(join(project?.sourceRoot as string)).toEqual(join(appTest1.projectRoot ? appTest1.projectRoot : '', 'src'));
                 }).toRule();
             await runner.callRule(rule, tree).toPromise();
         });
@@ -75,8 +75,8 @@ import { customMatchers } from './jasmine.matchers';
                 const rule = application(appTest2.name)
                     .rule(({ project }: ChainableProjectContext) => {
                         expect(project?.name).toEqual(appTest2.name);
-                        expect(project?.root).toEqual(appTest2.projectRoot as string);
-                        expect(project?.sourceRoot).toEqual(`${appTest2.projectRoot ? `${appTest2.projectRoot}/` : ''}src`);
+                        expect(join(project?.root)).toEqual(join(appTest2.projectRoot as string));
+                        expect(join(project?.sourceRoot as string)).toEqual(join(appTest2.projectRoot ? appTest2.projectRoot : '', 'src'));
                     }).toRule();
                 await runner.callRule(rule, tree).toPromise();
             });

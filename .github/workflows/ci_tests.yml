@@ -12,15 +12,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci_tests:
-    runs-on: ubuntu-latest
+  ci_tests_macos:
+    name: Tests on macos node${{ matrix.node }}
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node: ['12', '14', '16']
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: ${{ matrix.node }}
           registry-url: https://registry.npmjs.org/
       - name: Make sure npm is latest
         run: npm install -g npm@latest
@@ -29,4 +33,53 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Test
+        run: npm run test
+
+  ci_tests_linux:
+    name: Tests on linux node${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['12', '14', '16']
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          registry-url: https://registry.npmjs.org/
+      - name: Make sure npm is latest
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm clean-install
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test
+
+  ci_tests_windows:
+    name: Tests on windows node${{ matrix.node }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node: ['12', '14', '16']
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Fix npm prior to installing latest
+        # https://github.com/actions/setup-node/issues/411
+        # https://github.com/npm/cli/issues/4341
+        run: npm install -g npm@8.3.1
+      - name: Make sure npm is latest
+        run: npm install -g npm@latest
+      - name: Install dependencies
+        run: npm clean-install
+      - name: Lint
+        run: npm run lint
+      - name: Tests
         run: npm run test

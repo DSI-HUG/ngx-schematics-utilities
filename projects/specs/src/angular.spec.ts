@@ -176,7 +176,10 @@ const expectAddToNgModule = async (
 
         it('rule: removeAngularJsonAsset', async () => {
             const project = await getProjectFromWorkspace(tree);
-            const asset = join(project.root, 'src/favicon.ico');
+            let asset = `${project.root}/src/favicon.ico`;
+            if (asset.startsWith('/') || asset.startsWith('\\')) {
+                asset = asset.substring(1, asset.length);
+            }
 
             // Before
             expect(getAssets(tree, 'build')).toContain(asset);

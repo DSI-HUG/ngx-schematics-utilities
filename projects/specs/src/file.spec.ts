@@ -38,7 +38,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
             await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
             expect(tree.exists('./test-file')).toBeTruthy();
-            expect(tree.readContent('./test-file')).toEqual('MyParam\n');
+            expect(tree.readContent('./test-file').replace('\r\n', '\n')).toEqual('MyParam\n');
             expect(tree.files.length).toEqual(nbFiles + 1);
         });
 
@@ -65,12 +65,12 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
             await runner.callRule(createOrUpdateFile(filePath, 'my data'), tree).toPromise();
             expect(tree.exists(filePath)).toBeTruthy();
-            expect(tree.readContent(filePath)).not.toEqual('MyParam\n');
+            expect(tree.readContent(filePath).replace('\r\n', '\n')).not.toEqual('MyParam\n');
 
             /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
             const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder', source: '../files' };
             await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
-            expect(tree.readContent(filePath)).toEqual('MyParam\n');
+            expect(tree.readContent(filePath).replace('\r\n', '\n')).toEqual('MyParam\n');
             expect(tree.files.length).toEqual(nbFiles + 1);
         });
 
