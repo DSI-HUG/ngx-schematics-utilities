@@ -3,13 +3,13 @@
 </h1>
 
 <p align="center">
-    <br>
+    <br/>
     <a href="https://www.hug.ch/">
         <img src="https://www.hug.ch//themes/custom/interhug/dist/img/logos/logo-hug.svg" alt="hug-logo" height="54px" />
     </a>
-    <br><br>
+    <br/><br/>
     <i>Useful utilities for Angular Schematics</i>
-    <br><br>
+    <br/><br/>
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@
     </a>
 </p>
 
-<hr>
+<hr/>
 
 #### Schematics
 
@@ -48,6 +48,34 @@
 This library provide a large set of utilities that can be used while developing a schematic for Angular.
 
 👉 Learn about it on the [docs site][docs-site].
+
+#### Example
+
+```ts
+export default (options: MySchematicOptions): Rule =>
+  schematic('my-schematic',
+    modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], true),
+
+    workspace()
+      .spawn('ng', ['add', '@angular/material', '--skip-confirmation'])
+      .addPackageJsonDevDependencies(['eslint'])
+      .packageInstallTask()
+      .isAngularVersion('<= 11', () => {
+        ...
+      })
+      .toRule(),
+
+    application(options.project)
+      .deployFiles(options)
+      .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
+      .deleteFiles(['karma.conf.js'])
+      .rule(({ project }: ChainableProjectContext) => {
+        return createOrUpdateFile(project.pathFromRoot('README.md'), project.name);
+      })
+      .toRule()
+
+  ], options);
+```
 
 
 ## Development

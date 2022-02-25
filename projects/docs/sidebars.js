@@ -18,6 +18,7 @@ const sidebars = {
 
     docs: [
         'installation',
+        'usage',
         {
             label: 'APIs',
             type: 'category',

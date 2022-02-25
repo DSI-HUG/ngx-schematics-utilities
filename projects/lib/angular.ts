@@ -39,6 +39,8 @@ const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: stri
 
 export interface ProjectDefinition extends NgDevKitProjectDefinition {
     name: string;
+    pathFromRoot: (path: string) => string;
+    pathFromSourceRoot: (path: string) => string;
 }
 
 // --- RULE(s) ----
@@ -330,5 +332,10 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName?: string):
     if (!project) {
         throw new SchematicsException(`Project "${name}" was not found in the current workspace.`);
     }
-    return { name, ...project };
+    return {
+        name,
+        ...project,
+        pathFromRoot: (path: string) => join(project.root ?? '', path),
+        pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)
+    };
 };

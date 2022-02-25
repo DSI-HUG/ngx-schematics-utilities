@@ -4,3 +4,6 @@ export * from './package-json';
 export * from './request';
 export * from './rules';
 export * from './schematics';
+export * from './chainable/chainable';
+export * from './chainable/chainable-project';
+export * from './chainable/chainable-workspace';

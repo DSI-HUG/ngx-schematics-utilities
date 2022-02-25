@@ -3,21 +3,21 @@ import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
     addAngularJsonAsset, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule, addProviderToNgModule,
-    addRouteDeclarationToNgModule, ensureIsAngularProject, getDefaultProjectName, getProjectOutputPath,
-    isAngularVersion, removeAngularJsonAsset, removeDeclarationFromNgModule, removeExportFromNgModule,
-    removeImportFromNgModule, removeProviderFromNgModule
+    addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureIsAngularWorkspace,
+    getDefaultProjectName, getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset,
+    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
-import { appName, getCleanAppTree, runner } from './common';
+import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common';
 import { customMatchers } from './jasmine.matchers';
 
 // --- HELPER(s) ---
 
 const getAssets = (tree: UnitTestTree, configName: string): string[] => {
     const angularJson = new JSONFile(tree, 'angular.json');
-    const architectPath = ['projects', appName, 'architect'];
+    const architectPath = ['projects', appTest1.name, 'architect'];
     const assetsPath = [...architectPath, configName, 'options', 'assets'];
     return angularJson.get(assetsPath) as string[];
 };
@@ -31,7 +31,7 @@ const getNgModule = (property: string, fileContent: string): string[] => {
     return [];
 };
 
-const removeFromNgModule = async (
+const expectRemoveFromNgModule = async (
     tree: UnitTestTree,
     ngModuleProperty: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,7 +56,7 @@ const removeFromNgModule = async (
     await expectAsync(test$).toBeResolved();
 };
 
-const addToNgModule = async (
+const expectAddToNgModule = async (
     tree: UnitTestTree,
     ngModuleProperty: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,13 +101,33 @@ const addToNgModule = async (
             tree = await getCleanAppTree(useWorkspace);
         });
 
+        it('rule: ensureIsAngularWorkspace', async () => {
+            const ok$ = runner.callRule(ensureIsAngularWorkspace(), tree).toPromise();
+            await expectAsync(ok$).toBeResolved();
+
+            tree.delete('angular.json');
+            const ko$ = runner.callRule(ensureIsAngularWorkspace(), tree).toPromise();
+            await expectAsync(ko$).toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
+        });
+
         it('rule: ensureIsAngularProject', async () => {
             const ok$ = runner.callRule(ensureIsAngularProject(), tree).toPromise();
             await expectAsync(ok$).toBeResolved();
 
-            tree.delete('angular.json');
+            const angularJson = new JSONFile(tree, 'angular.json');
+            angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
             const ko$ = runner.callRule(ensureIsAngularProject(), tree).toPromise();
             await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular project.');
+        });
+
+        it('rule: ensureIsAngularLibrary', async () => {
+            const ko$ = runner.callRule(ensureIsAngularLibrary(), tree).toPromise();
+            await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular library.');
+
+            const angularJson = new JSONFile(tree, 'angular.json');
+            angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
+            const ok$ = runner.callRule(ensureIsAngularLibrary(), tree).toPromise();
+            await expectAsync(ok$).toBeResolved();
         });
 
         it('rule: isAngularVersion', async () => {
@@ -136,7 +156,8 @@ const addToNgModule = async (
         });
 
         it('rule: addAngularJsonAsset', async () => {
-            const asset = 'src/manifest.webmanifest';
+            const project = await getProjectFromWorkspace(tree);
+            const asset = join(project.root, 'src/manifest.webmanifest');
 
             // Before
             expect(getAssets(tree, 'build')).not.toContain(asset);
@@ -154,7 +175,8 @@ const addToNgModule = async (
         });
 
         it('rule: removeAngularJsonAsset', async () => {
-            const asset = 'src/favicon.ico';
+            const project = await getProjectFromWorkspace(tree);
+            const asset = join(project.root, 'src/favicon.ico');
 
             // Before
             expect(getAssets(tree, 'build')).toContain(asset);
@@ -171,32 +193,41 @@ const addToNgModule = async (
         });
 
         it('rule: add/remove declaration in NgModule', async () => {
-            await addToNgModule(tree, 'declarations', addDeclarationToNgModule, {
-                filePath: 'src/app/app.module.ts',
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app.module.ts');
+
+            await expectAddToNgModule(tree, 'declarations', addDeclarationToNgModule, {
+                filePath,
                 classifiedName: 'TestComponent',
                 importPath: './components/test'
             });
-            await removeFromNgModule(tree, 'declarations', removeDeclarationFromNgModule, {
-                filePath: 'src/app/app.module.ts',
+            await expectRemoveFromNgModule(tree, 'declarations', removeDeclarationFromNgModule, {
+                filePath,
                 classifiedName: 'TestComponent'
             });
         });
 
         it('rule: add/remove simple import in NgModule', async () => {
-            await addToNgModule(tree, 'imports', addImportToNgModule, {
-                filePath: 'src/app/app.module.ts',
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app.module.ts');
+
+            await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
+                filePath,
                 classifiedName: 'HttpClientModule',
                 importPath: '@angular/common/http'
             });
-            await removeFromNgModule(tree, 'imports', removeImportFromNgModule, {
-                filePath: 'src/app/app.module.ts',
+            await expectRemoveFromNgModule(tree, 'imports', removeImportFromNgModule, {
+                filePath,
                 classifiedName: 'HttpClientModule'
             });
         });
 
         it('rule: add/remove forRoot import in NgModule', async () => {
-            await addToNgModule(tree, 'imports', addImportToNgModule, {
-                filePath: 'src/app/app.module.ts',
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app.module.ts');
+
+            await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
+                filePath,
                 classifiedName: tags.oneLine`
                 TestModule.forRoot({
                     enabled: environment.production
@@ -204,38 +235,45 @@ const addToNgModule = async (
             `,
                 importPath: 'src/common/test'
             });
-            await removeFromNgModule(tree, 'imports', removeImportFromNgModule, {
-                filePath: 'src/app/app.module.ts',
+            await expectRemoveFromNgModule(tree, 'imports', removeImportFromNgModule, {
+                filePath,
                 classifiedName: 'TestModule'
             });
         });
 
         it('rule: add/remove export in NgModule', async () => {
-            await addToNgModule(tree, 'exports', addExportToNgModule, {
-                filePath: 'src/app/app.module.ts',
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app.module.ts');
+
+            await expectAddToNgModule(tree, 'exports', addExportToNgModule, {
+                filePath,
                 classifiedName: 'TestComponent',
                 importPath: './components/test'
             });
-            await removeFromNgModule(tree, 'exports', removeExportFromNgModule, {
-                filePath: 'src/app/app.module.ts',
+            await expectRemoveFromNgModule(tree, 'exports', removeExportFromNgModule, {
+                filePath,
                 classifiedName: 'TestComponent'
             });
         });
 
         it('rule: add/remove provider in NgModule', async () => {
-            await addToNgModule(tree, 'providers', addProviderToNgModule, {
-                filePath: 'src/app/app.module.ts',
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app.module.ts');
+
+            await expectAddToNgModule(tree, 'providers', addProviderToNgModule, {
+                filePath,
                 classifiedName: 'TestService',
                 importPath: './services/test'
             });
-            await removeFromNgModule(tree, 'providers', removeProviderFromNgModule, {
-                filePath: 'src/app/app.module.ts',
+            await expectRemoveFromNgModule(tree, 'providers', removeProviderFromNgModule, {
+                filePath,
                 classifiedName: 'TestService'
             });
         });
 
         it('rule: addRouteDeclarationToNgModule', async () => {
-            const filePath = 'src/app/app-routing.module.ts';
+            const project = await getProjectFromWorkspace(tree);
+            const filePath = join(project.root, 'src/app/app-routing.module.ts');
             const route1 = '{ path: \'route1\', component: \'src/home/home.component.ts\' }';
             const route2 = '{ path: \'route2\', loadChildren: \'() => import(\'./pages/home/home.module\').then(m => m.HomeModule)\'; }';
 
@@ -253,11 +291,31 @@ const addToNgModule = async (
         });
 
         it('helper: getDefaultProjectName', () => {
-            expect(getDefaultProjectName(tree)).toEqual(appName);
+            expect(getDefaultProjectName(tree)).toEqual(appTest1.name);
         });
 
         it('helper: getProjectOutputPath', () => {
-            expect(getProjectOutputPath(tree)).toEqual(`dist/${appName}`);
+            expect(getProjectOutputPath(tree)).toEqual(`dist/${appTest1.name}`);
+            if (useWorkspace) {
+                expect(getProjectOutputPath(tree, appTest2.name)).toEqual(`dist/${appTest2.name}`);
+            } else {
+                expect(getProjectOutputPath(tree, appTest2.name)).toBeUndefined();
+            }
+            expect(getProjectOutputPath(tree, libTest.name)).toBeUndefined();
         });
+
+        it('helper: getProjectFromWorkspace', async () => {
+            await expectAsync(getProjectFromWorkspace(tree)).toBeResolved();
+            if (useWorkspace) {
+                await expectAsync(getProjectFromWorkspace(tree, appTest2.name)).toBeResolved();
+            } else {
+                await expectAsync(getProjectFromWorkspace(tree, appTest2.name))
+                    .toBeRejectedWithError(`Project "${appTest2.name}" was not found in the current workspace.`);
+            }
+            await expectAsync(getProjectFromWorkspace(tree, libTest.name)).toBeResolved();
+            await expectAsync(getProjectFromWorkspace(tree, 'non-existing-name'))
+                .toBeRejectedWithError('Project "non-existing-name" was not found in the current workspace.');
+        });
+
     });
 });

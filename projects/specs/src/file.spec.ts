@@ -1,10 +1,11 @@
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
-    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, modifyImportInFile, modifyJsonFile,
-    removeFromJsonFile, removeImportFromFile, replaceInFile, schematic
+    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace,
+    modifyImportInFile, modifyJsonFile, removeFromJsonFile, removeImportFromFile, replaceInFile, schematic
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
+import { join } from 'path';
 
 import { getCleanAppTree, runner } from './common';
 import { customMatchers } from './jasmine.matchers';
@@ -163,7 +164,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: addImportToFile - es import', async () => {
-            const options = { filePath: 'src/main.ts', symbolName: 'Test', fileName: './src/test' };
+            const project = await getProjectFromWorkspace(tree);
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'Test', fileName: './src/test' };
             const impt = `import { ${options.symbolName} } from '${options.fileName}`;
 
             // Before
@@ -177,7 +179,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: addImportToFile - default import', async () => {
-            const options = { filePath: 'src/main.ts', symbolName: 'packageJson', fileName: 'package.json', isDefault: true };
+            const project = await getProjectFromWorkspace(tree);
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'packageJson', fileName: 'package.json', isDefault: true };
             const impt = `import ${options.symbolName} from '${options.fileName}`;
 
             // Before
@@ -191,7 +194,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: modifyImportInFile', async () => {
-            const options = { filePath: 'src/main.ts', symbolName: 'environment', newSymbolName: 'NewName', fileName: './environments/environment' };
+            const project = await getProjectFromWorkspace(tree);
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'environment', newSymbolName: 'NewName', fileName: './environments/environment' };
             const impt = 'import { environment } from \'./environments/environment\';';
             const newImpt = `import { ${options.newSymbolName} } from './environments/environment';`;
 
@@ -208,7 +212,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: removeImportFromFile', async () => {
-            const options = { filePath: 'src/main.ts', symbolName: 'environment', fileName: './environments/environment' };
+            const project = await getProjectFromWorkspace(tree);
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'environment', fileName: './environments/environment' };
             const impt = 'import { environment } from \'./environments/environment\';';
 
             // Before
