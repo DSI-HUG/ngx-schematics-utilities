@@ -53,13 +53,13 @@
     "devDependencies": {
         "@hug/eslint-config": "^5.1.0",
         "@types/jasmine": "^3.10.2",
-        "@types/node": "^17.0.14",
+        "@types/node": "^17.0.21",
         "@types/semver": "^7.3.9",
         "cpy": "^8.1.2",
-        "eslint": "^8.8.0",
+        "eslint": "^8.9.0",
         "jasmine": "^4.0.2",
         "jasmine-spec-reporter": "^7.0.0",
-        "ts-node": "^10.4.0",
+        "ts-node": "^10.5.0",
         "tsconfig-paths": "^3.12.0",
         "typescript": "^4.5.5"
     }
