@@ -68,7 +68,7 @@ export const ensureIsAngularWorkspace = (): Rule =>
 export const ensureIsAngularProject = (projectName?: string): Rule =>
     async (tree: Tree): Promise<void> => {
         const project = await getProjectFromWorkspace(tree, projectName);
-        if (project.extensions.projectType !== ProjectType.Application) {
+        if (project.extensions['projectType'] !== ProjectType.Application) {
             throw new SchematicsException('Project is not an Angular project.');
         }
     };
@@ -82,7 +82,7 @@ export const ensureIsAngularProject = (projectName?: string): Rule =>
 export const ensureIsAngularLibrary = (projectName?: string): Rule =>
     async (tree: Tree): Promise<void> => {
         const project = await getProjectFromWorkspace(tree, projectName);
-        if (project.extensions.projectType !== ProjectType.Library) {
+        if (project.extensions['projectType'] !== ProjectType.Library) {
             throw new SchematicsException('Project is not an Angular library.');
         }
     };
@@ -327,7 +327,7 @@ export const getProjectOutputPath = (tree: Tree, projectName?: string): string =
  */
 export const getProjectFromWorkspace = async (tree: Tree, projectName?: string): Promise<ProjectDefinition> => {
     const workspace = await getWorkspace(tree);
-    const name = projectName ?? workspace.extensions.defaultProject as string;
+    const name = projectName ?? workspace.extensions['defaultProject'] as string;
     const project = workspace.projects.get(name);
     if (!project) {
         throw new SchematicsException(`Project "${name}" was not found in the current workspace.`);

@@ -19,7 +19,7 @@ describe('request', () => {
 
     it('helper: getJsonFromUrl - existing url', async () => {
         const json = await getJsonFromUrl('https://cdn.jsdelivr.net/npm/@angular/core@latest/package.json');
-        expect(json.name).toEqual('@angular/core');
+        expect(json['name']).toEqual('@angular/core');
     });
 
     it('helper: getJsonFromUrl - non existing url', async () => {

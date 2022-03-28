@@ -16,14 +16,14 @@ const getExternalSchemaJson = async (packageName: string, schematicName = 'ng-ad
     const url = `http://cdn.jsdelivr.net/npm/${packageName}@latest`;
 
     const pkgJson = await getJsonFromUrl(pathJoin(url, 'package.json'));
-    if (pkgJson?.schematics) {
-        const collectionJson = await getJsonFromUrl(pathJoin(url, pkgJson.schematics as string));
-        if (collectionJson?.schematics) {
-            const schema = ((collectionJson.schematics as JsonObject)[schematicName] as JsonObject)?.schema as string;
+    if (pkgJson?.['schematics']) {
+        const collectionJson = await getJsonFromUrl(pathJoin(url, pkgJson['schematics'] as string));
+        if (collectionJson?.['schematics']) {
+            const schema = ((collectionJson['schematics'] as JsonObject)[schematicName] as JsonObject)?.['schema'] as string;
             if (!schema) {
                 throw new Error(`Schematic "${schematicName}" not found in collection "${packageName}".`);
             }
-            return await getJsonFromUrl(pathJoin(url, pathDirname(pkgJson.schematics as string), schema));
+            return await getJsonFromUrl(pathJoin(url, pathDirname(pkgJson['schematics'] as string), schema));
         }
     }
 
@@ -58,11 +58,11 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
      * Feat: add support for hint property
      */
     options.forEach(option => {
-        const hint = ((schemaJson?.properties as JsonObject)[option.name] as JsonObject)?.hint as string;
+        const hint = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject)?.['hint'] as string;
         if (hint) {
             option.hint = hint;
         }
-        if ((schemaJson?.required as string[])?.includes(option.name)) {
+        if ((schemaJson?.['required'] as string[])?.includes(option.name)) {
             option.required = true;
         }
     });
