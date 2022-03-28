@@ -14,7 +14,7 @@ on:
 jobs:
   ci_tests:
     name: Tests on ${{ matrix.os }} node${{ matrix.node }}
-    runs-on: {{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
