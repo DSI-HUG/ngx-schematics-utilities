@@ -1,11 +1,12 @@
 /* eslint-disable array-element-newline */
 
+import colors from '@colors/colors/safe.js';
 import { exec } from 'child_process';
-import { green, magenta } from 'colors/safe';
 import cpy from 'cpy';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { resolve as pathResolve } from 'path';
 
+const { green, magenta } = colors;
 const DIST_PATH = './dist';
 
 const log = str => console.log(magenta(str));

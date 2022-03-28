@@ -1,6 +1,6 @@
 import { chain, Rule, SchematicContext, Tree, UnsuccessfulWorkflowExecution } from '@angular-devkit/schematics';
+import { blue, cyan, gray, magenta, red, white, yellow } from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'child_process';
-import { blue, cyan, gray, magenta, red, white, yellow } from 'colors/safe';
 import ora from 'ora';
 
 interface BufferOutput {
