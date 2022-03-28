@@ -1,16 +1,12 @@
 /* eslint-disable array-element-newline */
-const { existsSync, mkdirSync, rmSync, readFileSync, writeFileSync } = require('fs');
-const { resolve: pathResolve } = require('path');
-const { exec } = require('child_process');
-const { green, magenta } = require('colors/safe');
-const cpy = require('cpy');
+
+import { exec } from 'child_process';
+import { green, magenta } from 'colors/safe';
+import cpy from 'cpy';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { resolve as pathResolve } from 'path';
 
 const DIST_PATH = './dist';
-const LIB_ASSETS = [
-    'README.md',
-    'LICENSE',
-    'package.json'
-];
 
 const log = str => console.log(magenta(str));
 
@@ -36,14 +32,11 @@ const cleanDir = path => new Promise(resolve => {
     }, exists ? 1000 : 0);
 });
 
-const copyAssets = () => cpy(
-    LIB_ASSETS,
-    DIST_PATH,
-    {
-        expandDirectories: true,
-        parents: true
-    }
-);
+const copyAssets = async () => {
+    await cpy('README.md', DIST_PATH, { flat: true });
+    await cpy('LICENSE', DIST_PATH, { flat: true });
+    await cpy('package.json', DIST_PATH, { flat: true });
+};
 
 const customizePackageJson = async () => {
     const pkgJsonPath = pathResolve(DIST_PATH, 'package.json');
