@@ -1,4 +1,4 @@
-name: Deploy docs to GitHub Pages
+name: Deploy docs
 
 on:
   push:
@@ -13,22 +13,27 @@ on:
 jobs:
   ci_docs:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 14.x
           registry-url: https://registry.npmjs.org/
           cache: npm
-      - name: Make sure npm is latest
+
+      - name: Install latest npm
         run: npm install -g npm@latest
+
       - name: Build docs
         working-directory: projects/docs
         run: |
-          npm clean-install
+          npm clean-install --engine-strict
           npm run build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
