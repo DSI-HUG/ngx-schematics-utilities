@@ -83,21 +83,23 @@ You will have to make sure any modifications on a project are made in a generic 
 
 ```ts {7,9,11-13,15-16}
 import { addImportToFile, addPackageJsonDevDependencies, getProjectFromWorkspace, modifyJsonFile, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule } from '@angular-devkit/schematics';
+import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default async (options: any): Rule => {
-  const project = await getProjectFromWorkspace(options.project);
-  return schematic('my-schematic', [
-    modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], true),
+  async (tree: Tree): Promise<Rule> => {
+    const project = await getProjectFromWorkspace(tree, options.project);
+    return schematic('my-schematic', [
+      modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], true),
 
-    addImportToFile(project.pathFromSourceRoot('main.ts'), 'environment', './environments/environment'),
+      addImportToFile(project.pathFromSourceRoot('main.ts'), 'environment', './environments/environment'),
 
-    (): Rule => {
-      ...
-    },
+      (): Rule => {
+        ...
+      },
 
-    addPackageJsonDevDependencies(['eslint']),
-    packageInstallTask()
-  ], options);
+      addPackageJsonDevDependencies(['eslint']),
+      packageInstallTask()
+    ], options);
+  }
 }
 ```

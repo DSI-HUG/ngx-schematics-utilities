@@ -324,7 +324,7 @@ import { getProjectFromWorkspace, schematic } from '@hug/ngx-schematics-utilitie
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
-  (tree: Tree): Rule => {
+  async (tree: Tree): Promise<Rule> => {
     const project = await getProjectFromWorkspace(tree);
     return schematic('my-schematic', [
       ...
