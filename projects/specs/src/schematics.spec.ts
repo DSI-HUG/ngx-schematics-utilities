@@ -1,7 +1,7 @@
 import { MergeStrategy, SchematicContext } from '@angular-devkit/schematics';
 import { getSchematicSchemaOptions } from '@hug/ngx-schematics-utilities';
 
-import { runner } from './common';
+import { runner } from './common.spec';
 
 const context = ({
     schematic: { collection: { description: { name: 'ngx-schematics-utilities' } } },

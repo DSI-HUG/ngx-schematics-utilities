@@ -7,7 +7,7 @@ import {
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
-import { getCleanAppTree, runner } from './common';
+import { getCleanAppTree, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 export const deployFilesSchematic = (options: { templateOptions: Record<string, unknown>; source: string; destination: string }): Rule =>

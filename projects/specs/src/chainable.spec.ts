@@ -5,7 +5,7 @@ import {
 } from '@hug/ngx-schematics-utilities';
 import { join } from 'path';
 
-import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common';
+import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 [false, true].forEach(useWorkspace => {

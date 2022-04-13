@@ -10,7 +10,7 @@ import {
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
-import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common';
+import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 // --- HELPER(s) ---

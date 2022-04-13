@@ -6,7 +6,7 @@ import {
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 
-import { getCleanAppTree, runner } from './common';
+import { getCleanAppTree, runner } from './common.spec';
 
 // ---- HELPER(s) ----
 
