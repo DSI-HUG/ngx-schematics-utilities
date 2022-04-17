@@ -53,7 +53,7 @@ This library provide a large set of utilities that can be used while developing 
 
 ```ts
 export default (options: MySchematicOptions): Rule =>
-  schematic('my-schematic',
+  schematic('my-schematic', [
     modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], true),
 
     workspace()
