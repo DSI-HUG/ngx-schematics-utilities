@@ -1,3 +1,4 @@
+import { JsonValue } from '@angular-devkit/core';
 import { ProjectDefinition as NgDevKitProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
@@ -106,19 +107,20 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
 
 /**
  * Adds a new asset to the `build` and `test` sections of the `angular.json` file.
- * @param {string} value The asset to add.
+ * @param {string|JsonValue} value The asset to add.
  * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
  * @returns {Rule}
  */
-export const addAngularJsonAsset = (value: string, projectName?: string): Rule =>
+export const addAngularJsonAsset = (value: string | JsonValue, projectName?: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
         const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
 
         ['build', 'test'].forEach(configName => {
             const assetsPath = [...architectPath, configName, 'options', 'assets'];
-            const assets = angularJson.get(assetsPath) as string[];
-            if (!assets.includes(value)) {
+            const assets = angularJson.get(assetsPath) as (string | JsonValue)[];
+            const stringifiedAssets = assets.map(asset => JSON.stringify(asset));
+            if (!stringifiedAssets.includes(JSON.stringify(value))) {
                 assets.push(value);
                 angularJson.modify(assetsPath, assets);
             }
@@ -127,19 +129,20 @@ export const addAngularJsonAsset = (value: string, projectName?: string): Rule =
 
 /**
  * Removes an asset from the `build` and `test` sections of the `angular.json` file.
- * @param {string} value The asset to remove.
+ * @param {string|JsonValue} value The asset to remove.
  * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
  * @returns {Rule}
  */
-export const removeAngularJsonAsset = (value: string, projectName?: string): Rule =>
+export const removeAngularJsonAsset = (value: string | JsonValue, projectName?: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
         const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
 
         ['build', 'test'].forEach(configName => {
             const assetsPath = [...architectPath, configName, 'options', 'assets'];
-            const assets = angularJson.get(assetsPath) as string[];
-            const valueIndex = assets.indexOf(value);
+            const assets = angularJson.get(assetsPath) as (string | JsonValue)[];
+            const stringifiedAssets = assets.map(asset => JSON.stringify(asset));
+            const valueIndex = stringifiedAssets.indexOf(JSON.stringify(value));
             if (valueIndex !== -1) {
                 assets.splice(valueIndex, 1);
                 angularJson.modify(assetsPath, assets);

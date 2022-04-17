@@ -1,28 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace jasmine {
         interface Matchers<T> {
-            toContainTimes: (expected: T, times: number) => boolean;
+            toContainTimes: (expected: T | any, times: number) => boolean;
         }
     }
 }
 
 export const customMatchers = {
     toContainTimes: (util: jasmine.MatchersUtil): jasmine.CustomMatcher => ({
-        compare: (actual: string | string[], expected: string, times = 0): jasmine.CustomMatcherResult => {
+        compare: (actual: string | any[], expected: any, times = 0): jasmine.CustomMatcherResult => {
             let count = 0;
             if (typeof actual === 'string') {
-                count = (actual.match(new RegExp(expected, 'g')) || []).length;
+                count = (actual.match(new RegExp(expected as string, 'g')) || []).length;
             } else if (Array.isArray(actual)) {
                 actual.forEach(item => {
-                    if (item === expected) {
+                    if (JSON.stringify(item) === JSON.stringify(expected)) {
                         count++;
                     }
                 });
             }
             return {
                 pass: (count === times),
-                message: `Expect ${util.pp(actual)} (not) to contains "${expected}" more than (${times}) times.`
+                message: `Expect ${util.pp(actual)} (not) to contains "${expected as string}" more than (${times}) times.`
             };
         }
     })

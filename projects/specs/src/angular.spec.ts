@@ -155,7 +155,7 @@ const expectAddToNgModule = async (
             }
         });
 
-        it('rule: addAngularJsonAsset', async () => {
+        it('rule: addAngularJsonAsset(string)', async () => {
             const project = await getProjectFromWorkspace(tree);
             const asset = join(project.root, 'src/manifest.webmanifest');
 
@@ -174,7 +174,7 @@ const expectAddToNgModule = async (
             expect(getAssets(tree, 'test')).toContainTimes(asset, 1);
         });
 
-        it('rule: removeAngularJsonAsset', async () => {
+        it('rule: removeAngularJsonAsset(string)', async () => {
             const project = await getProjectFromWorkspace(tree);
             let asset = `${project.root}/src/favicon.ico`;
             if (asset.startsWith('/') || asset.startsWith('\\')) {
@@ -189,6 +189,50 @@ const expectAddToNgModule = async (
             await runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
             expect(getAssets(tree, 'build')).not.toContain(asset);
             expect(getAssets(tree, 'test')).not.toContain(asset);
+
+            // Twice (expect no error)
+            const test$ = runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            await expectAsync(test$).toBeResolved();
+        });
+
+        it('rule: addAngularJsonAsset(JsonValue)', async () => {
+            const asset = {
+                'glob': '**/*',
+                'input': 'node_modules/my-module',
+                'output': 'my/output'
+            };
+
+            // Before
+            expect(getAssets(tree, 'build')).not.toContain(jasmine.objectContaining(asset));
+            expect(getAssets(tree, 'test')).not.toContain(jasmine.objectContaining(asset));
+
+            // After
+            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            expect(getAssets(tree, 'build')).toContain(jasmine.objectContaining(asset));
+            expect(getAssets(tree, 'test')).toContain(jasmine.objectContaining(asset));
+
+            // Twice (expect no duplicates)
+            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            expect(getAssets(tree, 'build')).toContainTimes(asset, 1);
+            expect(getAssets(tree, 'test')).toContainTimes(asset, 1);
+        });
+
+        it('rule: removeAngularJsonAsset(JsonValue)', async () => {
+            const asset = {
+                'glob': '**/*',
+                'input': 'node_modules/my-module',
+                'output': 'my/output'
+            };
+
+            // Before
+            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            expect(getAssets(tree, 'build')).toContain(jasmine.objectContaining(asset));
+            expect(getAssets(tree, 'test')).toContain(jasmine.objectContaining(asset));
+
+            // After
+            await runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            expect(getAssets(tree, 'build')).not.toContain(jasmine.objectContaining(asset));
+            expect(getAssets(tree, 'test')).not.toContain(jasmine.objectContaining(asset));
 
             // Twice (expect no error)
             const test$ = runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
