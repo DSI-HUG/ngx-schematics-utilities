@@ -1,3 +1,4 @@
+import { JsonValue } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
@@ -116,7 +117,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link addAngularJsonAsset See addAngularJsonAsset}
      * @returns {this}
      */
-    public addAngularJsonAsset(value: string): this {
+    public addAngularJsonAsset(value: JsonValue): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, this._project?.name));
     }
 
@@ -124,7 +125,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link removeAngularJsonAsset See removeAngularJsonAsset}
      * @returns {this}
      */
-    public removeAngularJsonAsset(value: string): this {
+    public removeAngularJsonAsset(value: JsonValue): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, this._project?.name));
     }
 

@@ -107,11 +107,11 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
 
 /**
  * Adds a new asset to the `build` and `test` sections of the `angular.json` file.
- * @param {string|JsonValue} value The asset to add.
+ * @param {JsonValue} value The asset to add.
  * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
  * @returns {Rule}
  */
-export const addAngularJsonAsset = (value: string | JsonValue, projectName?: string): Rule =>
+export const addAngularJsonAsset = (value: JsonValue, projectName?: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
         const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
@@ -129,11 +129,11 @@ export const addAngularJsonAsset = (value: string | JsonValue, projectName?: str
 
 /**
  * Removes an asset from the `build` and `test` sections of the `angular.json` file.
- * @param {string|JsonValue} value The asset to remove.
+ * @param {JsonValue} value The asset to remove.
  * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
  * @returns {Rule}
  */
-export const removeAngularJsonAsset = (value: string | JsonValue, projectName?: string): Rule =>
+export const removeAngularJsonAsset = (value: JsonValue, projectName?: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
         const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
