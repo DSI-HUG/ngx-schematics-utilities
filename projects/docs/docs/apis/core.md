@@ -123,7 +123,7 @@ import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   (tree: Tree, context: SchematicContext): Rule =>
     schematic('my-schematic', [
-        (): Rule => {
+        async(): Rule => {
             // Get the `ng-add` schema of the current running schematic
             const opts1 = await getSchematicSchemaOptions(context);
 
@@ -133,8 +133,36 @@ export default (options: any): Rule =>
             // Get the `ng-add` schema of the local package `@angular/material`
             const opts3 = await getSchematicSchemaOptions(context, 'ng-add', '@angular/material'));
 
-            // Get the `sentry` schema of the external package `@hug/ngx-sentry` from npm
+            // Get the `sentry` schema of the external package `@hug/ngx-sentry` on npm
             const opts4 = await getSchematicSchemaOptions(context, 'sentry', '@hug/ngx-sentry', true));
+            ...
+        }
+    ]);
+```
+
+### `getSchematicSchemaDefaultOptions`
+
+Returns all the default options of a specific local or external schematic's schema.
+
+```ts {9,12,15,18}
+import { getSchematicSchemaDefaultOptions, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  (tree: Tree, context: SchematicContext): Rule =>
+    schematic('my-schematic', [
+        async (): Rule => {
+            // Get the default options from the `ng-add` schema of the current running schematic
+            const opts1 = await getSchematicSchemaDefaultOptions(context);
+
+            // Get the default options from the `schematic-name` schema of the current running schematic
+            const opts2 = await getSchematicSchemaDefaultOptions(context, 'schematic-name'));
+
+            // Get the default options from the `ng-add` schema of the local package `@angular/material`
+            const opts3 = await getSchematicSchemaDefaultOptions(context, 'ng-add', '@angular/material'));
+
+            // Get the default options from the `sentry` schema of the external package `@hug/ngx-sentry` on npm
+            const opts4 = await getSchematicSchemaDefaultOptions(context, 'sentry', '@hug/ngx-sentry', true));
             ...
         }
     ]);

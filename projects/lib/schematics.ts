@@ -54,13 +54,16 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
     const registry = (context.engine.workflow as NodeWorkflow)?.registry || new CoreSchemaRegistry();
     const options = await parseJsonSchemaToOptions(registry, schemaJson || {}) as NgCliOption[];
     /**
-     * Fix: @angular/cli is not handling required properly
+     * Fix: @angular/cli is not handling required and default properties
      * Feat: add support for hint property
      */
     options.forEach(option => {
-        const hint = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject)?.['hint'] as string;
-        if (hint) {
-            option.hint = hint;
+        const props = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject);
+        if (props?.['hint']) {
+            option.hint = props?.['hint'] as string;
+        }
+        if (props?.['default']) {
+            option.default = props?.['default'] as string;
         }
         if ((schemaJson?.['required'] as string[])?.includes(option.name)) {
             option.required = true;
@@ -68,4 +71,21 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
     });
     // --
     return options;
+};
+
+/**
+ * Returns all the default options of a specific local or external schematic's schema.
+ * @async
+ * @param {SchematicContext} context The current schematic context.
+ * @param {string} [schematicName="ng-add"] Name of the schematic schema (ex: "drag-drop").
+ * @param {string} [packageName="current-schematic-collection-name"] Name of the package containing the schematic schema (ex: "@angular/cli").
+ * @param {boolean} [external=false] Whether the schematic is local or external.
+ * @returns {Promise<JsonObject>} A JsonObject containing all the default options.
+ */
+export const getSchematicSchemaDefaultOptions = async (context: SchematicContext, schematicName = 'ng-add', packageName?: string, external = false): Promise<JsonObject> => {
+    const schemaOptions = await getSchematicSchemaOptions(context, schematicName, packageName, external);
+    return schemaOptions.reduce((defaultOptions, option) => {
+        (defaultOptions as Record<string, unknown>)[option.name] = option.default;
+        return defaultOptions;
+    }, {});
 };
