@@ -6,10 +6,10 @@ title: Core
 
 ### `schematic`
 
-Executes a set of rules by outputing first the name of the associated schematic and its options to the console.
+Executes a set of rules by outputing first the name of the associated schematic to the console.
 
 :::note Note
-The schematic name will be prefixed by the word "SCHEMATIC" printed in magenta and the given options will follow inlined, stringified and printed in gray.
+The schematic name will be prefixed by the word "SCHEMATIC" printed in magenta and given options can follow inlined, stringified and printed in gray if verbose mode is activated.
 :::
 
 ```ts {5-7}
@@ -41,45 +41,45 @@ export default (options: any): Rule =>
   ]);
 ```
 
-### `info`
+### `logInfo`
 
-Outputs a message to the console, preceded by a blue (i) icon.
+Outputs a message to the console, prefixed by the word "INFO" printed in blue.
 
 ```ts {6}
-import { info, schematic } from '@hug/ngx-schematics-utilities';
+import { logInfo, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    info('My info message')
+    logInfo('My info message')
   ]);
 ```
 
-### `warn`
+### `logWarning`
 
 Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
 
 ```ts {6}
-import { warn, schematic } from '@hug/ngx-schematics-utilities';
+import { logWarning, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    warn('My warn message')
+    logWarning('My warn message')
   ]);
 ```
 
-### `action`
+### `logAction`
 
-Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
+Outputs a message to the console, prefixed by the word "ACTION" printed in green.
 
 ```ts {6}
-import { action, schematic } from '@hug/ngx-schematics-utilities';
+import { logAction, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    action('My action message')
+    logAction('My action message')
   ]);
 ```
 

@@ -1,5 +1,7 @@
 import { chain, Rule, SchematicContext, Tree, UnsuccessfulWorkflowExecution } from '@angular-devkit/schematics';
-import { blue, cyan, gray, magenta, red, white, yellow } from '@colors/colors/safe';
+import {
+    bgBlue, bgGreen, bgMagenta, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
+} from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'child_process';
 import ora from 'ora';
 
@@ -7,21 +9,6 @@ interface BufferOutput {
     stream: NodeJS.WriteStream;
     data: Buffer;
 }
-
-/**
- * Executes a set of rules by outputing first the name of the associated schematic and its options to the console.
- * The schematic name will be prefixed by the word "SCHEMATIC" printed in magenta and the given options will
- * follow inlined, stringified and printed in gray.
- * @param {string} name Name of the schematic to display.
- * @param {Rule[]} rules Set of rules to execute.
- * @param {unknown} [options] Schematic's options to display.
- * @returns {Rule}
- */
-export const schematic = (name: string, rules: Rule[], options?: unknown): Rule =>
-    chain([
-        log(magenta(`🚀 SCHEMATIC ${white('[')} ${magenta(name)}${(options) ? gray(`, ${JSON.stringify(options)}`) : ''} ${white(']')}`)),
-        ...rules
-    ]);
 
 /**
  * Outputs a message to the console.
@@ -38,28 +25,47 @@ export const log = (message: string): Rule =>
         };
 
 /**
- * Outputs a message to the console, preceded by a blue (i) icon.
+ * Executes a set of rules by outputing first the name of the associated schematic to the console.
+ * The schematic name will be prefixed by the word "SCHEMATIC" printed in magenta and given options can
+ * follow inlined, stringified and printed in gray if verbose mode is activated.
+ * @param {string} name Name of the schematic to display.
+ * @param {Rule[]} rules Set of rules to execute.
+ * @param {unknown} [options] Schematic's options to display.
+ * @returns {Rule}
+ */
+export const schematic = (name: string, rules: Rule[], options?: unknown): Rule => {
+    const opts = process.argv.includes('--verbose') ? JSON.stringify(options) : undefined;
+    return chain([
+        log(''),
+        log(`${magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)}`),
+        log(''),
+        ...rules
+    ]);
+};
+
+/**
+ * Outputs a message to the console, prefixed by the word "INFO" printed in blue.
  * @param {string} message Message to display.
  * @returns {Rule}
  */
-export const info = (message: string): Rule =>
-    log(`${blue('ℹ')} ${message}`);
+export const logInfo = (message: string): Rule =>
+    log(`${blue('>')} ${black(bgBlue(' INFO '))} ${blue(message)}\n`);
 
 /**
  * Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
  * @param {string} message Message to display.
  * @returns {Rule}
  */
-export const warn = (message: string): Rule =>
-    log(`${yellow('WARNING')} ${white(message)}`);
+export const logWarning = (message: string): Rule =>
+    log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}\n`);
 
 /**
- * Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
+ * Outputs a message to the console, prefixed by the word "ACTION" printed in green.
  * @param {string} message Message to display.
  * @returns {Rule}
  */
-export const action = (message: string): Rule =>
-    log(`${yellow('ACTION')} ${yellow(message)}`);
+export const logAction = (message: string): Rule =>
+    log(`${green('>')} ${black(bgGreen(' ACTION '))} ${green(message)}\n`);
 
 /**
  * Spawns a new process using the given command and arguments.
