@@ -1,6 +1,6 @@
 import { chain, Rule, SchematicContext, Tree, UnsuccessfulWorkflowExecution } from '@angular-devkit/schematics';
 import {
-    bgBlue, bgGreen, bgMagenta, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
+    bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
 } from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'child_process';
 import ora from 'ora';
@@ -58,6 +58,14 @@ export const logInfo = (message: string): Rule =>
  */
 export const logWarning = (message: string): Rule =>
     log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}\n`);
+
+/**
+ * Outputs a message to the console, prefixed by the word "ERROR" printed in red.
+ * @param {string} message Message to display.
+ * @returns {Rule}
+ */
+export const logError = (message: string): Rule =>
+    log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}\n`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ACTION" printed in green.

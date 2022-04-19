@@ -9,7 +9,7 @@ import {
     addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, modifyImportInFile, modifyJsonFile,
     removeFromJsonFile, removeImportFromFile, replaceInFile
 } from '../file';
-import { log, logAction, logInfo, logWarning, spawn } from '../rules';
+import { log, logAction, logError, logInfo, logWarning, spawn } from '../rules';
 
 export enum ChainableType {
     WORKSPACE,
@@ -152,6 +152,14 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
      */
     public logWarning(message: string): this {
         return this.addRuleToChain(() => logWarning(message));
+    }
+
+    /**
+     * {@link logError See logError}
+     * @returns {this}
+     */
+    public logError(message: string): this {
+        return this.addRuleToChain(() => logError(message));
     }
 
     /**

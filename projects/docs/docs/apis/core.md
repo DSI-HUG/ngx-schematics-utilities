@@ -69,6 +69,20 @@ export default (options: any): Rule =>
   ]);
 ```
 
+### `logError`
+
+Outputs a message to the console, prefixed by the word "ERROR" printed in red.
+
+```ts {6}
+import { logError, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    logError('My error message')
+  ]);
+```
+
 ### `logAction`
 
 Outputs a message to the console, prefixed by the word "ACTION" printed in green.
