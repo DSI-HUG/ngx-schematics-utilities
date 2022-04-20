@@ -58,7 +58,7 @@
     "devDependencies": {
         "@hug/eslint-config": "^7.0.1",
         "@types/jasmine": "^4.0.3",
-        "@types/node": "^17.0.24",
+        "@types/node": "^17.0.25",
         "@types/semver": "^7.3.9",
         "cpy": "^9.0.1",
         "eslint": "^8.13.0",
