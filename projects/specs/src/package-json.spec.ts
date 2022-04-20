@@ -1,7 +1,7 @@
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
-    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, KeyValueItem,
+    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, PackageItem,
     removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
@@ -10,10 +10,10 @@ import { getCleanAppTree, runner } from './common.spec';
 
 // ---- HELPER(s) ----
 
-const expectDep = (tree: UnitTestTree, devType: string, dep: string | KeyValueItem, toExists: boolean): void => {
+const expectDep = (tree: UnitTestTree, devType: string, dep: string | PackageItem, toExists: boolean): void => {
     const pkgJson = new JSONFile(tree, 'package.json');
-    const depName = (typeof dep === 'string') ? dep : dep.key;
-    const depValue = (typeof dep === 'string') ? 'latest' : dep.value;
+    const depName = (typeof dep === 'string') ? dep : dep.name;
+    const depValue = (typeof dep === 'string') ? 'latest' : dep.version;
     const depItem = pkgJson.get([devType, depName]);
     const count = (pkgJson.content.match(new RegExp(depName, 'g')) || []).length;
 
@@ -28,7 +28,7 @@ const expectDep = (tree: UnitTestTree, devType: string, dep: string | KeyValueIt
 
 const test = async (
     tree: UnitTestTree,
-    deps: (string | KeyValueItem)[],
+    deps: (string | PackageItem)[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addRule: (...args: any[]) => Rule,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,21 +59,21 @@ const test = async (
 
         it('rule: add/remove packageJson dependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/dep', { key: 'my-dep', value: '1.2.3' }]]) {
+            for (const deps of [['@my/dep', { name: 'my-dep', version: '1.2.3' }]]) {
                 await test(tree, deps, addPackageJsonDependencies, removePackageJsonDependencies, 'dependencies');
             }
         });
 
         it('rule: add/remove packageJson devDependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/dev-dep', { key: 'my-dev-dep', value: '1.2.3' }]]) {
+            for (const deps of [['@my/dev-dep', { name: 'my-dev-dep', version: '1.2.3' }]]) {
                 await test(tree, deps, addPackageJsonDevDependencies, removePackageJsonDevDependencies, 'devDependencies');
             }
         });
 
         it('rule: add/remove packageJson peerDependencies', async () => {
         // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/peer-dep', { key: 'my-peer-dep', value: '1.2.3' }]]) {
+            for (const deps of [['@my/peer-dep', { name: 'my-peer-dep', version: '1.2.3' }]]) {
                 await test(tree, deps, addPackageJsonPeerDependencies, removePackageJsonPeerDependencies, 'peerDependencies');
             }
         });

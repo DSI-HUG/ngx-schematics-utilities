@@ -3,7 +3,7 @@ import { TaskId } from '@angular-devkit/schematics';
 import { addAngularJsonAsset } from '../angular';
 import {
     addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies,
-    KeyValueItem, packageInstallTask, removePackageJsonDependencies, removePackageJsonDevDependencies,
+    packageInstallTask, PackageItem, removePackageJsonDependencies, removePackageJsonDevDependencies,
     removePackageJsonPeerDependencies
 } from '../package-json';
 import { Chainable, ChainableType } from './chainable';
@@ -13,7 +13,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addPackageJsonDependencies See addPackageJsonDependencies}
      * @returns {this}
      */
-    public addPackageJsonDependencies(deps: (string | KeyValueItem)[]): this {
+    public addPackageJsonDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => addPackageJsonDependencies(deps));
     }
 
@@ -21,7 +21,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addPackageJsonDevDependencies See addPackageJsonDevDependencies}
      * @returns {this}
      */
-    public addPackageJsonDevDependencies(deps: (string | KeyValueItem)[]): this {
+    public addPackageJsonDevDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => addPackageJsonDevDependencies(deps));
     }
 
@@ -29,7 +29,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addPackageJsonPeerDependencies See addPackageJsonPeerDependencies}
      * @returns {this}
      */
-    public addPackageJsonPeerDependencies(deps: (string | KeyValueItem)[]): this {
+    public addPackageJsonPeerDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => addPackageJsonPeerDependencies(deps));
     }
 
@@ -37,7 +37,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removePackageJsonDependencies See removePackageJsonDependencies}
      * @returns {this}
      */
-    public removePackageJsonDependencies(deps: (string | KeyValueItem)[]): this {
+    public removePackageJsonDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => removePackageJsonDependencies(deps));
     }
 
@@ -45,7 +45,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removePackageJsonDevDependencies See removePackageJsonDevDependencies}
      * @returns {this}
      */
-    public removePackageJsonDevDependencies(deps: (string | KeyValueItem)[]): this {
+    public removePackageJsonDevDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => removePackageJsonDevDependencies(deps));
     }
 
@@ -53,7 +53,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removePackageJsonPeerDependencies See removePackageJsonPeerDependencies}
      * @returns {this}
      */
-    public removePackageJsonPeerDependencies(deps: (string | KeyValueItem)[]): this {
+    public removePackageJsonPeerDependencies(deps: (string | PackageItem)[]): this {
         return this.addRuleToChain(() => removePackageJsonPeerDependencies(deps));
     }
 

@@ -33,7 +33,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addPackageJsonDependencies([ '@my/dep', { key: 'my-dep', value: '1.0.0' } ]),
+    addPackageJsonDependencies([ '@my/dep', { name: 'my-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
@@ -48,7 +48,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addPackageJsonDevDependencies([ '@my/dev-dep', { key: 'my-dev-dep', value: '1.0.0' } ]),
+    addPackageJsonDevDependencies([ '@my/dev-dep', { name: 'my-dev-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
@@ -63,7 +63,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addPackageJsonPeerDependencies([ '@my/peer-dep', { key: 'my-peer-dep', value: '1.0.0' } ]),
+    addPackageJsonPeerDependencies([ '@my/peer-dep', { name: 'my-peer-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
@@ -78,7 +78,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removePackageJsonDependencies([ '@my/dep', { key: 'my-dep', value: '1.0.0' } ]),
+    removePackageJsonDependencies([ '@my/dep', { name: 'my-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
@@ -93,7 +93,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removePackageJsonDevDependencies([ '@my/dev-dep', { key: 'my-dev-dep', value: '1.0.0' } ]),
+    removePackageJsonDevDependencies([ '@my/dev-dep', { name: 'my-dev-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```
@@ -108,7 +108,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removePackageJsonPeerDependencies([ '@my/peer-dep', { key: 'my-peer-dep', value: '1.0.0' } ]),
+    removePackageJsonPeerDependencies([ '@my/peer-dep', { name: 'my-peer-dep', version: '1.0.0' } ]),
     packageInstallTask()
   ]);
 ```

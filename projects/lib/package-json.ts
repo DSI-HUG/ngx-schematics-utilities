@@ -3,39 +3,39 @@ import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import latestVersion from '@badisi/latest-version';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 
-export interface KeyValueItem {
-    key: string;
-    value?: string;
+export interface PackageItem {
+    name: string;
+    version?: string;
 }
 
 let packageJsonDepsModified = false;
 
-const modifyPackageJson = (tree: Tree, path: string, items: KeyValueItem[], remove = false): void => {
+const modifyPackageJson = (tree: Tree, path: string, items: PackageItem[], remove = false): void => {
     const pkgJson = new JSONFile(tree, 'package.json');
     if (!pkgJson) {
         throw new SchematicsException('Could not find a `package.json` file at the root of your project.');
     }
-    items.forEach((item: KeyValueItem) => {
-        if (remove && pkgJson.get([path, item.key])) {
+    items.forEach((item: PackageItem) => {
+        if (remove && pkgJson.get([path, item.name])) {
             packageJsonDepsModified = true;
-            pkgJson.remove([path, item.key]);
-        } else if (pkgJson.get([path, item.key]) !== item.value) {
+            pkgJson.remove([path, item.name]);
+        } else if (pkgJson.get([path, item.name]) !== item.version) {
             packageJsonDepsModified = true;
-            pkgJson.modify([path, item.key], item.value);
+            pkgJson.modify([path, item.name], item.version);
         }
     });
 };
 
-const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' | 'peerDependencies', deps: (string | KeyValueItem)[], remove = false): Promise<void> => {
-    const jsonValues: KeyValueItem[] = [];
+const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' | 'peerDependencies', deps: (string | PackageItem)[], remove = false): Promise<void> => {
+    const jsonValues: PackageItem[] = [];
     // eslint-disable-next-line no-loops/no-loops
     for (const dep of deps) {
         if (typeof dep === 'string') {
             if (remove) {
-                jsonValues.push({ key: dep });
+                jsonValues.push({ name: dep });
             } else {
                 const pkgVersions = await latestVersion(dep);
-                jsonValues.push({ key: dep, value: (pkgVersions.latest) ? `^${pkgVersions.latest}` : 'latest' });
+                jsonValues.push({ name: dep, version: (pkgVersions.latest) ? `^${pkgVersions.latest}` : 'latest' });
             }
         } else {
             jsonValues.push(dep);
@@ -70,50 +70,50 @@ export const packageInstallTask = (callback?: (taskId?: TaskId) => void, force =
 
 /**
  * Adds items to the `dependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be added.
+ * @param {(string|PackageItem)[]} deps List of items to be added.
  * @returns {Rule}
  */
-export const addPackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const addPackageJsonDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
 
 /**
 * Adds items to the `devDependencies` section of `package.json` file.
-* @param {(string|KeyValueItem)[]} deps List of items to be added.
+* @param {(string|PackageItem)[]} deps List of items to be added.
 * @returns {Rule}
 */
-export const addPackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const addPackageJsonDevDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
 
 /**
 * Adds items to the `peerDependencies` section of `package.json` file.
-* @param {(string|KeyValueItem)[]} deps List of items to be added.
+* @param {(string|PackageItem)[]} deps List of items to be added.
 * @returns {Rule}
 */
-export const addPackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const addPackageJsonPeerDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);
 
 // --- REMOVE DEPS ---
 
 /**
  * Removes items from the `dependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @param {(string|PackageItem)[]} deps List of items to be removed.
  * @returns {Rule}
  */
-export const removePackageJsonDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const removePackageJsonDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps, true);
 
 /**
  * Removes items from the `devDependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @param {(string|PackageItem)[]} deps List of items to be removed.
  * @returns {Rule}
  */
-export const removePackageJsonDevDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const removePackageJsonDevDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps, true);
 
 /**
  * Removes items from the `peerDependencies` section of `package.json` file.
- * @param {(string|KeyValueItem)[]} deps List of items to be removed.
+ * @param {(string|PackageItem)[]} deps List of items to be removed.
  * @returns {Rule}
  */
-export const removePackageJsonPeerDependencies = (deps: (string | KeyValueItem)[]): Rule =>
+export const removePackageJsonPeerDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps, true);
