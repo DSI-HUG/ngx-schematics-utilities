@@ -25,6 +25,14 @@
     color: white;
 }
 
+/**
+ * @docusaurus@2.0.0-beta.18 breaks the left column -> it does not take the whole page height
+ */
+.main-wrapper {
+    display: flex;
+}
+/**/
+
 .header-github-link:before {
     display: flex;
     content: "";

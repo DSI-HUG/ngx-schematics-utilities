@@ -70,7 +70,7 @@ export default (options: any): Rule =>
 
 ### `removePackageJsonDependencies`
 
-Removes items from the **dependencies** section of **package.json** file.
+Removes items from the `dependencies` section of `package.json` file.
 
 ```ts {6}
 import { removePackageJsonDependencies, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';

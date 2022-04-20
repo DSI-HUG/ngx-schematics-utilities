@@ -78,10 +78,11 @@ export default (options: any): Rule =>
 
 :::caution Caution
 When used this way all the paths will be relative to the root of the workspace.<br/>
-You will have to make sure any modifications on a project are made in a generic way.
+You will have to make sure any modifications on a project are made in a generic way.<br/>
+To help you with that, the [getProjectFromWorkspace()](https://dsi-hug.github.io/ngx-schematics-utilities/apis/angular#getprojectfromworkspace) helper is a good start.
 :::
 
-```ts {7,9,11-13,15-16}
+```ts {6,8,10,12-14,16-17}
 import { addImportToFile, addPackageJsonDevDependencies, getProjectFromWorkspace, modifyJsonFile, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 

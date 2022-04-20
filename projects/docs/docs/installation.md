@@ -3,7 +3,7 @@ title: Installation
 slug: /
 ---
 
-Install from the NPM repository using npm or yarn:
+Install from the **NPM repository** using **npm** or **yarn**:
 
 ```shell
 npm install @hug/ngx-schematics-utilities --save-dev
