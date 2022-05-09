@@ -50,22 +50,22 @@
         "@schematics/angular": ">= 11"
     },
     "dependencies": {
-        "@badisi/latest-version": "^2.1.4",
+        "@badisi/latest-version": "^3.0.0",
         "@colors/colors": "^1.5.0",
         "ora": "5.4.1",
         "semver": "^7.3.7"
     },
     "devDependencies": {
-        "@hug/eslint-config": "^7.0.1",
+        "@hug/eslint-config": "^7.0.2",
         "@types/jasmine": "^4.0.3",
-        "@types/node": "^17.0.25",
+        "@types/node": "^17.0.31",
         "@types/semver": "^7.3.9",
         "cpy": "^9.0.1",
-        "eslint": "^8.13.0",
+        "eslint": "^8.15.0",
         "jasmine": "^4.1.0",
         "jasmine-spec-reporter": "^7.0.0",
         "ts-node": "^10.7.0",
-        "tsconfig-paths": "^3.14.1",
-        "typescript": "^4.6.3"
+        "tsconfig-paths": "^4.0.0",
+        "typescript": "^4.6.4"
     }
 }
