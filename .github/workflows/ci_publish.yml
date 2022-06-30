@@ -34,5 +34,5 @@ jobs:
 
       - name: Publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.DSI_HUG_NPM_TOKEN }}
         run: npm publish ./dist --access public
