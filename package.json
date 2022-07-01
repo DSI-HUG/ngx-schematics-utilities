@@ -44,10 +44,10 @@
         "lint": "eslint projects/lib projects/specs"
     },
     "peerDependencies": {
-        "@angular-devkit/core": ">= 11",
-        "@angular-devkit/schematics": ">= 11",
-        "@angular/cli": ">= 11",
-        "@schematics/angular": ">= 11"
+        "@angular-devkit/core": ">= 11 < 14",
+        "@angular-devkit/schematics": ">= 11 < 14",
+        "@angular/cli": ">= 11 < 14",
+        "@schematics/angular": ">= 11 < 14"
     },
     "dependencies": {
         "@badisi/latest-version": "^3.0.0",
