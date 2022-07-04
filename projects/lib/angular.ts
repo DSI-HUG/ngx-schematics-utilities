@@ -63,10 +63,10 @@ export const ensureIsAngularWorkspace = (): Rule =>
 /**
  * Ensures that a project is actually an Angular project or throws an exception otherwise.
  * @throws {SchematicsException} An exception if the project is not an Angular project.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const ensureIsAngularProject = (projectName?: string): Rule =>
+export const ensureIsAngularProject = (projectName: string): Rule =>
     async (tree: Tree): Promise<void> => {
         const project = await getProjectFromWorkspace(tree, projectName);
         if (project.extensions['projectType'] !== ProjectType.Application) {
@@ -77,10 +77,10 @@ export const ensureIsAngularProject = (projectName?: string): Rule =>
 /**
  * Ensures that a project is actually an Angular library or throws an exception otherwise.
  * @throws {SchematicsException} An exception if the project is not an Angular library.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const ensureIsAngularLibrary = (projectName?: string): Rule =>
+export const ensureIsAngularLibrary = (projectName: string): Rule =>
     async (tree: Tree): Promise<void> => {
         const project = await getProjectFromWorkspace(tree, projectName);
         if (project.extensions['projectType'] !== ProjectType.Library) {
@@ -108,13 +108,13 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
 /**
  * Adds a new asset to the `build` and `test` sections of the `angular.json` file.
  * @param {JsonValue} value The asset to add.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const addAngularJsonAsset = (value: JsonValue, projectName?: string): Rule =>
+export const addAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
-        const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
+        const architectPath = ['projects', projectName, 'architect'];
 
         ['build', 'test'].forEach(configName => {
             const assetsPath = [...architectPath, configName, 'options', 'assets'];
@@ -130,13 +130,13 @@ export const addAngularJsonAsset = (value: JsonValue, projectName?: string): Rul
 /**
  * Removes an asset from the `build` and `test` sections of the `angular.json` file.
  * @param {JsonValue} value The asset to remove.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const removeAngularJsonAsset = (value: JsonValue, projectName?: string): Rule =>
+export const removeAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
     (tree: Tree): void => {
         const angularJson = new JSONFile(tree, 'angular.json');
-        const architectPath = ['projects', projectName ?? getDefaultProjectName(tree), 'architect'];
+        const architectPath = ['projects', projectName, 'architect'];
 
         ['build', 'test'].forEach(configName => {
             const assetsPath = [...architectPath, configName, 'options', 'assets'];
@@ -294,49 +294,33 @@ export const addRouteDeclarationToNgModule = (filePath: string, routeLiteral: st
 // --- HELPER(s) ----
 
 /**
- * Gets the default project name defined in the `angular.json` file.
- * @param {Tree} tree The current schematic's project tree.
- * @throws {SchematicsException} An exception if a `defaultProject` property was not found in the `angular.json` file.
- * @returns {string} The default project name.
- */
-export const getDefaultProjectName = (tree: Tree): string => {
-    const angularJson = new JSONFile(tree, 'angular.json');
-    const defaultProjectName = angularJson.get(['defaultProject']) as string;
-    if (!defaultProjectName) {
-        throw new SchematicsException('Cannot find "defaultProject" property in angular.json file.');
-    }
-    return defaultProjectName;
-};
-
-/**
  * Gets a project output path as defined in the `angular.json` file.
  * @param {Tree} tree The current schematic's project tree.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @throws {SchematicsException} An exception if a `defaultProject` property was not found in the `angular.json` file.
  * @returns {string} The default project output path.
  */
-export const getProjectOutputPath = (tree: Tree, projectName?: string): string => {
+export const getProjectOutputPath = (tree: Tree, projectName: string): string => {
     const angularJson = new JSONFile(tree, 'angular.json');
-    return angularJson.get(['projects', projectName ?? getDefaultProjectName(tree), 'architect', 'build', 'options', 'outputPath']) as string;
+    return angularJson.get(['projects', projectName, 'architect', 'build', 'options', 'outputPath']) as string;
 };
 
 /**
  * Gets a project definition object from the current Angular workspace.
  * @async
  * @param {Tree} tree The current schematic's project tree.
- * @param {string} [projectName='defaultProject from angular.json'] The name of the project to look for.
+ * @param {string} projectName The name of the project to look for.
  * @throws {SchematicsException} An exception if no project was found.
  * @returns {Promise<ProjectDefinition>} A project definition object.
  */
-export const getProjectFromWorkspace = async (tree: Tree, projectName?: string): Promise<ProjectDefinition> => {
+export const getProjectFromWorkspace = async (tree: Tree, projectName: string): Promise<ProjectDefinition> => {
     const workspace = await getWorkspace(tree);
-    const name = projectName ?? workspace.extensions['defaultProject'] as string;
-    const project = workspace.projects.get(name);
+    const project = workspace.projects.get(projectName);
     if (!project) {
-        throw new SchematicsException(`Project "${name}" was not found in the current workspace.`);
+        throw new SchematicsException(`Project "${projectName}" was not found in the current workspace.`);
     }
     return {
-        name,
+        name: projectName,
         ...project,
         pathFromRoot: (path: string) => join(project.root ?? '', path),
         pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)

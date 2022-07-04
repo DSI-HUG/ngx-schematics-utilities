@@ -69,7 +69,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addAngularJsonAsset See addAngularJsonAsset}
      * @returns {this}
      */
-    public addAngularJsonAsset(value: string, projectName?: string): this {
+    public addAngularJsonAsset(value: string, projectName: string): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, projectName));
     }
 
@@ -77,7 +77,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removeAngularJsonAsset See removeAngularJsonAsset}
      * @returns {this}
      */
-    public removeAngularJsonAsset(value: string, projectName?: string): this {
+    public removeAngularJsonAsset(value: string, projectName: string): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, projectName));
     }
 }

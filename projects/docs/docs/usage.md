@@ -4,6 +4,25 @@ title: Usage
 
 Each api rules can be used in a [**chainable**](#chainable-usage) or [**individual**](#individual-usage) way.
 
+:::tip
+Currently, `ng add` does not provide a way to choose which project you want a schematic to be used on.<br/>
+To provide such an option you will have to declare the following `project` property, inside your `schema.json` file:
+```json
+"project": {
+  "type": "string",
+  "description": "The name of the project.",
+  "$default": {
+    "$source": "projectName"
+  }
+}
+```
+Users will then be able to provide a `project` along your schematic installation:<br/>
+*(and if they do not, the default provider will populate the project option based on the inferred project from the cwd)*
+```sh
+ng add YourSchematic --project ProjectName
+```
+:::
+
 ### Chainable usage
 
 #### `Workspace`
@@ -29,9 +48,7 @@ export default (options: any): Rule =>
 Allow you to act at a *project* level and make sure the specified project is an *application*.
 
 :::tip
-- `application()` will use the **defaultProject** specified in the **angular.json** file.
-- `application(option.project)` can be used to specify a project from the command line.
-- `__SRC__` will be interpolated with the project **sourceRoot** specified in the **angular.json** file.
+`__SRC__` will be interpolated with the project **sourceRoot** specified in the **angular.json** file.
 :::
 
 ```ts {6-14}
@@ -57,9 +74,7 @@ export default (options: any): Rule =>
 Allow you to act at a *project* level and make sure the specified project is a *library*.
 
 :::tip
-- `library()` will use the **defaultProject** specified in the **angular.json** file.
-- `library(option.project)` can be used to specify a project from the command line.
-- `__SRC__` will be interpolated with the project **sourceRoot** specified in the **angular.json** file.
+`__SRC__` will be interpolated with the project **sourceRoot** specified in the **angular.json** file.
 :::
 
 ```ts {6-8}
@@ -79,7 +94,7 @@ export default (options: any): Rule =>
 :::caution Caution
 When used this way all the paths will be relative to the root of the workspace.<br/>
 You will have to make sure any modifications on a project are made in a generic way.<br/>
-To help you with that, the [getProjectFromWorkspace()](https://dsi-hug.github.io/ngx-schematics-utilities/apis/angular#getprojectfromworkspace) helper is a good start.
+To help you with that, the [getProjectFromWorkspace()](/apis/angular#getprojectfromworkspace) helper is a good start.
 :::
 
 ```ts {6,8,10,12-14,16-17}

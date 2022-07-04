@@ -16,7 +16,7 @@ import { customMatchers } from './jasmine.matchers';
         beforeEach(async () => {
             jasmine.addMatchers(customMatchers);
             tree = await getCleanAppTree(useWorkspace);
-            projectDef = await getProjectFromWorkspace(tree);
+            projectDef = await getProjectFromWorkspace(tree, appTest1.name);
         });
 
         it('should throw if not an Angular workspace', async () => {
@@ -32,12 +32,12 @@ import { customMatchers } from './jasmine.matchers';
         });
 
         it('should throw if not an Angular library', async () => {
-            const test$ = runner.callRule(library().toRule(), tree).toPromise();
+            const test$ = runner.callRule(library(appTest1.name).toRule(), tree).toPromise();
             await expectAsync(test$).toBeRejectedWithError('Project is not an Angular library.');
         });
 
         it('should get project context info', async () => {
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule((context: ChainableProjectContext) => {
                     expect(context.project).toBeDefined();
                     expect(context.project.name).toBeDefined();
@@ -61,7 +61,7 @@ import { customMatchers } from './jasmine.matchers';
         });
 
         it('should get default project context info', async () => {
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(({ project }: ChainableProjectContext) => {
                     expect(project?.name).toEqual(appTest1.name);
                     expect(join(project?.root)).toEqual(join(appTest1.projectRoot as string));
@@ -94,7 +94,7 @@ import { customMatchers } from './jasmine.matchers';
         });
 
         it('should return a single rule', () => {
-            const rule = application()
+            const rule = application(appTest1.name)
                 .deleteFiles([])
                 .modifyJsonFile('angular.json', [], '')
                 .toRule();
@@ -102,7 +102,7 @@ import { customMatchers } from './jasmine.matchers';
         });
 
         it('should return an array of rules', () => {
-            const rule = application()
+            const rule = application(appTest1.name)
                 .deleteFiles([])
                 .modifyJsonFile('angular.json', [], '')
                 .toRules();
@@ -115,7 +115,7 @@ import { customMatchers } from './jasmine.matchers';
 
             expect(tree.exists(fileFromRoot)).toBeTruthy();
 
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
                 .deleteFiles(['__SRC__/main.ts'])
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
@@ -130,7 +130,7 @@ import { customMatchers } from './jasmine.matchers';
 
             expect(tree.exists(fileFromRoot)).toBeTruthy();
 
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
                 .deleteFiles(['__SRC__/main.ts'])
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
@@ -146,7 +146,7 @@ import { customMatchers } from './jasmine.matchers';
 
             expect(tree.exists(fileFromRoot)).toBeFalsy();
 
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
                 .rule(({ project }) => createOrUpdateFile(project.pathFromRoot(file), 'hello world'))
                 .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
@@ -198,7 +198,7 @@ import { customMatchers } from './jasmine.matchers';
             const sourceFile = `src/${file}`;
             const fileFromRoot = join(projectDef.root, sourceFile);
 
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(context => expect(context.project.pathFromRoot(sourceFile)).toEqual(fileFromRoot))
                 .toRule();
             await runner.callRule(rule, tree).toPromise();
@@ -209,7 +209,7 @@ import { customMatchers } from './jasmine.matchers';
             const sourceFile = `src/${file}`;
             const fileFromRoot = join(projectDef.root, sourceFile);
 
-            const rule = application()
+            const rule = application(appTest1.name)
                 .rule(context => expect(context.project.pathFromSourceRoot(file)).toEqual(fileFromRoot))
                 .toRule();
             await runner.callRule(rule, tree).toPromise();
@@ -227,7 +227,7 @@ import { customMatchers } from './jasmine.matchers';
 
             // eslint-disable-next-line no-loops/no-loops
             for (const range of [ngVersion, `>= ${ngVersion}`]) {
-                const rule = application().isAngularVersion(range, spyObject.callback).toRule();
+                const rule = application(appTest1.name).isAngularVersion(range, spyObject.callback).toRule();
                 await runner.callRule(rule, tree).toPromise();
                 expect(spyObject.callback).toHaveBeenCalled();
             }
@@ -236,7 +236,7 @@ import { customMatchers } from './jasmine.matchers';
 
             // eslint-disable-next-line no-loops/no-loops
             for (const range of [`> ${ngVersion}`, `< ${ngVersion}`]) {
-                const rule = application().isAngularVersion(range, spyObject.callback).toRule();
+                const rule = application(appTest1.name).isAngularVersion(range, spyObject.callback).toRule();
                 await runner.callRule(rule, tree).toPromise();
                 expect(spyObject.callback).not.toHaveBeenCalled();
             }

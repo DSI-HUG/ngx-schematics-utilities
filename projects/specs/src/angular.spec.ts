@@ -4,7 +4,7 @@ import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
     addAngularJsonAsset, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule, addProviderToNgModule,
     addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureIsAngularWorkspace,
-    getDefaultProjectName, getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset,
+    getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset,
     removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
@@ -111,22 +111,22 @@ const expectAddToNgModule = async (
         });
 
         it('rule: ensureIsAngularProject', async () => {
-            const ok$ = runner.callRule(ensureIsAngularProject(), tree).toPromise();
+            const ok$ = runner.callRule(ensureIsAngularProject(appTest1.name), tree).toPromise();
             await expectAsync(ok$).toBeResolved();
 
             const angularJson = new JSONFile(tree, 'angular.json');
             angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
-            const ko$ = runner.callRule(ensureIsAngularProject(), tree).toPromise();
+            const ko$ = runner.callRule(ensureIsAngularProject(appTest1.name), tree).toPromise();
             await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular project.');
         });
 
         it('rule: ensureIsAngularLibrary', async () => {
-            const ko$ = runner.callRule(ensureIsAngularLibrary(), tree).toPromise();
+            const ko$ = runner.callRule(ensureIsAngularLibrary(appTest1.name), tree).toPromise();
             await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular library.');
 
             const angularJson = new JSONFile(tree, 'angular.json');
             angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
-            const ok$ = runner.callRule(ensureIsAngularLibrary(), tree).toPromise();
+            const ok$ = runner.callRule(ensureIsAngularLibrary(appTest1.name), tree).toPromise();
             await expectAsync(ok$).toBeResolved();
         });
 
@@ -156,7 +156,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: addAngularJsonAsset(string)', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const asset = join(project.root, 'src/manifest.webmanifest');
 
             // Before
@@ -164,18 +164,18 @@ const expectAddToNgModule = async (
             expect(getAssets(tree, 'test')).not.toContain(asset);
 
             // After
-            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).toContain(asset);
             expect(getAssets(tree, 'test')).toContain(asset);
 
             // Twice (expect no duplicates)
-            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).toContainTimes(asset, 1);
             expect(getAssets(tree, 'test')).toContainTimes(asset, 1);
         });
 
         it('rule: removeAngularJsonAsset(string)', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             let asset = `${project.root}/src/favicon.ico`;
             if (asset.startsWith('/') || asset.startsWith('\\')) {
                 asset = asset.substring(1, asset.length);
@@ -186,12 +186,12 @@ const expectAddToNgModule = async (
             expect(getAssets(tree, 'test')).toContain(asset);
 
             // After
-            await runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).not.toContain(asset);
             expect(getAssets(tree, 'test')).not.toContain(asset);
 
             // Twice (expect no error)
-            const test$ = runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            const test$ = runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             await expectAsync(test$).toBeResolved();
         });
 
@@ -207,12 +207,12 @@ const expectAddToNgModule = async (
             expect(getAssets(tree, 'test')).not.toContain(jasmine.objectContaining(asset));
 
             // After
-            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).toContain(jasmine.objectContaining(asset));
             expect(getAssets(tree, 'test')).toContain(jasmine.objectContaining(asset));
 
             // Twice (expect no duplicates)
-            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).toContainTimes(asset, 1);
             expect(getAssets(tree, 'test')).toContainTimes(asset, 1);
         });
@@ -225,22 +225,22 @@ const expectAddToNgModule = async (
             };
 
             // Before
-            await runner.callRule(addAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).toContain(jasmine.objectContaining(asset));
             expect(getAssets(tree, 'test')).toContain(jasmine.objectContaining(asset));
 
             // After
-            await runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            await runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             expect(getAssets(tree, 'build')).not.toContain(jasmine.objectContaining(asset));
             expect(getAssets(tree, 'test')).not.toContain(jasmine.objectContaining(asset));
 
             // Twice (expect no error)
-            const test$ = runner.callRule(removeAngularJsonAsset(asset), tree).toPromise();
+            const test$ = runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
             await expectAsync(test$).toBeResolved();
         });
 
         it('rule: add/remove declaration in NgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app.module.ts');
 
             await expectAddToNgModule(tree, 'declarations', addDeclarationToNgModule, {
@@ -255,7 +255,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: add/remove simple import in NgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app.module.ts');
 
             await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
@@ -270,7 +270,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: add/remove forRoot import in NgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app.module.ts');
 
             await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
@@ -289,7 +289,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: add/remove export in NgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app.module.ts');
 
             await expectAddToNgModule(tree, 'exports', addExportToNgModule, {
@@ -304,7 +304,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: add/remove provider in NgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app.module.ts');
 
             await expectAddToNgModule(tree, 'providers', addProviderToNgModule, {
@@ -319,7 +319,7 @@ const expectAddToNgModule = async (
         });
 
         it('rule: addRouteDeclarationToNgModule', async () => {
-            const project = await getProjectFromWorkspace(tree);
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = join(project.root, 'src/app/app-routing.module.ts');
             const route1 = '{ path: \'route1\', component: \'src/home/home.component.ts\' }';
             const route2 = '{ path: \'route2\', loadChildren: \'() => import(\'./pages/home/home.module\').then(m => m.HomeModule)\'; }';
@@ -337,12 +337,8 @@ const expectAddToNgModule = async (
             expect(newFileContent).toContain(route2);
         });
 
-        it('helper: getDefaultProjectName', () => {
-            expect(getDefaultProjectName(tree)).toEqual(appTest1.name);
-        });
-
         it('helper: getProjectOutputPath', () => {
-            expect(getProjectOutputPath(tree)).toEqual(`dist/${appTest1.name}`);
+            expect(getProjectOutputPath(tree, appTest1.name)).toEqual(`dist/${appTest1.name}`);
             if (useWorkspace) {
                 expect(getProjectOutputPath(tree, appTest2.name)).toEqual(`dist/${appTest2.name}`);
             } else {
@@ -352,7 +348,7 @@ const expectAddToNgModule = async (
         });
 
         it('helper: getProjectFromWorkspace', async () => {
-            await expectAsync(getProjectFromWorkspace(tree)).toBeResolved();
+            await expectAsync(getProjectFromWorkspace(tree, appTest1.name)).toBeResolved();
             if (useWorkspace) {
                 await expectAsync(getProjectFromWorkspace(tree, appTest2.name)).toBeResolved();
             } else {

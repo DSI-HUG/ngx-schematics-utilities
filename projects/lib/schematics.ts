@@ -1,5 +1,4 @@
-import { Option } from '@angular/cli/models/interface';
-import { parseJsonSchemaToOptions } from '@angular/cli/utilities/json-schema';
+import { Option, parseJsonSchemaToOptions } from '@angular/cli/src/command-builder/utilities/json-schema';
 import { JsonObject } from '@angular-devkit/core';
 import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema';
 import { SchematicContext } from '@angular-devkit/schematics';

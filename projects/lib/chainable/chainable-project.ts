@@ -19,7 +19,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
 
     constructor(
         protected chainableType: ChainableType,
-        protected projectName?: string
+        protected projectName: string
     ) {
         super(chainableType);
 
@@ -118,7 +118,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * @returns {this}
      */
     public addAngularJsonAsset(value: JsonValue): this {
-        return this.addRuleToChain(() => addAngularJsonAsset(value, this._project?.name));
+        return this.addRuleToChain(() => addAngularJsonAsset(value, this.projectName));
     }
 
     /**
@@ -126,7 +126,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * @returns {this}
      */
     public removeAngularJsonAsset(value: JsonValue): this {
-        return this.addRuleToChain(() => addAngularJsonAsset(value, this._project?.name));
+        return this.addRuleToChain(() => addAngularJsonAsset(value, this.projectName));
     }
 
     // --- OVERRIDE(s) ---
@@ -146,6 +146,6 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 }
 
-export const application = (projectName?: string): ChainableProject => new ChainableProject(ChainableType.APPLICATION, projectName);
+export const application = (projectName: string): ChainableProject => new ChainableProject(ChainableType.APPLICATION, projectName);
 
-export const library = (projectName?: string): ChainableProject => new ChainableProject(ChainableType.LIBRARY, projectName);
+export const library = (projectName: string): ChainableProject => new ChainableProject(ChainableType.LIBRARY, projectName);

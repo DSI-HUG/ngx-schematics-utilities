@@ -26,16 +26,12 @@ export default (options: any): Rule =>
 
 Ensures that a project is actually an Angular project or throws an exception otherwise.
 
-```ts {7,10}
+```ts {6}
 import { ensureIsAngularProject, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // By default: uses the default project name specified in the `angular.json` file
-    ensureIsAngularProject(),
-
-    // Use a specific project name
     ensureIsAngularProject('ProjectName')
   ]);
 ```
@@ -44,16 +40,12 @@ export default (options: any): Rule =>
 
 Ensures that a project is actually an Angular library or throws an exception otherwise.
 
-```ts {7,10}
+```ts {6}
 import { ensureIsAngularLibrary, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // By default: uses the default project name specified in the `angular.json` file
-    ensureIsAngularLibrary(),
-
-    // Use a specific project name
     ensureIsAngularLibrary('ProjectName')
   ]);
 ```
@@ -78,16 +70,12 @@ export default (options: any): Rule =>
 
 Adds a new asset to a project `build` and `test` sections of the `angular.json` file.
 
-```ts {7,10}
+```ts {6}
 import { addAngularJsonAsset, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // By default: uses the default project name specified in the `angular.json` file
-    addAngularJsonAsset('src/manifest.webmanifest'),
-
-    // Use a specific project name
     addAngularJsonAsset('src/manifest.webmanifest', 'ProjectName')
   ]);
 ```
@@ -96,16 +84,12 @@ export default (options: any): Rule =>
 
 Removes an asset from a project `build` and `test` sections of the `angular.json` file.
 
-```ts {7,10}
+```ts {6}
 import { removeAngularJsonAsset, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    // By default: uses the default project name specified in the `angular.json` file
-    removeAngularJsonAsset('src/manifest.webmanifest'),
-
-    // Use a specific project name
     removeAngularJsonAsset('src/manifest.webmanifest', 'ProjectName')
   ]);
 ```
@@ -276,39 +260,17 @@ export default (options: any): Rule => {
 
 ## Helpers
 
-### `getDefaultProjectName`
-
-Gets the default project name defined in the `angular.json` file.
-
-```ts {6}
-import { getDefaultProjectName, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule, Tree } from '@angular-devkit/schematics';
-
-export default (options: any): Rule =>
-  (tree: Tree): Rule => {
-    const projectName = getDefaultProjectName(tree);
-    return schematic('my-schematic', [
-      ...
-    ]);
-  };
-```
-
 ### `getProjectOutputPath`
 
 Gets a project output path as defined in the `angular.json` file.
 
-```ts {7,10}
+```ts {6}
 import { getProjectOutputPath, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   (tree: Tree): Rule => {
-    // By default: uses the default project name specified in the `angular.json` file
-    const defaultProjectOutputPath = getProjectOutputPath(tree);
-
-    // Use a specific project name
     const projectOutputPath = getProjectOutputPath(tree, 'ProjectName');
-
     return schematic('my-schematic', [
       ...
     ]);
@@ -325,7 +287,7 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   async (tree: Tree): Promise<Rule> => {
-    const project = await getProjectFromWorkspace(tree);
+    const project = await getProjectFromWorkspace(tree, 'ProjectName');
     return schematic('my-schematic', [
       ...
     ]);
