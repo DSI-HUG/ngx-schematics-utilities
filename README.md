@@ -22,6 +22,9 @@
     <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/license-GPLv3-ff69b4.svg" alt="license GPLv3" />
     </a>
+    <a href="https://DSI-HUG.github.io/ngx-schematics-utilities">
+        <img src="https://img.shields.io/badge/docs-site-blue" alt="docs-site" />
+    </a>
 </p>
 
 <p align="center">
