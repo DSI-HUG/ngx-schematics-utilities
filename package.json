@@ -56,16 +56,16 @@
         "semver": "^7.3.7"
     },
     "devDependencies": {
-        "@hug/eslint-config": "^8.0.0",
+        "@hug/eslint-config": "^8.0.1",
         "@types/jasmine": "^4.0.3",
-        "@types/node": "^18.0.6",
-        "@types/semver": "^7.3.10",
+        "@types/node": "^18.7.1",
+        "@types/semver": "^7.3.11",
         "cpy": "^9.0.1",
-        "eslint": "^8.20.0",
-        "jasmine": "^4.2.1",
+        "eslint": "^8.21.0",
+        "jasmine": "^4.3.0",
         "jasmine-spec-reporter": "^7.0.0",
         "ts-node": "^10.9.1",
-        "tsconfig-paths": "^4.0.0",
+        "tsconfig-paths": "^4.1.0",
         "typescript": "^4.7.4"
     }
 }
