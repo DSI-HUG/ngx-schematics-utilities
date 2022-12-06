@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: run-tests-group-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
       - name: Install latest npm
         run: npm install -g npm@latest
 
-      - name: Cache node_modules
+      - name: Cache .angular and node_modules
         uses: actions/cache@v3
         id: cache-step
         with:
@@ -54,6 +54,7 @@ jobs:
           restore-keys: |
             cache-${{ matrix.os }}-node${{ matrix.node }}-
           path: |
+            .angular/cache
             node_modules
 
       - name: Install dependencies
@@ -65,3 +66,6 @@ jobs:
 
       - name: Test
         run: npm run test
+
+      - name: Build
+        run: npm run build:lib
