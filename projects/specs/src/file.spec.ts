@@ -195,9 +195,9 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
         it('rule: modifyImportInFile', async () => {
             const project = await getProjectFromWorkspace(tree, appTest1.name);
-            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'environment', newSymbolName: 'NewName', fileName: './environments/environment' };
-            const impt = 'import { environment } from \'./environments/environment\';';
-            const newImpt = `import { ${options.newSymbolName} } from './environments/environment';`;
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'AppModule', newSymbolName: 'NewName', fileName: './app/app.module' };
+            const impt = 'import { AppModule } from \'./app/app.module\';';
+            const newImpt = `import { ${options.newSymbolName} } from './app/app.module';`;
 
             // Before
             expect(tree.readContent(options.filePath)).toContain(impt);
@@ -213,8 +213,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
         it('rule: removeImportFromFile', async () => {
             const project = await getProjectFromWorkspace(tree, appTest1.name);
-            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'environment', fileName: './environments/environment' };
-            const impt = 'import { environment } from \'./environments/environment\';';
+            const options = { filePath: join(project.root, 'src/main.ts'), symbolName: 'AppModule', fileName: './app/app.module' };
+            const impt = 'import { AppModule } from \'./app/app.module\';';
 
             // Before
             expect(tree.readContent(options.filePath)).toContain(impt);

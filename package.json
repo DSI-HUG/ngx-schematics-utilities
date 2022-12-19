@@ -37,11 +37,10 @@
         }
     },
     "scripts": {
-        "start:docs": "npm run start --prefix=projects/docs",
-        "build:docs": "npm run build --prefix=projects/docs",
-        "build:lib": "node ./build.mjs",
+        "ncu": "npx ncu -i --format=group --packageFile '{,projects/**/}package.json'",
+        "lint": "eslint projects/lib projects/specs",
         "test": "ts-node --project=projects/specs/tsconfig.json --require=tsconfig-paths/register ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
-        "lint": "eslint projects/lib projects/specs"
+        "build": "node ./build.mjs"
     },
     "peerDependencies": {
         "@angular-devkit/core": ">= 14",
@@ -50,22 +49,25 @@
         "@schematics/angular": ">= 14"
     },
     "dependencies": {
-        "@badisi/latest-version": "^4.0.0",
+        "@badisi/latest-version": "^4.0.2",
         "@colors/colors": "^1.5.0",
         "ora": "5.4.1",
-        "semver": "^7.3.7"
+        "semver": "^7.3.8"
     },
     "devDependencies": {
-        "@hug/eslint-config": "^8.0.1",
-        "@types/jasmine": "^4.0.3",
-        "@types/node": "^18.7.1",
-        "@types/semver": "^7.3.11",
+        "@angular-devkit/core": "^15.0.4",
+        "@angular-devkit/schematics": "^15.0.4",
+        "@angular/cli": "^15.0.4",
+        "@schematics/angular": "^15.0.4",
+        "@hug/eslint-config": "^10.0.1",
+        "@types/jasmine": "^4.3.1",
+        "@types/node": "^18.11.17",
+        "@types/semver": "^7.3.13",
         "cpy": "^9.0.1",
-        "eslint": "^8.21.0",
-        "jasmine": "^4.3.0",
+        "jasmine": "^4.5.0",
         "jasmine-spec-reporter": "^7.0.0",
         "ts-node": "^10.9.1",
-        "tsconfig-paths": "^4.1.0",
-        "typescript": "^4.7.4"
+        "tsconfig-paths": "^4.1.1",
+        "typescript": "^4.9.4"
     }
 }
