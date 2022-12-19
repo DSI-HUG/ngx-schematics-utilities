@@ -5,8 +5,8 @@ on:
     types: [created]
 
 env:
-  NODE: 14
-  
+  NODE: 18
+
 jobs:
   ci_tests:
     uses: ./.github/workflows/ci_tests.yml
@@ -45,7 +45,7 @@ jobs:
         run: npm clean-install --engine-strict
 
       - name: Build
-        run: npm run build:lib
+        run: npm run build
 
       - name: Publish
         env:
