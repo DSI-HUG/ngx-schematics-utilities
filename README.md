@@ -28,8 +28,8 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/actions?query=workflow:CI%20tests">
-        <img src="https://github.com/DSI-HUG/ngx-schematics-utilities/workflows/CI%20tests/badge.svg" alt="build status" />
+    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/actions/workflows/ci_tests.yml">
+        <img src="https://github.com/DSI-HUG/ngx-schematics-utilities/actions/workflows/ci_tests.yml/badge.svg" alt="build status" />
     </a>
     <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CONTRIBUTING.md#-submitting-a-pull-request-pr">
         <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" />
