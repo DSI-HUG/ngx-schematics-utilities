@@ -42,6 +42,9 @@
         "test": "ts-node --project=projects/specs/tsconfig.json --require=tsconfig-paths/register ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
         "build": "node ./build.mjs"
     },
+    "engines": {
+        "node": ">= 15"
+    },
     "peerDependencies": {
         "@angular-devkit/core": ">= 14",
         "@angular-devkit/schematics": ">= 14",
