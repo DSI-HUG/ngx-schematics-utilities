@@ -52,25 +52,25 @@
         "@schematics/angular": ">= 14"
     },
     "dependencies": {
-        "@badisi/latest-version": "^4.0.2",
+        "@badisi/latest-version": "^6.1.0",
         "@colors/colors": "^1.5.0",
         "ora": "5.4.1",
         "semver": "^7.3.8"
     },
     "devDependencies": {
-        "@angular-devkit/core": "^15.0.4",
-        "@angular-devkit/schematics": "^15.0.4",
-        "@angular/cli": "^15.0.4",
-        "@schematics/angular": "^15.0.4",
-        "@hug/eslint-config": "^10.0.1",
+        "@angular-devkit/core": "^15.1.3",
+        "@angular-devkit/schematics": "^15.1.3",
+        "@angular/cli": "^15.1.3",
+        "@schematics/angular": "^15.1.3",
+        "@hug/eslint-config": "^11.0.0",
         "@types/jasmine": "^4.3.1",
-        "@types/node": "^18.11.17",
+        "@types/node": "^18.11.18",
         "@types/semver": "^7.3.13",
         "cpy": "^9.0.1",
         "jasmine": "^4.5.0",
         "jasmine-spec-reporter": "^7.0.0",
         "ts-node": "^10.9.1",
-        "tsconfig-paths": "^4.1.1",
+        "tsconfig-paths": "^4.1.2",
         "typescript": "^4.9.4"
     }
 }
