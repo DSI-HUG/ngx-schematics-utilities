@@ -45,19 +45,11 @@ export const getCleanAppTree = async (useWorkspace = false): Promise<UnitTestTre
     appTest1.projectRoot = (useWorkspace) ? join(workspaceOptions.newProjectRoot as string, appTest1.name) : '';
     appTest2.projectRoot = (useWorkspace) ? join(workspaceOptions.newProjectRoot as string, appTest2.name) : '';
 
-    const workspaceTree = await runner
-        .runExternalSchematicAsync('@schematics/angular', 'workspace', workspaceOptions)
-        .toPromise();
-    await runner
-        .runExternalSchematicAsync('@schematics/angular', 'application', appTest1, workspaceTree)
-        .toPromise();
+    const workspaceTree = await runner.runExternalSchematic('@schematics/angular', 'workspace', workspaceOptions);
+    await runner.runExternalSchematic('@schematics/angular', 'application', appTest1, workspaceTree);
     if (useWorkspace) {
-        await runner
-            .runExternalSchematicAsync('@schematics/angular', 'application', appTest2, workspaceTree)
-            .toPromise();
+        await runner.runExternalSchematic('@schematics/angular', 'application', appTest2, workspaceTree);
     }
-    await runner
-        .runExternalSchematicAsync('@schematics/angular', 'library', libTest, workspaceTree)
-        .toPromise();
+    await runner.runExternalSchematic('@schematics/angular', 'library', libTest, workspaceTree);
     return workspaceTree;
 };
