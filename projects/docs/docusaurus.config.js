@@ -18,14 +18,14 @@ const config = {
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',
     i18n: {
-        defaultLocale: 'fr-CH',
-        locales: ['fr-CH']
+        defaultLocale: 'en-US',
+        locales: ['en-US']
     },
     plugins: [
         [
             require.resolve('@cmfcmf/docusaurus-search-local'),
             {
-                language: 'fr'
+                language: 'en'
             }
         ]
     ],
