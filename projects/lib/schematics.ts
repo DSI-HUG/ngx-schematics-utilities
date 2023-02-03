@@ -52,22 +52,30 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
     }
     const registry = (context.engine.workflow as NodeWorkflow)?.registry || new CoreSchemaRegistry();
     const options = await parseJsonSchemaToOptions(registry, schemaJson || {}) as NgCliOption[];
-    /**
-     * Fix: @angular/cli is not handling required and default properties
-     * Feat: add support for hint property
-     */
-    options.forEach(option => {
-        const props = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject);
-        if (props?.['hint']) {
-            option.hint = props?.['hint'] as string;
-        }
-        if (props?.['default']) {
-            option.default = props?.['default'] as string;
-        }
-        if ((schemaJson?.['required'] as string[])?.includes(option.name)) {
-            option.required = true;
-        }
-    });
+
+    const schemaPropertiesOrdered = Object.keys(schemaJson?.['properties'] as JsonObject);
+    options
+        /**
+         * Fix: @angular/cli is not keeping the options in the same order as they are declared in schema.json
+         */
+        .sort((a, b) => schemaPropertiesOrdered.indexOf(a.name) - schemaPropertiesOrdered.indexOf(b.name))
+
+        /**
+         * Feat: add support for "hint" property
+         * Fix: @angular/cli is not handling "required" and "default" properties
+         */
+        .forEach(option => {
+            const props = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject);
+            if (props?.['hint']) {
+                option.hint = props?.['hint'] as string;
+            }
+            if (props?.['default']) {
+                option.default = props?.['default'] as string;
+            }
+            if ((schemaJson?.['required'] as string[])?.includes(option.name)) {
+                option.required = true;
+            }
+        });
     // --
     return options;
 };
