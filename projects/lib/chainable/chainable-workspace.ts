@@ -1,6 +1,6 @@
 import { TaskId } from '@angular-devkit/schematics';
 
-import { addAngularJsonAsset } from '../angular';
+import { addAngularJsonAsset, addAngularJsonStyle, removeAngularJsonStyle } from '../angular';
 import {
     addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies,
     packageInstallTask, PackageItem, removePackageJsonDependencies, removePackageJsonDevDependencies,
@@ -79,6 +79,22 @@ export class ChainableWorkspace extends Chainable {
      */
     public removeAngularJsonAsset(value: string, projectName: string): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, projectName));
+    }
+
+    /**
+     * {@link addAngularJsonStyle See addAngularJsonStyle}
+     * @returns {this}
+     */
+    public addAngularJsonStyle(value: string, projectName: string): this {
+        return this.addRuleToChain(() => addAngularJsonStyle(value, projectName));
+    }
+
+    /**
+     * {@link removeAngularJsonStyle See removeAngularJsonStyle}
+     * @returns {this}
+     */
+    public removeAngularJsonStyle(value: string, projectName: string): this {
+        return this.addRuleToChain(() => removeAngularJsonStyle(value, projectName));
     }
 }
 

@@ -2,10 +2,11 @@ import { tags } from '@angular-devkit/core';
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
-    addAngularJsonAsset, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule, addProviderToNgModule,
-    addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureIsAngularWorkspace,
-    getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset,
-    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
+    addAngularJsonAsset, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
+    addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject,
+    ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset,
+    removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
+    removeProviderFromNgModule
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
@@ -236,6 +237,46 @@ const expectAddToNgModule = async (
 
             // Twice (expect no error)
             const test$ = runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+            await expectAsync(test$).toBeResolved();
+        });
+
+        it('rule: addAngularJsonStyle(string)', async () => {
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
+            const asset = join(project.root, 'src/assets/my-styles.css');
+
+            // Before
+            expect(getAssets(tree, 'build')).not.toContain(asset);
+            expect(getAssets(tree, 'test')).not.toContain(asset);
+
+            // After
+            await runner.callRule(addAngularJsonStyle(asset, appTest1.name), tree).toPromise();
+            expect(getAssets(tree, 'build')).toContain(asset);
+            expect(getAssets(tree, 'test')).toContain(asset);
+
+            // Twice (expect no duplicates)
+            await runner.callRule(addAngularJsonStyle(asset, appTest1.name), tree).toPromise();
+            expect(getAssets(tree, 'build')).toContainTimes(asset, 1);
+            expect(getAssets(tree, 'test')).toContainTimes(asset, 1);
+        });
+
+        it('rule: removeAngularJsonStyle(string)', async () => {
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
+            let asset = `${project.root}/src/my-theme.css`;
+            if (asset.startsWith('/') || asset.startsWith('\\')) {
+                asset = asset.substring(1, asset.length);
+            }
+
+            // Before
+            expect(getAssets(tree, 'build')).toContain(asset);
+            expect(getAssets(tree, 'test')).toContain(asset);
+
+            // After
+            await runner.callRule(removeAngularJsonStyle(asset, appTest1.name), tree).toPromise();
+            expect(getAssets(tree, 'build')).not.toContain(asset);
+            expect(getAssets(tree, 'test')).not.toContain(asset);
+
+            // Twice (expect no error)
+            const test$ = runner.callRule(removeAngularJsonStyle(asset, appTest1.name), tree).toPromise();
             await expectAsync(test$).toBeResolved();
         });
 

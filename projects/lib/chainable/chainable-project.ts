@@ -3,9 +3,9 @@ import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
 import {
-    addAngularJsonAsset, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule, addProviderToNgModule,
-    addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, getProjectFromWorkspace,
-    ProjectDefinition, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
+    addAngularJsonAsset, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
+    addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, getProjectFromWorkspace,
+    ProjectDefinition, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
     removeProviderFromNgModule
 } from '../angular';
 import { Chainable, ChainableContext, ChainableType } from './chainable';
@@ -127,6 +127,22 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      */
     public removeAngularJsonAsset(value: JsonValue): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, this.projectName));
+    }
+
+    /**
+     * {@link addAngularJsonStyle See addAngularJsonStyle}
+     * @returns {this}
+     */
+    public addAngularJsonStyle(value: string): this {
+        return this.addRuleToChain(() => addAngularJsonStyle(value, this.projectName));
+    }
+
+    /**
+     * {@link removeAngularJsonStyle See removeAngularJsonStyle}
+     * @returns {this}
+     */
+    public removeAngularJsonStyle(value: string): this {
+        return this.addRuleToChain(() => removeAngularJsonStyle(value, this.projectName));
     }
 
     // --- OVERRIDE(s) ---

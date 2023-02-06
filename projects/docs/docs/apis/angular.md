@@ -94,6 +94,34 @@ export default (options: any): Rule =>
   ]);
 ```
 
+### `addAngularJsonStyle`
+
+Adds a new style to a project `build` and `test` sections of the `angular.json` file.
+
+```ts {6}
+import { addAngularJsonStyle, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    addAngularJsonStyle('src/assets/my-styles.css', 'ProjectName')
+  ]);
+```
+
+### `removeAngularJsonStyle`
+
+Removes a style from a project `build` and `test` sections of the `angular.json` file.
+
+```ts {6}
+import { removeAngularJsonStyle, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removeAngularJsonStyle('src/assets/my-styles.css', 'ProjectName')
+  ]);
+```
+
 ### `addDeclarationToNgModule`
 
 Inserts a declaration (ex. Component, Pipe, Directive) into an NgModule declarations and also imports that declaration.

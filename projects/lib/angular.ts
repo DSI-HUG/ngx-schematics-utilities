@@ -113,18 +113,7 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
  */
 export const addAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
     (tree: Tree): void => {
-        const angularJson = new JSONFile(tree, 'angular.json');
-        const architectPath = ['projects', projectName, 'architect'];
-
-        ['build', 'test'].forEach(configName => {
-            const assetsPath = [...architectPath, configName, 'options', 'assets'];
-            const assets = angularJson.get(assetsPath) as (string | JsonValue)[];
-            const stringifiedAssets = assets.map(asset => JSON.stringify(asset));
-            if (!stringifiedAssets.includes(JSON.stringify(value))) {
-                assets.push(value);
-                angularJson.modify(assetsPath, assets);
-            }
-        });
+        customizeAngularJsonBuildAndTestSection('add', 'assets', tree, value, projectName);
     };
 
 /**
@@ -135,19 +124,29 @@ export const addAngularJsonAsset = (value: JsonValue, projectName: string): Rule
  */
 export const removeAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
     (tree: Tree): void => {
-        const angularJson = new JSONFile(tree, 'angular.json');
-        const architectPath = ['projects', projectName, 'architect'];
+        customizeAngularJsonBuildAndTestSection('remove', 'assets', tree, value, projectName);
+    };
 
-        ['build', 'test'].forEach(configName => {
-            const assetsPath = [...architectPath, configName, 'options', 'assets'];
-            const assets = angularJson.get(assetsPath) as (string | JsonValue)[];
-            const stringifiedAssets = assets.map(asset => JSON.stringify(asset));
-            const valueIndex = stringifiedAssets.indexOf(JSON.stringify(value));
-            if (valueIndex !== -1) {
-                assets.splice(valueIndex, 1);
-                angularJson.modify(assetsPath, assets);
-            }
-        });
+/**
+ * Adds a new style to the `build` and `test` sections of the `angular.json` file.
+ * @param {string} value The style to add.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {Rule}
+ */
+export const addAngularJsonStyle = (value: string, projectName: string): Rule =>
+    (tree: Tree): void => {
+        customizeAngularJsonBuildAndTestSection('add', 'styles', tree, value, projectName);
+    };
+
+/**
+ * Removes a style from the `build` and `test` sections of the `angular.json` file.
+ * @param {string} value The style to remove.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {Rule}
+ */
+export const removeAngularJsonStyle = (value: string, projectName: string): Rule =>
+    (tree: Tree): void => {
+        customizeAngularJsonBuildAndTestSection('remove', 'styles', tree, value, projectName);
     };
 
 /**
@@ -325,4 +324,27 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName: string): 
         pathFromRoot: (path: string) => join(project.root ?? '', path),
         pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)
     };
+};
+
+// --- HELPER(s) ---
+
+const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', option: string, tree: Tree, value: JsonValue, projectName: string): void => {
+    const angularJson = new JSONFile(tree, 'angular.json');
+    const architectPath = ['projects', projectName, 'architect'];
+
+    ['build', 'test'].forEach(configName => {
+        const path = [...architectPath, configName, 'options', option];
+        const values = angularJson.get(path) as (string | JsonValue)[];
+        const stringifiedValue = values.map(opt => JSON.stringify(opt));
+        if ((action === 'add') && !stringifiedValue.includes(JSON.stringify(value))) {
+            values.push(value);
+            angularJson.modify(path, values);
+        } else if (action === 'remove') {
+            const valueIndex = stringifiedValue.indexOf(JSON.stringify(value));
+            if (valueIndex !== -1) {
+                values.splice(valueIndex, 1);
+                angularJson.modify(path, values);
+            }
+        }
+    });
 };
