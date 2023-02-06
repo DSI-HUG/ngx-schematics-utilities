@@ -5,8 +5,8 @@ import { join } from 'path';
 import {
     addAngularJsonAsset, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
     addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, getProjectFromWorkspace,
-    ProjectDefinition, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
-    removeProviderFromNgModule
+    ProjectDefinition, removeAngularJsonAsset, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
+    removeImportFromNgModule, removeProviderFromNgModule
 } from '../angular';
 import { Chainable, ChainableContext, ChainableType } from './chainable';
 
@@ -126,7 +126,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * @returns {this}
      */
     public removeAngularJsonAsset(value: JsonValue): this {
-        return this.addRuleToChain(() => addAngularJsonAsset(value, this.projectName));
+        return this.addRuleToChain(() => removeAngularJsonAsset(value, this.projectName));
     }
 
     /**
