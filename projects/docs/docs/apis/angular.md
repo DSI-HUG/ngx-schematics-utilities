@@ -122,6 +122,34 @@ export default (options: any): Rule =>
   ]);
 ```
 
+### `addAngularJsonScript`
+
+Adds a new script to a project `build` and `test` sections of the `angular.json` file.
+
+```ts {6}
+import { addAngularJsonScript, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    addAngularJsonScript('src/my-script.js', 'ProjectName')
+  ]);
+```
+
+### `removeAngularJsonScript`
+
+Removes a script from a project `build` and `test` sections of the `angular.json` file.
+
+```ts {6}
+import { removeAngularJsonScript, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removeAngularJsonScript('src/my-script.js', 'ProjectName')
+  ]);
+```
+
 ### `addDeclarationToNgModule`
 
 Inserts a declaration (ex. Component, Pipe, Directive) into an NgModule declarations and also imports that declaration.

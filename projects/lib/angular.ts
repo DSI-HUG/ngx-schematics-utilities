@@ -150,6 +150,28 @@ export const removeAngularJsonStyle = (value: JsonObject | string, projectName: 
     };
 
 /**
+ * Adds a new script to the `build` and `test` sections of the `angular.json` file.
+ * @param {JsonObject|string} value The script to add.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {Rule}
+ */
+export const addAngularJsonScript = (value: JsonObject | string, projectName: string): Rule =>
+    (tree: Tree): void => {
+        customizeAngularJsonBuildAndTestSection('add', 'scripts', tree, value, projectName);
+    };
+
+/**
+* Removes a script from the `build` and `test` sections of the `angular.json` file.
+* @param {JsonObject|string} value The style to remove.
+* @param {string} projectName The name of the project to look for.
+* @returns {Rule}
+*/
+export const removeAngularJsonScript = (value: JsonObject | string, projectName: string): Rule =>
+    (tree: Tree): void => {
+        customizeAngularJsonBuildAndTestSection('remove', 'scripts', tree, value, projectName);
+    };
+
+/**
  * Inserts a declaration (ex. Component, Pipe, Directive) into an NgModule declarations and also imports that declaration.
  * @param {string} filePath The path of the file containing the NgModule to modify.
  * @param {string} classifiedName The classified name of the declaration to insert.
