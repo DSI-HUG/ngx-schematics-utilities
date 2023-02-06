@@ -1,4 +1,4 @@
-import { JsonValue } from '@angular-devkit/core';
+import { JsonObject } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
@@ -117,7 +117,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link addAngularJsonAsset See addAngularJsonAsset}
      * @returns {this}
      */
-    public addAngularJsonAsset(value: JsonValue): this {
+    public addAngularJsonAsset(value: JsonObject | string): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, this.projectName));
     }
 
@@ -125,7 +125,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link removeAngularJsonAsset See removeAngularJsonAsset}
      * @returns {this}
      */
-    public removeAngularJsonAsset(value: JsonValue): this {
+    public removeAngularJsonAsset(value: JsonObject | string): this {
         return this.addRuleToChain(() => removeAngularJsonAsset(value, this.projectName));
     }
 
@@ -133,7 +133,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link addAngularJsonStyle See addAngularJsonStyle}
      * @returns {this}
      */
-    public addAngularJsonStyle(value: string): this {
+    public addAngularJsonStyle(value: JsonObject | string): this {
         return this.addRuleToChain(() => addAngularJsonStyle(value, this.projectName));
     }
 
@@ -141,7 +141,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      * {@link removeAngularJsonStyle See removeAngularJsonStyle}
      * @returns {this}
      */
-    public removeAngularJsonStyle(value: string): this {
+    public removeAngularJsonStyle(value: JsonObject | string): this {
         return this.addRuleToChain(() => removeAngularJsonStyle(value, this.projectName));
     }
 

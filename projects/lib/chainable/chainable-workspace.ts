@@ -1,4 +1,4 @@
-import { JsonValue } from '@angular-devkit/core';
+import { JsonObject } from '@angular-devkit/core';
 import { TaskId } from '@angular-devkit/schematics';
 
 import { addAngularJsonAsset, addAngularJsonStyle, removeAngularJsonAsset, removeAngularJsonStyle } from '../angular';
@@ -69,7 +69,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addAngularJsonAsset See addAngularJsonAsset}
      * @returns {this}
      */
-    public addAngularJsonAsset(value: JsonValue, projectName: string): this {
+    public addAngularJsonAsset(value: JsonObject | string, projectName: string): this {
         return this.addRuleToChain(() => addAngularJsonAsset(value, projectName));
     }
 
@@ -77,7 +77,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removeAngularJsonAsset See removeAngularJsonAsset}
      * @returns {this}
      */
-    public removeAngularJsonAsset(value: JsonValue, projectName: string): this {
+    public removeAngularJsonAsset(value: JsonObject | string, projectName: string): this {
         return this.addRuleToChain(() => removeAngularJsonAsset(value, projectName));
     }
 
@@ -85,7 +85,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link addAngularJsonStyle See addAngularJsonStyle}
      * @returns {this}
      */
-    public addAngularJsonStyle(value: string, projectName: string): this {
+    public addAngularJsonStyle(value: JsonObject | string, projectName: string): this {
         return this.addRuleToChain(() => addAngularJsonStyle(value, projectName));
     }
 
@@ -93,7 +93,7 @@ export class ChainableWorkspace extends Chainable {
      * {@link removeAngularJsonStyle See removeAngularJsonStyle}
      * @returns {this}
      */
-    public removeAngularJsonStyle(value: string, projectName: string): this {
+    public removeAngularJsonStyle(value: JsonObject | string, projectName: string): this {
         return this.addRuleToChain(() => removeAngularJsonStyle(value, projectName));
     }
 }

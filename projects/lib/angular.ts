@@ -1,4 +1,4 @@
-import { JsonValue } from '@angular-devkit/core';
+import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { ProjectDefinition as NgDevKitProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
@@ -107,44 +107,44 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
 
 /**
  * Adds a new asset to the `build` and `test` sections of the `angular.json` file.
- * @param {JsonValue} value The asset to add.
+ * @param {JsonObject|string} value The asset to add.
  * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const addAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
+export const addAngularJsonAsset = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
         customizeAngularJsonBuildAndTestSection('add', 'assets', tree, value, projectName);
     };
 
 /**
  * Removes an asset from the `build` and `test` sections of the `angular.json` file.
- * @param {JsonValue} value The asset to remove.
+ * @param {JsonObject|string} value The asset to remove.
  * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const removeAngularJsonAsset = (value: JsonValue, projectName: string): Rule =>
+export const removeAngularJsonAsset = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
         customizeAngularJsonBuildAndTestSection('remove', 'assets', tree, value, projectName);
     };
 
 /**
  * Adds a new style to the `build` and `test` sections of the `angular.json` file.
- * @param {string} value The style to add.
+ * @param {JsonObject|string} value The style to add.
  * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const addAngularJsonStyle = (value: string, projectName: string): Rule =>
+export const addAngularJsonStyle = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
         customizeAngularJsonBuildAndTestSection('add', 'styles', tree, value, projectName);
     };
 
 /**
  * Removes a style from the `build` and `test` sections of the `angular.json` file.
- * @param {string} value The style to remove.
+ * @param {JsonObject|string} value The style to remove.
  * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const removeAngularJsonStyle = (value: string, projectName: string): Rule =>
+export const removeAngularJsonStyle = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
         customizeAngularJsonBuildAndTestSection('remove', 'styles', tree, value, projectName);
     };
