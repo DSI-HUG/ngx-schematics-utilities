@@ -101,6 +101,40 @@ const expectAddToNgModule = async (
             tree = await getCleanAppTree(useWorkspace);
         });
 
+        it('should throw if no project could be found', async () => {
+            const error = 'Project cannot be determined and no --project option was provided.';
+            const options = { project: undefined as unknown as string };
+
+            let test$: Promise<unknown> = runner.callRule(ensureIsAngularProject(options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: ensureIsAngularProject').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(ensureIsAngularLibrary(options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: ensureIsAngularLibrary').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(addAngularJsonAsset('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: addAngularJsonAsset').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(removeAngularJsonAsset('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: removeAngularJsonAsset').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(addAngularJsonStyle('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: addAngularJsonStyle').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(removeAngularJsonStyle('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: removeAngularJsonStyle').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(addAngularJsonScript('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: addAngularJsonScript').toBeRejectedWithError(error);
+
+            test$ = runner.callRule(removeAngularJsonScript('', options.project), tree).toPromise();
+            await expectAsync(test$).withContext('rule: removeAngularJsonScript').toBeRejectedWithError(error);
+
+            test$ = getProjectFromWorkspace(tree, options.project);
+            await expectAsync(test$).withContext('helper: getProjectFromWorkspace').toBeRejectedWithError(error);
+
+            expect(() => getProjectOutputPath(tree, options.project)).withContext('helper: getProjectOutputPath').toThrowError(error);
+        });
+
         it('rule: ensureIsAngularWorkspace', async () => {
             const ok$ = runner.callRule(ensureIsAngularWorkspace(), tree).toPromise();
             await expectAsync(ok$).toBeResolved();

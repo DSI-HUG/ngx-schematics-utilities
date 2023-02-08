@@ -4,9 +4,9 @@ import { join } from 'path';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
-    addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, getProjectFromWorkspace,
-    ProjectDefinition, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule,
-    removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
+    addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureProjectIsDefined,
+    getProjectFromWorkspace, ProjectDefinition, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle,
+    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
 } from '../angular';
 import { Chainable, ChainableContext, ChainableType } from './chainable';
 
@@ -24,6 +24,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
         super(chainableType);
 
         // Sanity checks
+        ensureProjectIsDefined(projectName);
         switch (this.chainableType) {
             case ChainableType.APPLICATION:
                 this.addRuleToChain(() => ensureIsAngularProject(this.projectName));

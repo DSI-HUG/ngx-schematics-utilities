@@ -18,26 +18,6 @@ import { satisfies } from 'semver';
 
 import { commitChanges, getTsSourceFile } from './file';
 
-const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: string, metadataField: string, classifiedName: string): Change => {
-    const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
-    const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
-    const arrayLiteral = (ngModuleImports[0] as PropertyAssignment).initializer as ArrayLiteralExpression;
-    const symbolIndex = arrayLiteral.elements.findIndex(el => el.getText().includes(classifiedName));
-    if (symbolIndex !== -1) {
-        const el = arrayLiteral.elements[symbolIndex];
-        let position = el.getFullStart();
-        let fullText = el.getFullText();
-        if (symbolIndex !== (arrayLiteral.elements.length - 1)) {
-            fullText = `${fullText},`;
-        } else if (arrayLiteral.elements.length > 1) {
-            position--;
-            fullText = `,${fullText}`;
-        }
-        return new RemoveChange(filePath, position, fullText);
-    }
-    return new NoopChange();
-};
-
 export interface ProjectDefinition extends NgDevKitProjectDefinition {
     name: string;
     pathFromRoot: (path: string) => string;
@@ -68,6 +48,7 @@ export const ensureIsAngularWorkspace = (): Rule =>
  */
 export const ensureIsAngularProject = (projectName: string): Rule =>
     async (tree: Tree): Promise<void> => {
+        ensureProjectIsDefined(projectName);
         const project = await getProjectFromWorkspace(tree, projectName);
         if (project.extensions['projectType'] !== ProjectType.Application) {
             throw new SchematicsException('Project is not an Angular project.');
@@ -82,6 +63,7 @@ export const ensureIsAngularProject = (projectName: string): Rule =>
  */
 export const ensureIsAngularLibrary = (projectName: string): Rule =>
     async (tree: Tree): Promise<void> => {
+        ensureProjectIsDefined(projectName);
         const project = await getProjectFromWorkspace(tree, projectName);
         if (project.extensions['projectType'] !== ProjectType.Library) {
             throw new SchematicsException('Project is not an Angular library.');
@@ -113,6 +95,7 @@ export const isAngularVersion = (range: string, rule: Rule): Rule =>
  */
 export const addAngularJsonAsset = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('add', 'assets', tree, value, projectName);
     };
 
@@ -124,6 +107,7 @@ export const addAngularJsonAsset = (value: JsonObject | string, projectName: str
  */
 export const removeAngularJsonAsset = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('remove', 'assets', tree, value, projectName);
     };
 
@@ -135,6 +119,7 @@ export const removeAngularJsonAsset = (value: JsonObject | string, projectName: 
  */
 export const addAngularJsonStyle = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('add', 'styles', tree, value, projectName);
     };
 
@@ -146,6 +131,7 @@ export const addAngularJsonStyle = (value: JsonObject | string, projectName: str
  */
 export const removeAngularJsonStyle = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('remove', 'styles', tree, value, projectName);
     };
 
@@ -157,6 +143,7 @@ export const removeAngularJsonStyle = (value: JsonObject | string, projectName: 
  */
 export const addAngularJsonScript = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('add', 'scripts', tree, value, projectName);
     };
 
@@ -168,6 +155,7 @@ export const addAngularJsonScript = (value: JsonObject | string, projectName: st
 */
 export const removeAngularJsonScript = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
+        ensureProjectIsDefined(projectName);
         customizeAngularJsonBuildAndTestSection('remove', 'scripts', tree, value, projectName);
     };
 
@@ -322,6 +310,7 @@ export const addRouteDeclarationToNgModule = (filePath: string, routeLiteral: st
  * @returns {string} The default project output path.
  */
 export const getProjectOutputPath = (tree: Tree, projectName: string): string => {
+    ensureProjectIsDefined(projectName);
     const angularJson = new JSONFile(tree, 'angular.json');
     return angularJson.get(['projects', projectName, 'architect', 'build', 'options', 'outputPath']) as string;
 };
@@ -335,6 +324,7 @@ export const getProjectOutputPath = (tree: Tree, projectName: string): string =>
  * @returns {Promise<ProjectDefinition>} A project definition object.
  */
 export const getProjectFromWorkspace = async (tree: Tree, projectName: string): Promise<ProjectDefinition> => {
+    ensureProjectIsDefined(projectName);
     const workspace = await getWorkspace(tree);
     const project = workspace.projects.get(projectName);
     if (!project) {
@@ -349,6 +339,32 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName: string): 
 };
 
 // --- HELPER(s) ---
+
+export const ensureProjectIsDefined = (projectName: string | undefined): void => {
+    if (!projectName) {
+        throw new SchematicsException('Project cannot be determined and no --project option was provided.');
+    }
+};
+
+const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: string, metadataField: string, classifiedName: string): Change => {
+    const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
+    const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
+    const arrayLiteral = (ngModuleImports[0] as PropertyAssignment).initializer as ArrayLiteralExpression;
+    const symbolIndex = arrayLiteral.elements.findIndex(el => el.getText().includes(classifiedName));
+    if (symbolIndex !== -1) {
+        const el = arrayLiteral.elements[symbolIndex];
+        let position = el.getFullStart();
+        let fullText = el.getFullText();
+        if (symbolIndex !== (arrayLiteral.elements.length - 1)) {
+            fullText = `${fullText},`;
+        } else if (arrayLiteral.elements.length > 1) {
+            position--;
+            fullText = `,${fullText}`;
+        }
+        return new RemoveChange(filePath, position, fullText);
+    }
+    return new NoopChange();
+};
 
 const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', option: string, tree: Tree, value: JsonValue, projectName: string): void => {
     const angularJson = new JSONFile(tree, 'angular.json');

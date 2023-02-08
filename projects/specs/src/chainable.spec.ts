@@ -36,6 +36,13 @@ import { customMatchers } from './jasmine.matchers';
             await expectAsync(test$).toBeRejectedWithError('Project is not an Angular library.');
         });
 
+        it('should throw if no project could be found', () => {
+            const error = 'Project cannot be determined and no --project option was provided.';
+            const options = { project: undefined as unknown as string };
+            expect(() => application(options.project)).withContext('application').toThrowError(error);
+            expect(() => library(options.project)).withContext('library').toThrowError(error);
+        });
+
         it('should get project context info', async () => {
             const rule = application(appTest1.name)
                 .rule((context: ChainableProjectContext) => {
