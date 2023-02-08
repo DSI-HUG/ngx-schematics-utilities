@@ -28,15 +28,15 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
         it('rule: deployFiles - missing template options', async () => {
             const options = { source: '../files' };
-            /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
-            const test$ = runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
+            /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
+            const test$ = runner.runSchematic('deployFilesSchematic', options, tree);
             await expectAsync(test$).toBeRejectedWithError('myParam is not defined');
         });
 
         it('rule: deployFiles - with template options', async () => {
             const options = { templateOptions: { myParam: 'MyParam' }, source: '../files' };
-            /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
-            await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
+            /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
+            await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.exists('./test-file')).toBeTruthy();
             expect(tree.readContent('./test-file').replace('\r\n', '\n')).toEqual('MyParam\n');
             expect(tree.files.length).toEqual(nbFiles + 1);
@@ -44,8 +44,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
         it('rule: deployFiles - with non existing source', async () => {
             const options = { source: './nonExistingFolder' };
-            /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
-            const test$ = runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
+            /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
+            const test$ = runner.runSchematic('deployFilesSchematic', options, tree);
             await expectAsync(test$).toBeResolved();
             expect(tree.exists('./test-file')).toBeFalsy();
             expect(tree.files.length).toEqual(nbFiles);
@@ -53,8 +53,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
         it('rule: deployFiles - to another destination', async () => {
             const options = { templateOptions: { myParam: 'MyParam' }, destination: './otherFolder', source: '../files' };
-            /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
-            await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
+            /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
+            await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.exists('./test-file')).toBeFalsy();
             expect(tree.exists('./otherFolder/test-file')).toBeTruthy();
             expect(tree.files.length).toEqual(nbFiles + 1);
@@ -67,9 +67,9 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             expect(tree.exists(filePath)).toBeTruthy();
             expect(tree.readContent(filePath).replace('\r\n', '\n')).not.toEqual('MyParam\n');
 
-            /** use `runner.runSchematicAsync` as `runner.callRule` isn't working in this case */
+            /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
             const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder', source: '../files' };
-            await runner.runSchematicAsync('deployFilesSchematic', options, tree).toPromise();
+            await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.readContent(filePath).replace('\r\n', '\n')).toEqual('MyParam\n');
             expect(tree.files.length).toEqual(nbFiles + 1);
         });
