@@ -50,7 +50,7 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
     } else {
         schemaJson = await getExternalSchemaJson(packageName, schematicName);
     }
-    if (schemaJson) {
+    if (schemaJson?.['properties']) {
         const schemaPropertiesOrdered = Object.keys(schemaJson?.['properties'] as JsonObject);
         const registry = (context.engine.workflow as NodeWorkflow)?.registry ?? new CoreSchemaRegistry();
         const options = await parseJsonSchemaToOptions(registry, schemaJson) as NgCliOption[];
