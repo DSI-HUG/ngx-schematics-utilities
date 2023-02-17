@@ -39,7 +39,8 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
         log(''),
         log(`${magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)}`),
         log(''),
-        ...rules
+        ...rules,
+        log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)
     ]);
 };
 
