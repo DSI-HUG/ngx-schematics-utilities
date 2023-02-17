@@ -68,12 +68,12 @@ export const logError = (message: string): Rule =>
     log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}\n`);
 
 /**
- * Outputs a message to the console, prefixed by the word "ACTION" printed in green.
+ * Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
  * @param {string} message Message to display.
  * @returns {Rule}
  */
 export const logAction = (message: string): Rule =>
-    log(`${green('>')} ${black(bgGreen(' ACTION '))} ${green(message)}\n`);
+    log(`${yellow('>')} ${black(bgYellow(' ACTION '))} ${yellow(message)}\n`);
 
 /**
  * Spawns a new process using the given command and arguments.
