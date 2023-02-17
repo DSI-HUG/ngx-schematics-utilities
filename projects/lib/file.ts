@@ -58,7 +58,7 @@ export const createOrUpdateFile = (filePath: string, data: unknown): Rule =>
         if (!tree.exists(filePath)) {
             tree.create(filePath, (typeof data === 'string') ? data : serializeToJson(data));
         } else {
-            const actualData = tree.read(filePath)?.toString('utf-8');
+            const actualData = tree.readText(filePath);
             const newData = (typeof data === 'string') ? data : serializeToJson(data);
             if (actualData !== newData) {
                 tree.overwrite(filePath, newData);
@@ -95,7 +95,7 @@ export const downloadFile = (source: string | URL, destination: string, replace 
 export const replaceInFile = (filePath: string, searchValue: string | RegExp, replaceValue: string): Rule =>
     (tree: Tree): void => {
         if (tree.exists(filePath)) {
-            const content = tree.read(filePath)?.toString('utf-8') || '';
+            const content = tree.readText(filePath) ?? '';
             const newContent = content.replace(searchValue, replaceValue);
             if (content !== newContent) {
                 tree.overwrite(filePath, newContent);

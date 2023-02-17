@@ -15,7 +15,7 @@ const expectDep = (tree: UnitTestTree, devType: string, dep: string | PackageIte
     const depName = (typeof dep === 'string') ? dep : dep.name;
     const depValue = (typeof dep === 'string') ? 'latest' : dep.version;
     const depItem = pkgJson.get([devType, depName]);
-    const count = (pkgJson.content.match(new RegExp(depName, 'g')) || []).length;
+    const count = (pkgJson.content.match(new RegExp(depName, 'g')) ?? []).length;
 
     if (!toExists) {
         expect(count).toEqual(0);

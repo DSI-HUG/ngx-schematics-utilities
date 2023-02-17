@@ -14,7 +14,7 @@ export const customMatchers = {
         compare: (actual: string | any[], expected: any, times = 0): jasmine.CustomMatcherResult => {
             let count = 0;
             if (typeof actual === 'string') {
-                count = (actual.match(new RegExp(expected as string, 'g')) || []).length;
+                count = (actual.match(new RegExp(expected as string, 'g')) ?? []).length;
             } else if (Array.isArray(actual)) {
                 actual.forEach(item => {
                     if (JSON.stringify(item) === JSON.stringify(expected)) {
