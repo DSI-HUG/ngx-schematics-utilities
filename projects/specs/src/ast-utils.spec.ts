@@ -155,7 +155,7 @@ describe('ast-utils', () => {
     });
 
     ADD_USE_CASES.forEach((useCase, index) => {
-        fit(`addProviderToStandaloneApplication: use case ${index}`, async () => {
+        it(`addProviderToStandaloneApplication: use case ${index}`, async () => {
             const project = await getProjectFromWorkspace(tree, appTest1.name);
             const filePath = project.pathFromSourceRoot('main.ts');
 
@@ -186,7 +186,7 @@ describe('ast-utils', () => {
 
             // After
             const sourceFile = getTsSourceFile(tree, filePath);
-            const changes = removeProviderFromStandaloneApplication(sourceFile, filePath, useCase.providerName);
+            const changes = removeProviderFromStandaloneApplication(sourceFile, filePath, useCase.realProviderName ?? useCase.providerName);
             commitChanges(tree, filePath, changes);
             expect(tree.readContent(filePath)).toContain(useCase.state1);
         });
