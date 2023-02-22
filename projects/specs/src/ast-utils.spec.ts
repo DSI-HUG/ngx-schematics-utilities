@@ -1,6 +1,7 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { commitChanges, getProjectFromWorkspace, getTsSourceFile } from '@hug/ngx-schematics-utilities';
 import { addProviderToStandaloneApplication, removeProviderFromStandaloneApplication } from '@hug/ngx-schematics-utilities/ast-utils';
+import { sep } from 'path';
 
 import { appTest1, getCleanAppTree } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -151,7 +152,7 @@ describe('ast-utils', () => {
         // After
         const sourceFile = getTsSourceFile(tree, filePath);
         expect(() => addProviderToStandaloneApplication(sourceFile, filePath, 'providerA'))
-            .toThrowError('Could not find bootstrapApplication() in src/main.ts.');
+            .toThrowError(`Could not find bootstrapApplication() in src${sep}main.ts.`);
     });
 
     ADD_USE_CASES.forEach((useCase, index) => {
