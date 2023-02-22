@@ -9,12 +9,16 @@ declare global {
     }
 }
 
+/**
+ * @internal
+ */
 export const customMatchers = {
     toContainTimes: (util: jasmine.MatchersUtil): jasmine.CustomMatcher => ({
         compare: (actual: string | any[], expected: any, times = 0): jasmine.CustomMatcherResult => {
             let count = 0;
             if (typeof actual === 'string') {
-                count = (actual.match(new RegExp(expected as string, 'g')) ?? []).length;
+                const preservedExpected = (expected as string).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                count = (actual.match(new RegExp(preservedExpected, 'g')) ?? []).length;
             } else if (Array.isArray(actual)) {
                 actual.forEach(item => {
                     if (JSON.stringify(item) === JSON.stringify(expected)) {
