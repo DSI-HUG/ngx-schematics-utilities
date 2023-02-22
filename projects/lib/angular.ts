@@ -2,20 +2,19 @@ import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { ProjectDefinition as NgDevKitProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
-    ArrayLiteralExpression, ObjectLiteralExpression, PropertyAssignment, SourceFile
-} from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import {
     addDeclarationToModule, addExportToModule, addImportToModule, addProviderToModule,
-    addRouteDeclarationToModule, addSymbolToNgModuleMetadata, getDecoratorMetadata,
-    getMetadataField, insertImport
+    addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport
 } from '@schematics/angular/utility/ast-utils';
-import { Change, NoopChange, RemoveChange } from '@schematics/angular/utility/change';
+import { NoopChange } from '@schematics/angular/utility/change';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { ProjectType } from '@schematics/angular/utility/workspace-models';
 import { join } from 'path';
 import { satisfies } from 'semver';
 
+import {
+    addProviderToStandaloneApplication, removeProviderFromStandaloneApplication, removeSymbolFromNgModuleMetadata
+} from './ast-utils';
 import { commitChanges, getTsSourceFile } from './file';
 
 export interface ProjectDefinition extends NgDevKitProjectDefinition {
@@ -300,7 +299,53 @@ export const addRouteDeclarationToNgModule = (filePath: string, routeLiteral: st
         commitChanges(tree, filePath, [change]);
     };
 
-// --- HELPER(s) ----
+/**
+ * Inserts a provider (ex. provideRouter) into a bootstrapApplication's providers and also imports that provider.
+ * @param {string} filePath The path of the file containing the bootstrapApplication call to modify.
+ * @param {string} providerName The name of the provider to insert.
+ * @param {string} importPath The path of the file containing the provider to insert.
+ * @param {boolean} [useImportProvidersFrom=false] Whether or not to use the importProvidersFrom api.
+ * @param {number} [indent=2] The indentation used during the insertion.
+ * @returns {Rule}
+ */
+export const addProviderToBootstrapApplication = (filePath: string, providerName: string, importPath: string, useImportProvidersFrom = false, indent = 2): Rule =>
+    (tree: Tree): void => {
+        let sourceFile = getTsSourceFile(tree, filePath);
+        let realProviderName = providerName;
+
+        // Fix: manage provider import with arguments (ex: provideRouter(ROUTES))
+        const matches = new RegExp(/(.*)\(/gm).exec(providerName);
+        if (matches?.length) {
+            realProviderName = matches[1].trim();
+
+            // Remove any entry first
+            commitChanges(tree, filePath, [
+                ...removeProviderFromStandaloneApplication(sourceFile, filePath, realProviderName)
+            ]);
+
+            // Refresh source
+            sourceFile = getTsSourceFile(tree, filePath);
+        }
+
+        commitChanges(tree, filePath, [
+            insertImport(sourceFile, filePath, realProviderName, importPath),
+            (useImportProvidersFrom) ? insertImport(sourceFile, filePath, 'importsProvidersFrom', '@angular/core') : new NoopChange(),
+            addProviderToStandaloneApplication(sourceFile, filePath, providerName, useImportProvidersFrom, indent)
+        ]);
+    };
+
+/**
+ * Removes a provider (ex. provideRouter) from a bootstrapApplication's providers.
+ * @param {string} filePath The path of the file containing the bootstrapApplication call to modify.
+ * @param {string} providerName The name of the provider to remove.
+ * @returns {Rule}
+ */
+export const removeProviderFromBootstrapApplication = (filePath: string, providerName: string): Rule =>
+    (tree: Tree): void => {
+        const sourceFile = getTsSourceFile(tree, filePath);
+        const changes = removeProviderFromStandaloneApplication(sourceFile, filePath, providerName);
+        commitChanges(tree, filePath, changes);
+    };
 
 /**
  * Gets a project output path as defined in the `angular.json` file.
@@ -338,33 +383,16 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName: string): 
     };
 };
 
-// --- HELPER(s) ---
-
+/**
+ * @internal
+ */
 export const ensureProjectIsDefined = (projectName: string | undefined): void => {
     if (!projectName) {
         throw new SchematicsException('Project cannot be determined and no --project option was provided.');
     }
 };
 
-const removeSymbolFromNgModuleMetadata = (sourceFile: SourceFile, filePath: string, metadataField: string, classifiedName: string): Change => {
-    const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
-    const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
-    const arrayLiteral = (ngModuleImports[0] as PropertyAssignment).initializer as ArrayLiteralExpression;
-    const symbolIndex = arrayLiteral.elements.findIndex(el => el.getText().includes(classifiedName));
-    if (symbolIndex !== -1) {
-        const el = arrayLiteral.elements[symbolIndex];
-        let position = el.getFullStart();
-        let fullText = el.getFullText();
-        if (symbolIndex !== (arrayLiteral.elements.length - 1)) {
-            fullText = `${fullText},`;
-        } else if (arrayLiteral.elements.length > 1) {
-            position--;
-            fullText = `,${fullText}`;
-        }
-        return new RemoveChange(filePath, position, fullText);
-    }
-    return new NoopChange();
-};
+// --- HELPER(s) ---
 
 const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', option: string, tree: Tree, value: JsonValue, projectName: string): void => {
     const angularJson = new JSONFile(tree, 'angular.json');

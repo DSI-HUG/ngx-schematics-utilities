@@ -3,10 +3,11 @@ import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
 import {
-    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
-    addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureProjectIsDefined,
-    getProjectFromWorkspace, ProjectDefinition, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle,
-    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
+    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
+    addImportToNgModule, addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule,
+    ensureIsAngularLibrary, ensureIsAngularProject, ensureProjectIsDefined, getProjectFromWorkspace, ProjectDefinition,
+    removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
+    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../angular';
 import { Chainable, ChainableContext, ChainableType } from './chainable';
 
@@ -112,6 +113,22 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
      */
     public addRouteDeclarationToNgModule(filePath: string, routeLiteral: string): this {
         return this.addRuleToChain(() => addRouteDeclarationToNgModule(this.pathFromRoot(filePath), routeLiteral));
+    }
+
+    /**
+     * {@link addProviderToBootstrapApplication See addProviderToBootstrapApplication}
+     * @returns {this}
+     */
+    public addProviderToBootstrapApplication(filePath: string, providerName: string, importPath: string, useImportProvidersFrom = false, indent = 2): this {
+        return this.addRuleToChain(() => addProviderToBootstrapApplication(this.pathFromRoot(filePath), providerName, importPath, useImportProvidersFrom, indent));
+    }
+
+    /**
+     * {@link removeProviderFromBootstrapApplication See removeProviderFromBootstrapApplication}
+     * @returns {this}
+     */
+    public removeProviderFromBootstrapApplication(filePath: string, providerName: string): this {
+        return this.addRuleToChain(() => removeProviderFromBootstrapApplication(this.pathFromRoot(filePath), providerName));
     }
 
     /**

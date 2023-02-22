@@ -314,6 +314,54 @@ export default (options: any): Rule => {
 }
 ```
 
+### `addProviderToBootstrapApplication`
+
+Inserts a provider (ex. provideRouter) into a bootstrapApplication's providers and also imports that provider.
+
+```ts {8,11-19}
+import { addProviderToBootstrapApplication, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+import { tags } from '@angular-devkit/core';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    // Add simple module
+    addProviderToBootstrapApplication('src/main.ts', 'provideAnimations()', '@angular/platform-browser/animations'),
+
+    // Add module to `importProvidersFrom`
+    addProviderToBootstrapApplication('src/main.ts', 'MyModule', 'path/to/my/module', true),
+
+    // Add module with parameters
+    addProviderToBootstrapApplication(
+      'src/main.ts',
+      tags.stripIndent`
+        provideRouter(appRoutes,
+          withDebugTracing()
+        )
+      `,
+      '@angular/router'
+    )
+  ]);
+```
+
+### `removeProviderFromBootstrapApplication`
+
+Removes a provider (ex. provideRouter) from a bootstrapApplication's providers.
+
+:::tip Tip
+Use [#removeImportFromFile](/apis/file#removeimportfromfile) to also remove the import.
+:::
+
+```ts {6}
+import { removeProviderFromBootstrapApplication, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    removeProviderFromBootstrapApplication('src/main.ts', 'provideRouter')
+  ]);
+```
+
 ## Helpers
 
 ### `getProjectOutputPath`

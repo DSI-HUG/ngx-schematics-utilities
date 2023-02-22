@@ -3,9 +3,11 @@ import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
+    addProviderToBootstrapApplication,
     addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject, ensureIsAngularWorkspace,
     getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset, removeAngularJsonScript,
-    removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromNgModule
+    removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
+    removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
@@ -537,6 +539,48 @@ const expectAddToNgModule = async (
             const newFileContent = tree.readContent(filePath);
             expect(newFileContent).toContain(route1);
             expect(newFileContent).toContain(route2);
+        });
+
+        it('rule: add provider in bootstrapApplication', async () => {
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
+            const filePath = project.pathFromSourceRoot('main.ts');
+            tree.overwrite(filePath, `import { bootstrapApplication } from '@angular/platform-browser';\n${tree.readContent(filePath)}\n\nbootstrapApplication(AppComponent);\n`);
+            const impt = 'import { provideA } from \'provide/A';
+
+            // Before
+            expect(tree.readContent(filePath)).not.toContain(impt);
+
+            // After
+            await runner.callRule(addProviderToBootstrapApplication(filePath, 'provideA()', 'provide/A'), tree).toPromise();
+            expect(tree.readContent(filePath)).toContain(impt);
+            expect(tree.readContent(filePath)).toContain('provideA()');
+
+            // Twice (expect no duplicates)
+            await runner.callRule(addProviderToBootstrapApplication(filePath, 'provideA()', 'provide/A'), tree).toPromise();
+            expect(tree.readContent(filePath)).toContainTimes(impt, 1);
+            expect(tree.readContent(filePath)).toContainTimes('provideA()', 1);
+        });
+
+        it('rule: remove provider in bootstrapApplication', async () => {
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
+            const filePath = project.pathFromSourceRoot('main.ts');
+            tree.overwrite(filePath, `import { bootstrapApplication } from '@angular/platform-browser';\n${tree.readContent(filePath)}\n\nbootstrapApplication(AppComponent);\n`);
+            const impt = 'import { provideA } from \'provide/A';
+
+            // Before
+            await runner.callRule(addProviderToBootstrapApplication(filePath, 'provideA()', 'provide/A'), tree).toPromise();
+            expect(tree.readContent(filePath)).toContain(impt);
+            expect(tree.readContent(filePath)).toContain('provideA()');
+
+            // After
+            await runner.callRule(removeProviderFromBootstrapApplication(filePath, 'provideA'), tree).toPromise();
+            expect(tree.readContent(filePath)).toContain(impt);
+            expect(tree.readContent(filePath)).not.toContain('provideA()');
+
+            // Twice (expect no duplicates)
+            await runner.callRule(removeProviderFromBootstrapApplication(filePath, 'provideA'), tree).toPromise();
+            expect(tree.readContent(filePath)).toContainTimes(impt, 1);
+            expect(tree.readContent(filePath)).toContainTimes('provideA()', 0);
         });
 
         it('helper: getProjectOutputPath', () => {
