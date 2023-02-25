@@ -154,7 +154,7 @@ export const addProviderToStandaloneApplication = (
         } else {
             const indentedProviderName = providerName.replace(/\r?\n|\r/gm, `$&${indentBy(indent * 2)}`);
             const toAdd = `, {\n${indentBy(indent)}providers: [\n${indentBy(indent * 2)}${indentedProviderName}\n${indentBy(indent)}]\n${indentBy(0)}}`;
-            return new InsertChange(filePath, bootstrapApplicationCall.arguments[0].getEnd(), toAdd);
+            return new InsertChange(filePath, bootstrapApplicationCall.arguments?.[0].getEnd(), toAdd);
         }
     } else {
         throw new SchematicsException(`Could not find bootstrapApplication() in ${filePath}.`);
