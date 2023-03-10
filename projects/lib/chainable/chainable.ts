@@ -43,7 +43,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link deployFiles See deployFiles}
+     * @see {@link deployFiles}
      * @returns {this}
      */
     public deployFiles(templateOptions = {}, source = './files', destination = '', strategy = MergeStrategy.Overwrite): this {
@@ -51,7 +51,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link deleteFiles See deleteFiles}
+     * @see {@link deleteFiles}
      * @returns {this}
      */
     public deleteFiles(files: string[]): this {
@@ -59,7 +59,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link createOrUpdateFile See createOrUpdateFile}
+     * @see {@link createOrUpdateFile}
      * @returns {this}
      */
     public createOrUpdateFile(filePath: string, data: unknown): this {
@@ -67,7 +67,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link downloadFile See downloadFile}
+     * @see {@link downloadFile}
      * @returns {this}
      */
     public downloadFile(source: string | URL, destination: string, replace = false): this {
@@ -75,7 +75,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link replaceInFile See replaceInFile}
+     * @see {@link replaceInFile}
      * @returns {this}
      */
     public replaceInFile(filePath: string, searchValue: string | RegExp, replaceValue: string): this {
@@ -83,7 +83,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link addImportToFile See addImportToFile}
+     * @see {@link addImportToFile}
      * @returns {this}
      */
     public addImportToFile(filePath: string, symbolName: string, fileName: string, isDefault?: boolean): this {
@@ -91,7 +91,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link modifyImportInFile See modifyImportInFile}
+     * @see {@link modifyImportInFile}
      * @returns {this}
      */
     public modifyImportInFile(filePath: string, symbolName: string, newSymbolName: string | undefined, fileName: string): this {
@@ -99,7 +99,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link removeImportFromFile See removeImportFromFile}
+     * @see {@link removeImportFromFile}
      * @returns {this}
      */
     public removeImportFromFile(filePath: string, symbolName: string, fileName: string): this {
@@ -107,7 +107,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link modifyJsonFile See modifyJsonFile}
+     * @see {@link modifyJsonFile}
      * @returns {this}
      */
     public modifyJsonFile(filePath: string, jsonPath: JSONPath, value: JsonValue | undefined, insertInOrder?: InsertionIndex | false): this {
@@ -115,7 +115,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link removeFromJsonFile See removeFromJsonFile}
+     * @see {@link removeFromJsonFile}
      * @returns {this}
      */
     public removeFromJsonFile(filePath: string, jsonPath: JSONPath): this {
@@ -123,7 +123,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link isAngularVersion See isAngularVersion}
+     * @see {@link isAngularVersion}
      * @returns {this}
      */
     public isAngularVersion(range: string, rule: ChainableRule<T>): this {
@@ -131,7 +131,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link log See log}
+     * @see {@link log}
      * @returns {this}
      */
     public log(message: string): this {
@@ -139,7 +139,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link logInfo See logInfo}
+     * @see {@link logInfo}
      * @returns {this}
      */
     public logInfo(message: string): this {
@@ -147,7 +147,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link logWarning See logWarning}
+     * @see {@link logWarning}
      * @returns {this}
      */
     public logWarning(message: string): this {
@@ -155,7 +155,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link logError See logError}
+     * @see {@link logError}
      * @returns {this}
      */
     public logError(message: string): this {
@@ -163,7 +163,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link logAction See logAction}
+     * @see {@link logAction}
      * @returns {this}
      */
     public logAction(message: string): this {
@@ -171,7 +171,7 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
     }
 
     /**
-     * {@link spawn See spawn}
+     * @see {@link spawn}
      * @returns {this}
      */
     public spawn(command: string, args: string[], showOutput = false): this {

@@ -44,15 +44,14 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addDeclarationToNgModule See addDeclarationToNgModule}
-     * @returns {this}
+     * @see {@link addDeclarationToNgModule}
      */
     public addDeclarationToNgModule(filePath: string, classifiedName: string, importPath: string): this {
         return this.addRuleToChain(() => addDeclarationToNgModule(this.pathFromRoot(filePath), classifiedName, importPath));
     }
 
     /**
-     * {@link removeDeclarationFromNgModule See removeDeclarationFromNgModule}
+     * @see {@link removeDeclarationFromNgModule}
      * @returns {this}
      */
     public removeDeclarationFromNgModule(filePath: string, classifiedName: string): this {
@@ -60,7 +59,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addImportToNgModule See addImportToNgModule}
+     * @see {@link addImportToNgModule}
      * @returns {this}
      */
     public addImportToNgModule(filePath: string, classifiedName: string, importPath: string): this {
@@ -68,7 +67,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeImportFromNgModule See removeImportFromNgModule}
+     * @see {@link removeImportFromNgModule}
      * @returns {this}
      */
     public removeImportFromNgModule(filePath: string, classifiedName: string): this {
@@ -76,7 +75,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addExportToNgModule See addExportToNgModule}
+     * @see {@link addExportToNgModule}
      * @returns {this}
      */
     public addExportToNgModule(filePath: string, classifiedName: string, importPath: string): this {
@@ -84,7 +83,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeExportFromNgModule See removeExportFromNgModule}
+     * @see {@link removeExportFromNgModule}
      * @returns {this}
      */
     public removeExportFromNgModule(filePath: string, classifiedName: string): this {
@@ -92,7 +91,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addProviderToNgModule See addProviderToNgModule}
+     * @see {@link addProviderToNgModule}
      * @returns {this}
      */
     public addProviderToNgModule(filePath: string, classifiedName: string, importPath: string): this {
@@ -100,7 +99,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeProviderFromNgModule See removeProviderFromNgModule}
+     * @see {@link removeProviderFromNgModule}
      * @returns {this}
      */
     public removeProviderFromNgModule(filePath: string, classifiedName: string): this {
@@ -108,7 +107,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addRouteDeclarationToNgModule See addRouteDeclarationToNgModule}
+     * @see {@link addRouteDeclarationToNgModule}
      * @returns {this}
      */
     public addRouteDeclarationToNgModule(filePath: string, routeLiteral: string): this {
@@ -116,7 +115,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addProviderToBootstrapApplication See addProviderToBootstrapApplication}
+     * @see {@link addProviderToBootstrapApplication}
      * @returns {this}
      */
     public addProviderToBootstrapApplication(filePath: string, providerName: string, importPath: string, useImportProvidersFrom = false, indent = 2): this {
@@ -124,7 +123,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeProviderFromBootstrapApplication See removeProviderFromBootstrapApplication}
+     * @see {@link removeProviderFromBootstrapApplication}
      * @returns {this}
      */
     public removeProviderFromBootstrapApplication(filePath: string, providerName: string): this {
@@ -132,7 +131,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addAngularJsonAsset See addAngularJsonAsset}
+     * @see {@link addAngularJsonAsset}
      * @returns {this}
      */
     public addAngularJsonAsset(value: JsonObject | string): this {
@@ -140,7 +139,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeAngularJsonAsset See removeAngularJsonAsset}
+     * @see {@link removeAngularJsonAsset}
      * @returns {this}
      */
     public removeAngularJsonAsset(value: JsonObject | string): this {
@@ -148,7 +147,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addAngularJsonStyle See addAngularJsonStyle}
+     * @see {@link addAngularJsonStyle}
      * @returns {this}
      */
     public addAngularJsonStyle(value: JsonObject | string): this {
@@ -156,7 +155,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeAngularJsonStyle See removeAngularJsonStyle}
+     * @see {@link removeAngularJsonStyle}
      * @returns {this}
      */
     public removeAngularJsonStyle(value: JsonObject | string): this {
@@ -164,7 +163,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link addAngularJsonScript See addAngularJsonScript}
+     * @see {@link addAngularJsonScript}
      * @returns {this}
      */
     public addAngularJsonScript(value: JsonObject | string): this {
@@ -172,7 +171,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 
     /**
-     * {@link removeAngularJsonScript See removeAngularJsonScript}
+     * @see {@link removeAngularJsonScript}
      * @returns {this}
      */
     public removeAngularJsonScript(value: JsonObject | string): this {

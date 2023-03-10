@@ -13,7 +13,7 @@ import { Chainable, ChainableType } from './chainable';
 
 export class ChainableWorkspace extends Chainable {
     /**
-     * {@link addPackageJsonDependencies See addPackageJsonDependencies}
+     * @see {@link addPackageJsonDependencies}
      * @returns {this}
      */
     public addPackageJsonDependencies(deps: (string | PackageItem)[]): this {
@@ -21,7 +21,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link addPackageJsonDevDependencies See addPackageJsonDevDependencies}
+     * @see {@link addPackageJsonDevDependencies}
      * @returns {this}
      */
     public addPackageJsonDevDependencies(deps: (string | PackageItem)[]): this {
@@ -29,7 +29,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link addPackageJsonPeerDependencies See addPackageJsonPeerDependencies}
+     * @see {@link addPackageJsonPeerDependencies}
      * @returns {this}
      */
     public addPackageJsonPeerDependencies(deps: (string | PackageItem)[]): this {
@@ -37,7 +37,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removePackageJsonDependencies See removePackageJsonDependencies}
+     * @see {@link removePackageJsonDependencies}
      * @returns {this}
      */
     public removePackageJsonDependencies(deps: (string | PackageItem)[]): this {
@@ -45,7 +45,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removePackageJsonDevDependencies See removePackageJsonDevDependencies}
+     * @see {@link removePackageJsonDevDependencies}
      * @returns {this}
      */
     public removePackageJsonDevDependencies(deps: (string | PackageItem)[]): this {
@@ -53,7 +53,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removePackageJsonPeerDependencies See removePackageJsonPeerDependencies}
+     * @see {@link removePackageJsonPeerDependencies}
      * @returns {this}
      */
     public removePackageJsonPeerDependencies(deps: (string | PackageItem)[]): this {
@@ -61,7 +61,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link packageInstallTask See packageInstallTask}
+     * @see {@link packageInstallTask}
      * @returns {this}
      */
     public packageInstallTask(callback?: (taskId?: TaskId) => void, force = false): this {
@@ -69,7 +69,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link addAngularJsonAsset See addAngularJsonAsset}
+     * @see {@link addAngularJsonAsset}
      * @returns {this}
      */
     public addAngularJsonAsset(value: JsonObject | string, projectName: string): this {
@@ -77,7 +77,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removeAngularJsonAsset See removeAngularJsonAsset}
+     * @see {@link removeAngularJsonAsset}
      * @returns {this}
      */
     public removeAngularJsonAsset(value: JsonObject | string, projectName: string): this {
@@ -85,7 +85,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link addAngularJsonStyle See addAngularJsonStyle}
+     * @see {@link addAngularJsonStyle}
      * @returns {this}
      */
     public addAngularJsonStyle(value: JsonObject | string, projectName: string): this {
@@ -93,7 +93,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removeAngularJsonStyle See removeAngularJsonStyle}
+     * @see {@link removeAngularJsonStyle}
      * @returns {this}
      */
     public removeAngularJsonStyle(value: JsonObject | string, projectName: string): this {
@@ -101,7 +101,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link addAngularJsonScript See addAngularJsonScript}
+     * @see {@link addAngularJsonScript}
      * @returns {this}
      */
     public addAngularJsonScript(value: JsonObject | string, projectName: string): this {
@@ -109,7 +109,7 @@ export class ChainableWorkspace extends Chainable {
     }
 
     /**
-     * {@link removeAngularJsonScript See removeAngularJsonScript}
+     * @see {@link removeAngularJsonScript}
      * @returns {this}
      */
     public removeAngularJsonScript(value: JsonObject | string, projectName: string): this {
