@@ -34,15 +34,20 @@ export const deployFiles = (templateOptions = {}, source = './files', destinatio
     );
 
 /**
- * Deletes a collection of files.
- * @param {string[]} files A set of file paths to delete.
+ * Deletes a collection of files or folders
+ * @param {string[]} paths A set of file or folder paths to delete.
+ * @param {boolean} [force=false] Force deletion (required for folders).
  * @returns {Rule}
  */
-export const deleteFiles = (files: string[]): Rule =>
+export const deleteFiles = (paths: string[], force = false): Rule =>
     (tree: Tree): void => {
-        files.forEach(file => {
-            if (tree.exists(file)) {
-                tree.delete(file);
+        paths.forEach(path => {
+            if (force) {
+                try {
+                    tree.delete(path);
+                } catch { /* swallow errors*/ }
+            } else if (tree.exists(path)) {
+                tree.delete(path);
             }
         });
     };
