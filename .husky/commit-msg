@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+printf "> Validating commit message... "
+npx --no -- commitlint --edit "$1"
+printf "OK\n"
+
+printf "> Linting staged files... "
+npx --no -- lint-staged --quiet
+printf "OK\n"

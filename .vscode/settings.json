@@ -24,5 +24,9 @@
     "html.format.wrapLineLength": 120,
     "[html]": {
         "editor.defaultFormatter": "vscode.html-language-features"
-    }
+    },
+    "npm.exclude": "**/{dist,tmp}{,/**}",
+    "npm.scriptExplorerExclude": [
+        "install"
+    ]
 }

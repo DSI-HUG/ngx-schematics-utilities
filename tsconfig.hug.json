@@ -2,8 +2,9 @@
     "compilerOptions": {
         "forceConsistentCasingInFileNames": true,
         "noImplicitAny": true,
-        "noImplicitReturns": true,
         "noImplicitThis": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "noPropertyAccessFromIndexSignature": true,
         "noUnusedLocals": true,

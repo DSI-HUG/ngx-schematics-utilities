@@ -2,8 +2,8 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "types": [
-            "node",
-            "jasmine"
+            "jasmine",
+            "node"
         ]
     },
     "include": [

@@ -19,19 +19,19 @@
     <a href="https://npmcharts.com/compare/@hug/ngx-schematics-utilities?minimal=true">
         <img src="https://img.shields.io/npm/dw/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm donwloads" />
     </a>
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/LICENSE">
+    <a href="https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/license-GPLv3-ff69b4.svg" alt="license GPLv3" />
     </a>
-    <a href="https://DSI-HUG.github.io/ngx-schematics-utilities">
+    <a href="https://dsi-hug.github.io/ngx-schematics-utilities">
         <img src="https://img.shields.io/badge/docs-site-blue" alt="docs-site" />
     </a>
 </p>
 
 <p align="center">
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/actions/workflows/ci_tests.yml">
-        <img src="https://github.com/DSI-HUG/ngx-schematics-utilities/actions/workflows/ci_tests.yml/badge.svg" alt="build status" />
+    <a href="https://github.com/dsi-hug/ngx-schematics-utilities/actions/workflows/ci_tests.yml">
+        <img src="https://github.com/dsi-hug/ngx-schematics-utilities/actions/workflows/ci_tests.yml/badge.svg" alt="build status" />
     </a>
-    <a href="https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CONTRIBUTING.md#-submitting-a-pull-request-pr">
+    <a href="https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/CONTRIBUTING.md#-submitting-a-pull-request-pr">
         <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" />
     </a>
 </p>
@@ -101,14 +101,16 @@ Please read and follow the [Code of Conduct][codeofconduct], and help us keep th
 
 ## Credits
 
+Copyright (C) 2023 [HUG - Hôpitaux Universitaires Genève][dsi-hug]
+
 [![love@hug](https://img.shields.io/badge/@hug-%E2%9D%A4%EF%B8%8Flove-magenta)][dsi-hug]
 
 
 
 
-[developer]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/DEVELOPER.md
-[contributing]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CONTRIBUTING.md
-[codeofconduct]: https://github.com/DSI-HUG/ngx-schematics-utilities/blob/main/CODE_OF_CONDUCT.md
-[dsi-hug]: https://github.com/DSI-HUG
+[developer]: https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/DEVELOPER.md
+[contributing]: https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/CONTRIBUTING.md
+[codeofconduct]: https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/CODE_OF_CONDUCT.md
+[dsi-hug]: https://github.com/dsi-hug
 [schematics]: https://angular.io/guide/schematics
-[docs-site]: https://DSI-HUG.github.io/ngx-schematics-utilities
+[docs-site]: https://dsi-hug.github.io/ngx-schematics-utilities
