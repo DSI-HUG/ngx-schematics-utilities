@@ -21,8 +21,14 @@ body {
     width: 100% !important;
     flex-shrink: unset !important;
 }
+.aa-DetachedSearchButtonQuery {
+    display: none !important;
+}
 .aa-DetachedSearchButtonPlaceholder {
     padding: 0 12px 0 6px !important;
+}
+.aa-DetachedSearchButtonPlaceholder[hidden] {
+    display: block !important;
 }
 @media (max-width: 768px) {
     .aa-DetachedSearchButtonPlaceholder {
