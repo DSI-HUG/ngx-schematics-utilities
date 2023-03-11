@@ -5,7 +5,6 @@
  */
 
 import colors from '@colors/colors/safe.js';
-import { spawn } from 'child_process';
 import { watch as chokidarWatch } from 'chokidar';
 import cpy from 'cpy';
 import crossSpawn from 'cross-spawn';
@@ -15,7 +14,7 @@ import { fileURLToPath } from 'url';
 
 const { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } = fxExtra;
 const { green, magenta } = colors;
-const { sync: spawnSync } = crossSpawn;
+const { sync: spawnSync, spawn } = crossSpawn;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const NG_PROJECT_LIBRARY_NAME = 'lib';
