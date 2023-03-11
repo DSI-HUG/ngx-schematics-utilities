@@ -19,7 +19,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     protected _project?: ProjectDefinition;
 
     constructor(
-        protected chainableType: ChainableType,
+        protected override chainableType: ChainableType,
         protected projectName: string
     ) {
         super(chainableType);

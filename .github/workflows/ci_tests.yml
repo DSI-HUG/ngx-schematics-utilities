@@ -62,10 +62,13 @@ jobs:
         run: npm clean-install --engine-strict
 
       - name: Lint
+        working-directory: projects/lib
         run: npm run lint
 
       - name: Test
+        working-directory: projects/lib
         run: npm run test
 
       - name: Build
+        working-directory: projects/lib
         run: npm run build

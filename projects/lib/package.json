@@ -1,0 +1,64 @@
+{
+    "name": "@hug/ngx-schematics-utilities",
+    "version": "6.4.0",
+    "description": "Useful utilities for Angular Schematics",
+    "homepage": "https://github.com/dsi-hug/ngx-schematics-utilities",
+    "license": "GPL-3.0-only",
+    "author": "HUG - Hôpitaux Universitaires Genève",
+    "contributors": [
+        "badisi (https://github.com/badisi)"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dsi-hug/ngx-schematics-utilities.git"
+    },
+    "keywords": [
+        "schematics",
+        "utilities",
+        "utils",
+        "tools",
+        "typescript",
+        "helpers",
+        "devkit",
+        "angular",
+        "Angular CLI",
+        "Angular DevKit",
+        "ast",
+        "sdk",
+        "blueprints",
+        "scaffolding",
+        "template",
+        "tooling",
+        "code generation"
+    ],
+    "main": "src/index.js",
+    "types": "src/index.d.ts",
+    "exports": {
+        ".": {
+            "require": "./src/index.js"
+        }
+    },
+    "scripts": {
+        "start": "node ./make.mjs watch",
+        "lint": "node ./make.mjs lint",
+        "test": "node ./make.mjs test-lib",
+        "test:ci": "node ./make.mjs test-ci",
+        "build": "node ./make.mjs build",
+        "build:global": "node ./make.mjs build-global"
+    },
+    "peerDependencies": {
+        "@angular-devkit/core": ">= 14",
+        "@angular-devkit/schematics": ">= 14",
+        "@angular/cli": ">= 14",
+        "@schematics/angular": ">= 14"
+    },
+    "dependencies": {
+        "@badisi/latest-version": "^6.1.0",
+        "@colors/colors": "^1.5.0",
+        "ora": "5.4.1",
+        "semver": "^7.3.8"
+    },
+    "engines": {
+        "node": ">= 15"
+    }
+}

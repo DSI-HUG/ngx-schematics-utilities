@@ -1,4 +1,4 @@
-import { getDataFromUrl, getJsonFromUrl } from '@hug/ngx-schematics-utilities';
+import { getDataFromUrl, getJsonFromUrl } from '../src';
 
 describe('request', () => {
     it('helper: getDataFromUrl - existing url', async () => {

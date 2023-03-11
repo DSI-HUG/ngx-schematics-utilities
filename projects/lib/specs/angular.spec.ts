@@ -1,6 +1,9 @@
 import { tags } from '@angular-devkit/core';
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { JSONFile } from '@schematics/angular/utility/json-file';
+import { join } from 'path';
+
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
     addProviderToBootstrapApplication,
@@ -8,10 +11,7 @@ import {
     getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset, removeAngularJsonScript,
     removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
     removeProviderFromBootstrapApplication, removeProviderFromNgModule
-} from '@hug/ngx-schematics-utilities';
-import { JSONFile } from '@schematics/angular/utility/json-file';
-import { join } from 'path';
-
+} from '../src';
 import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 

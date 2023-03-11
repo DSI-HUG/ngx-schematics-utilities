@@ -1,46 +1,30 @@
 {
     "extends": "./tsconfig.hug.json",
+    "compileOnSave": false,
     "compilerOptions": {
-        "baseUrl": ".",
+        "baseUrl": "./",
         "outDir": "./dist/src",
-        "lib": [
-            "es2020",
-            "dom"
-        ],
-        "declaration": true,
         "esModuleInterop": true,
-        "module": "commonjs",
-        "moduleResolution": "node",
         "noEmitOnError": true,
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
-        "sourceMap": false,
         "forceConsistentCasingInFileNames": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "strict": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "target": "es2019",
         "types": [
             "jasmine",
             "node"
         ],
-        "paths": {
-            "@hug/ngx-schematics-utilities": [
-                "projects/lib"
-            ],
-            "@hug/ngx-schematics-utilities/*": [
-                "projects/lib/*"
-            ]
-        }
-    },
-    "include": [
-        "projects/lib/**/*"
-    ]
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "target": "ES2019",
+        "module": "commonjs",
+        "useDefineForClassFields": false,
+        "lib": [
+            "ES2020",
+            "dom"
+        ]
+    }
 }

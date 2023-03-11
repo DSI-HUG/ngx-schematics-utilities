@@ -1,6 +1,6 @@
 import { MergeStrategy, SchematicContext } from '@angular-devkit/schematics';
-import { getSchematicSchemaOptions } from '@hug/ngx-schematics-utilities';
 
+import { getSchematicSchemaOptions } from '../src';
 import { runner } from './common.spec';
 
 const context = ({

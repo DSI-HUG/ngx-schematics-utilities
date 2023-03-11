@@ -1,78 +1,33 @@
 {
-    "name": "@hug/ngx-schematics-utilities",
-    "version": "6.4.0",
-    "description": "Useful utilities for Angular Schematics",
-    "homepage": "https://github.com/DSI-HUG/ngx-schematics-utilities",
-    "license": "GPL-3.0-only",
-    "author": "HUG - Hôpitaux Universitaires Genève",
-    "contributors": [
-        "badisi (https://github.com/badisi)"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/DSI-HUG/ngx-schematics-utilities.git"
-    },
-    "keywords": [
-        "schematics",
-        "utilities",
-        "utils",
-        "tools",
-        "typescript",
-        "helpers",
-        "devkit",
-        "angular",
-        "Angular CLI",
-        "Angular DevKit",
-        "ast",
-        "sdk",
-        "blueprints",
-        "scaffolding",
-        "template",
-        "tooling",
-        "code generation"
-    ],
-    "main": "src/index.js",
-    "types": "src/index.d.ts",
-    "exports": {
-        ".": {
-            "require": "./src/index.js"
-        }
-    },
+    "private": true,
     "scripts": {
         "ncu": "npx ncu -i --format=group --packageFile '{,projects/**/}package.json'",
-        "lint": "eslint projects/lib projects/specs",
-        "test": "ts-node --project=projects/specs/tsconfig.json --require=tsconfig-paths/register ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
-        "build": "node ./build.mjs"
+        "prepare": "husky install"
     },
-    "engines": {
-        "node": ">= 15"
-    },
-    "peerDependencies": {
-        "@angular-devkit/core": ">= 14",
-        "@angular-devkit/schematics": ">= 14",
-        "@angular/cli": ">= 14",
-        "@schematics/angular": ">= 14"
-    },
-    "dependencies": {
-        "@badisi/latest-version": "^6.1.0",
-        "@colors/colors": "^1.5.0",
-        "ora": "5.4.1",
-        "semver": "^7.3.8"
-    },
+    "workspaces": [
+        "projects/lib"
+    ],
     "devDependencies": {
         "@angular-devkit/core": "^15.1.6",
         "@angular-devkit/schematics": "^15.1.6",
         "@angular/cli": "^15.1.6",
-        "@schematics/angular": "^15.1.6",
+        "@colors/colors": "^1.5.0",
+        "@commitlint/cli": "^17.4.4",
+        "@commitlint/config-conventional": "^17.4.4",
         "@hug/eslint-config": "^11.0.0",
+        "@schematics/angular": "^15.1.6",
         "@types/jasmine": "^4.3.1",
         "@types/node": "^18.14.0",
         "@types/semver": "^7.3.13",
+        "chokidar": "^3.5.3",
         "cpy": "^9.0.1",
+        "cross-spawn": "^7.0.3",
+        "fs-extra": "^11.1.0",
+        "husky": "^8.0.3",
         "jasmine": "^4.5.0",
         "jasmine-spec-reporter": "^7.0.0",
-        "ts-node": "^10.9.1",
-        "tsconfig-paths": "^4.1.2",
+        "lint-staged": "^13.2.0",
+        "ts-node-dev": "^2.0.0",
         "typescript": "^4.9.5"
     }
 }

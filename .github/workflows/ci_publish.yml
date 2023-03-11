@@ -45,6 +45,7 @@ jobs:
         run: npm clean-install --engine-strict
 
       - name: Build
+        working-directory: projects/lib
         run: npm run build
 
       - name: Publish

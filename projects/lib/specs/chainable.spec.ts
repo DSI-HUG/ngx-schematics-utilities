@@ -1,10 +1,10 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { join } from 'path';
+
 import {
     application, ChainableContext, ChainableProjectContext, createOrUpdateFile, deleteFiles, getProjectFromWorkspace,
     library, ProjectDefinition, workspace
-} from '@hug/ngx-schematics-utilities';
-import { join } from 'path';
-
+} from '../src';
 import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 

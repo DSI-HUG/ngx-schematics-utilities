@@ -1,8 +1,8 @@
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import { commitChanges, getProjectFromWorkspace, getTsSourceFile } from '@hug/ngx-schematics-utilities';
-import { addProviderToStandaloneApplication, removeProviderFromStandaloneApplication } from '@hug/ngx-schematics-utilities/ast-utils';
 import { sep } from 'path';
 
+import { commitChanges, getProjectFromWorkspace, getTsSourceFile } from '../src';
+import { addProviderToStandaloneApplication, removeProviderFromStandaloneApplication } from '../src/ast-utils';
 import { appTest1, getCleanAppTree } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 

@@ -30,9 +30,9 @@ export default (options: any): Rule =>
 
 ### `deleteFiles`
 
-Deletes a collection of files.
+Deletes a collection of files or folders
 
-```ts {6-9}
+```ts {6-9,12}
 import { deleteFiles, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
@@ -41,7 +41,10 @@ export default (options: any): Rule =>
     deleteFiles([
       'src/assets/.gitkeep',
       'src/app/app.component.spec.ts'
-    ])
+    ]),
+
+    // Folder deletion needs to be forced
+    deleteFiles(['src'], true)
   ]);
 ```
 

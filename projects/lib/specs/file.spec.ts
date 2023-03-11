@@ -1,12 +1,12 @@
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import {
-    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace,
-    modifyImportInFile, modifyJsonFile, removeFromJsonFile, removeImportFromFile, replaceInFile, schematic
-} from '@hug/ngx-schematics-utilities';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
+import {
+    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace,
+    modifyImportInFile, modifyJsonFile, removeFromJsonFile, removeImportFromFile, replaceInFile, schematic
+} from '../src';
 import { appTest1, getCleanAppTree, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
@@ -27,14 +27,14 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: deployFiles - missing template options', async () => {
-            const options = { source: '../files' };
+            const options = { source: './files' };
             /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
             const test$ = runner.runSchematic('deployFilesSchematic', options, tree);
             await expectAsync(test$).toBeRejectedWithError('myParam is not defined');
         });
 
         it('rule: deployFiles - with template options', async () => {
-            const options = { templateOptions: { myParam: 'MyParam' }, source: '../files' };
+            const options = { templateOptions: { myParam: 'MyParam' }, source: './files' };
             /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
             await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.exists('./test-file')).toBeTruthy();
@@ -52,7 +52,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
         });
 
         it('rule: deployFiles - to another destination', async () => {
-            const options = { templateOptions: { myParam: 'MyParam' }, destination: './otherFolder', source: '../files' };
+            const options = { templateOptions: { myParam: 'MyParam' }, destination: './otherFolder', source: './files' };
             /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
             await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.exists('./test-file')).toBeFalsy();
@@ -68,7 +68,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             expect(tree.readContent(filePath).replace('\r\n', '\n')).not.toEqual('MyParam\n');
 
             /** use `runner.runSchematic` as `runner.callRule` isn't working in this case */
-            const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder', source: '../files' };
+            const options = { templateOptions: { myParam: 'MyParam' }, destination: './test-folder', source: './files' };
             await runner.runSchematic('deployFilesSchematic', options, tree);
             expect(tree.readContent(filePath).replace('\r\n', '\n')).toEqual('MyParam\n');
             expect(tree.files.length).toEqual(nbFiles + 1);

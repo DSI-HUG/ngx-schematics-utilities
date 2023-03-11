@@ -1,11 +1,11 @@
 import { Rule } from '@angular-devkit/schematics';
 import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { JSONFile } from '@schematics/angular/utility/json-file';
+
 import {
     addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, PackageItem,
     removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
-} from '@hug/ngx-schematics-utilities';
-import { JSONFile } from '@schematics/angular/utility/json-file';
-
+} from '../src';
 import { getCleanAppTree, runner } from './common.spec';
 
 // ---- HELPER(s) ----

@@ -7,7 +7,7 @@
         ]
     },
     "include": [
-        "projects/lib/**/*",
-        "projects/specs/**/*"
+        "**/*.ts",
+        "**/*.js"
     ]
 }

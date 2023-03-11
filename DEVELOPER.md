@@ -48,7 +48,7 @@ npm run start --prefix=projects/docs
 
 This project comes with automatic continuous delivery (CD) using *GitHub Actions*.
 
-1. Bump the library version in `./package.json`
+1. Bump the library version in `./projects/lib/package.json`
 2. Push the changes
 3. Create a new: [GitHub release](https://github.com/dsi-hug/ngx-schematics-utilities/releases/new)
 4. Watch the results in: [Actions](https://github.com/dsi-hug/ngx-schematics-utilities/actions)
