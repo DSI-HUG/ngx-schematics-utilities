@@ -38,7 +38,7 @@ const config = {
                     routeBasePath: '/',
                     breadcrumbs: false,
                     sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl: 'https://github.com/DSI-HUG/ngx-schematics-utilities/edit/main/docs/'
+                    editUrl: 'https://github.com/dsi-hug/ngx-schematics-utilities/edit/main/docs/'
                 },
                 theme: {
                     customCss: [
@@ -61,7 +61,7 @@ const config = {
                     src: 'img/logo.svg'
                 },
                 items: [{
-                    href: 'https://github.com/DSI-HUG/ngx-schematics-utilities',
+                    href: 'https://github.com/dsi-hug/ngx-schematics-utilities',
                     label: ' ',
                     position: 'right',
                     className: 'header-github-link',
@@ -89,7 +89,7 @@ const config = {
                     title: 'More',
                     items: [{
                         label: 'GitHub',
-                        href: 'https://github.com/DSI-HUG/ngx-schematics-utilities'
+                        href: 'https://github.com/dsi-hug/ngx-schematics-utilities'
                     }]
                 }],
                 copyright: `Copyright © ${new Date().getFullYear()} HUG`
