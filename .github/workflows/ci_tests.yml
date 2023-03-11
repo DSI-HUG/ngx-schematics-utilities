@@ -67,7 +67,7 @@ jobs:
 
       - name: Test
         working-directory: projects/lib
-        run: npm run test
+        run: npm run test:ci
 
       - name: Build
         working-directory: projects/lib
