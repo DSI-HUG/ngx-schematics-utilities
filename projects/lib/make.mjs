@@ -158,7 +158,7 @@ const buildLib = async () => {
 
 const test = (tsconfigPath, ci = false) => {
     if (existsSync(tsconfigPath)) {
-        const args = [`--project=${tsconfigPath}`, '../../node_modules/.bin/jasmine', '--config=jasmine.json'];
+        const args = [`--project=${tsconfigPath}`, '../../node_modules/jasmine/bin/jasmine.js', '--config=jasmine.json'];
         if (!ci) {
             args.unshift('--respawn', '--transpile-only');
         }
