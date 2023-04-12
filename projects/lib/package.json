@@ -1,6 +1,6 @@
 {
     "name": "@hug/ngx-schematics-utilities",
-    "version": "6.5.1",
+    "version": "6.5.2",
     "description": "Useful utilities for Angular Schematics",
     "homepage": "https://github.com/dsi-hug/ngx-schematics-utilities",
     "license": "GPL-3.0-only",
