@@ -56,11 +56,13 @@ const logHeader = str => {
     console.log(green(`${'-'.repeat(78)}`));
 };
 
-const spawnCmd = (cmd, args, opts, verbose = true) => {
-    spawnSync(cmd, args, {
-        stdio: verbose ? 'inherit' : 'pipe',
-        ...opts
+const spawnCmd = (cmd, args, verbose = true, exitOnError = true) => {
+    const ret = spawnSync(cmd, args, {
+        stdio: verbose ? 'inherit' : 'pipe'
     });
+    if (exitOnError && (ret.status !== 0)) {
+        process.exit(1);
+    }
 };
 
 const cleanDir = (path, removeFolder = false) => new Promise(resolve => {
@@ -124,28 +126,24 @@ const sanitizePackageJson = async () => {
     writeFileSync(`${DIST_PATH}/package.json`, JSON.stringify(pkgJson, null, 4), { encoding: 'utf8' });
 };
 
-const buildSchematics = async (verbose = true) => {
+const buildSchematics = async (exitOnError = true) => {
     if (existsSync(SCHEMATICS_SRC_PATH)) {
         if (existsSync('tsconfig.schematics.json')) {
-            if (verbose) {
-                log('> Building schematics..');
-            }
-            spawnCmd('tsc', ['-p', './tsconfig.schematics.json']);
+            log('> Building schematics..');
+            spawnCmd('tsc', ['-p', './tsconfig.schematics.json'], true, exitOnError);
         }
-        if (verbose) {
-            log('> Copying schematics assets..');
-        }
+        log('> Copying schematics assets..');
         await copySchematicsAssets();
     }
 };
 
-const buildLib = async () => {
+const buildLib = async (exitOnError = true) => {
     if (existsSync(LIBRARY_SRC_PATH)) {
         log('> Building library..');
         if (LIBRARY_TYPE === 'ng') {
-            spawnCmd('ng', ['build', NG_PROJECT_LIBRARY_NAME, '--configuration', 'production']);
+            spawnCmd('ng', ['build', NG_PROJECT_LIBRARY_NAME, '--configuration', 'production'], true, exitOnError);
         } else {
-            spawnCmd('tsc', ['-p', './tsconfig.lib.prod.json']);
+            spawnCmd('tsc', ['-p', './tsconfig.lib.prod.json'], true, exitOnError);
         }
     }
 
@@ -181,7 +179,7 @@ const testLib = (ci = false) => {
             }
             spawn('ng', ligArgs, { stdio: 'inherit' });
         } else {
-            test('tsconfig.spec.json', ci);
+            test('tsconfig.lib.spec.json', ci);
         }
     }
 };
@@ -191,7 +189,7 @@ const lint = () => {
     if (existsSync(SCHEMATICS_SRC_PATH)) {
         lintArgs.unshift(`./{${LIBRARY_SRC},${SCHEMATICS_SRC}}/**/*.{ts,html}`);
     } else {
-        lintArgs.unshift(`./{${LIBRARY_SRC},specs}/**/*.{ts,html}`);
+        lintArgs.unshift(`./${LIBRARY_SRC}/**/*.{ts,html}`);
     }
     spawn('eslint', lintArgs, { stdio: 'inherit' });
 };
@@ -200,8 +198,8 @@ const watch = async () => {
     const rebuild = async () => {
         logHeader('Rebuilding...');
         await cleanDir(DIST_PATH);
-        await buildLib();
-        await buildSchematics();
+        await buildLib(false);
+        await buildSchematics(false);
         log(`> ${green('Done!')}`);
     };
 
