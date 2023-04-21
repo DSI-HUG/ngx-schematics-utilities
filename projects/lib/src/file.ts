@@ -53,6 +53,19 @@ export const deleteFiles = (paths: string[], force = false): Rule =>
     };
 
 /**
+ * Rename a file
+ * @param {string} from The path of the file to rename.
+ * @param {string} to The new path of the file to rename.
+ * @returns {Rule}
+ */
+export const renameFile = (from: string, to: string): Rule =>
+    (tree: Tree): void => {
+        if (tree.exists(from)) {
+            tree.rename(from, to);
+        }
+    };
+
+/**
  * Creates or updates a file.
  * @param {string} filePath The path of the file to create or modify.
  * @param {unknown} data The data to be written to the file.

@@ -4,8 +4,8 @@ import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
 import {
-    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace,
-    modifyImportInFile, modifyJsonFile, removeFromJsonFile, removeImportFromFile, replaceInFile, schematic
+    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace, modifyImportInFile,
+    modifyJsonFile, removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile, schematic
 } from '../src';
 import { appTest1, getCleanAppTree, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -101,6 +101,62 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             await expectAsync(test$).toBeResolved();
             files.forEach(file => expect(tree.exists(file)).toBeFalsy());
             expect(tree.files.length).toEqual(nbFiles);
+        });
+
+        it('rule: renameFile - with existing files', async () => {
+            const project = await getProjectFromWorkspace(tree, appTest1.name);
+            const files = [
+                { from: './README.md', to: './README2' },
+                { from: 'package.json', to: 'package2.json' },
+                { from: project.pathFromSourceRoot('index.html'), to: '/test/index2.html' }
+            ];
+            // Before
+            files.forEach(file => {
+                expect(tree.exists(file.from)).toBeTruthy();
+                expect(tree.exists(file.to)).toBeFalsy();
+            });
+            expect(tree.files.length).toEqual(nbFiles);
+
+            // After
+            // eslint-disable-next-line no-loops/no-loops
+            for (const file of files) {
+                const rule = renameFile(file.from, file.to);
+                const test$ = runner.callRule(rule, tree).toPromise();
+                await expectAsync(test$).toBeResolved();
+                expect(tree.exists(file.from)).toBeFalsy();
+                expect(tree.exists(file.to)).toBeTruthy();
+            }
+            expect(tree.files.length).toEqual(nbFiles);
+        });
+
+        it('rule: renameFile - with non existing file', async () => {
+            const file = { from: 'old.file', to: 'new.file' };
+
+            // Before
+            expect(tree.exists(file.from)).toBeFalsy();
+            expect(tree.exists(file.to)).toBeFalsy();
+            expect(tree.files.length).toEqual(nbFiles);
+
+            // After
+            const rule = renameFile(file.from, file.to);
+            const test$ = runner.callRule(rule, tree).toPromise();
+            await expectAsync(test$).toBeResolved();
+            expect(tree.exists(file.from)).toBeFalsy();
+            expect(tree.exists(file.to)).toBeFalsy();
+            expect(tree.files.length).toEqual(nbFiles);
+        });
+
+        it('rule: renameFile - with existing destination', async () => {
+            const file = { from: 'angular.json', to: 'package.json' };
+
+            // Before
+            expect(tree.exists(file.from)).toBeTruthy();
+            expect(tree.exists(file.to)).toBeTruthy();
+
+            // After
+            const rule = renameFile(file.from, file.to);
+            const test$ = runner.callRule(rule, tree).toPromise();
+            await expectAsync(test$).toBeRejectedWithError('Path "/package.json" already exist.');
         });
 
         it('rule: createOrUpdateFile - create file', async () => {

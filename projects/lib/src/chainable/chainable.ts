@@ -7,7 +7,7 @@ import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { ensureIsAngularWorkspace, isAngularVersion } from '../angular';
 import {
     addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, modifyImportInFile, modifyJsonFile,
-    removeFromJsonFile, removeImportFromFile, replaceInFile
+    removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile
 } from '../file';
 import { log, logAction, logError, logInfo, logWarning, spawn } from '../rules';
 
@@ -56,6 +56,14 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
      */
     public deleteFiles(files: string[], force = false): this {
         return this.addRuleToChain(() => deleteFiles(files.map(file => this.pathFromRoot(file)), force));
+    }
+
+    /**
+     * @see {@link renameFile}
+     * @returns {this}
+     */
+    public renameFile(from: string, to: string): this {
+        return this.addRuleToChain(() => renameFile(this.pathFromRoot(from), this.pathFromRoot(to)));
     }
 
     /**

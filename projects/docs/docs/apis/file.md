@@ -48,6 +48,20 @@ export default (options: any): Rule =>
   ]);
 ```
 
+### `renameFile`
+
+Rename a file
+
+```ts {6}
+import { renameFile, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    renameFile('src/old/a.ts', 'src/new/b.ts')
+  ]);
+```
+
 ### `createOrUpdateFile`
 
 Creates or updates a file.
