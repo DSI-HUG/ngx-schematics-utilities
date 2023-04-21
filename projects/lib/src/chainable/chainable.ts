@@ -54,8 +54,8 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
      * @see {@link deleteFiles}
      * @returns {this}
      */
-    public deleteFiles(files: string[]): this {
-        return this.addRuleToChain(() => deleteFiles(files.map(file => this.pathFromRoot(file))));
+    public deleteFiles(files: string[], force = false): this {
+        return this.addRuleToChain(() => deleteFiles(files.map(file => this.pathFromRoot(file)), force));
     }
 
     /**
