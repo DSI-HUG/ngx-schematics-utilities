@@ -33,10 +33,11 @@ describe('schematics', () => {
     });
 
     it('helper: getSchematicSchemaOptions - existing external', async () => {
-        const options = await getSchematicSchemaOptions(context, 'sentry', '@hug/ngx-sentry', true);
-        expect(options).toHaveSize(2);
-        expect(options[0].name).toEqual('projectName');
-        expect(options[1].name).toEqual('sentryDsnUrl');
+        const options = await getSchematicSchemaOptions(context, 'ng-add', '@hug/ngx-sentry', true);
+        expect(options).toHaveSize(3);
+        expect(options[0].name).toEqual('project');
+        expect(options[1].name).toEqual('projectName');
+        expect(options[2].name).toEqual('dsnUrl');
     });
 
     it('helper: getSchematicSchemaOptions - existing external but not compatible', async () => {
