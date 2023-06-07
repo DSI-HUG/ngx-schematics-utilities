@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@cmfcmf/docusaurus-search-local": "^1.1.0",
-        "@docusaurus/core": "2.4.0",
-        "@docusaurus/preset-classic": "2.4.0"
+        "@docusaurus/core": "2.4.1",
+        "@docusaurus/preset-classic": "2.4.1"
     },
     "browserslist": {
         "production": [
