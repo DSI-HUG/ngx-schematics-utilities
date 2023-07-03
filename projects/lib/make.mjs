@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 
 const { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } = fxExtra;
 const { green, magenta } = colors;
-const { sync: spawnSync, spawn } = crossSpawn;
+const { sync: spawnSync } = crossSpawn;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const NG_PROJECT_LIBRARY_NAME = 'lib';
@@ -160,7 +160,7 @@ const test = (tsconfigPath, ci = false) => {
         if (!ci) {
             args.unshift('--respawn', '--transpile-only');
         }
-        spawn('ts-node-dev', args, { stdio: 'inherit' });
+        spawnCmd('ts-node-dev', args);
     }
 };
 
@@ -177,7 +177,7 @@ const testLib = (ci = false) => {
             if (ci) {
                 ligArgs.push('--configuration', 'ci');
             }
-            spawn('ng', ligArgs, { stdio: 'inherit' });
+            spawnCmd('ng', ligArgs);
         } else {
             test('tsconfig.lib.spec.json', ci);
         }
@@ -191,7 +191,7 @@ const lint = () => {
     } else {
         lintArgs.unshift(`./${LIBRARY_SRC}/**/*.{ts,html}`);
     }
-    spawn('eslint', lintArgs, { stdio: 'inherit' });
+    spawnCmd('eslint', lintArgs);
 };
 
 const watch = async () => {
