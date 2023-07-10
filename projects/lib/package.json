@@ -32,11 +32,14 @@
         "code generation"
     ],
     "main": "src/index.js",
-    "types": "src/index.d.ts",
+    "typings": "src/index.d.ts",
     "exports": {
         ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.js",
             "require": "./src/index.js"
-        }
+        },
+        "./package.json": "./package.json"
     },
     "scripts": {
         "start": "node ./make.mjs watch",
@@ -53,10 +56,10 @@
         "@schematics/angular": ">= 14"
     },
     "dependencies": {
-        "@badisi/latest-version": "^6.1.7",
-        "@colors/colors": "^1.5.0",
+        "@badisi/latest-version": "^6.1.8",
+        "@colors/colors": "^1.6.0",
         "ora": "5.4.1",
-        "semver": "^7.5.3"
+        "semver": "^7.5.4"
     },
     "engines": {
         "node": ">= 15"
