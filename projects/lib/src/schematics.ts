@@ -1,6 +1,6 @@
 import { Option, parseJsonSchemaToOptions } from '@angular/cli/src/command-builder/utilities/json-schema';
 import { JsonObject } from '@angular-devkit/core';
-import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema';
+import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema/index';
 import { SchematicContext } from '@angular-devkit/schematics';
 import { NodeWorkflow } from '@angular-devkit/schematics/tools';
 import { dirname as pathDirname, join as pathJoin } from 'path';
