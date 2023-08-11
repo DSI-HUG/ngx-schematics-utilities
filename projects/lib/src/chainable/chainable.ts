@@ -220,9 +220,9 @@ export class Chainable<T extends ChainableContext = ChainableContext> {
 
     protected getContext(): T {
         return {
-            tree: this._tree as Tree,
-            schematicContext: this._schematicContext as SchematicContext,
-            workspace: this._workspace as WorkspaceDefinition
+            tree: this._tree!,
+            schematicContext: this._schematicContext!,
+            workspace: this._workspace!
         } as T;
     }
 

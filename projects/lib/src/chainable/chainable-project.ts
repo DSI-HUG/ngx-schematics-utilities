@@ -183,7 +183,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     protected override getContext(): ChainableProjectContext {
         return {
             ...super.getContext(),
-            project: this._project as ProjectDefinition
+            project: this._project!
         };
     }
 
