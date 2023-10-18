@@ -1,6 +1,7 @@
 name: Deploy docs
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,7 +10,6 @@ on:
     paths:
       - '.github/workflows/ci_docs.yml'
       - 'projects/docs/**'
-    workflow_dispatch:
 
 concurrency:
   group: deploy-docs-group-${{ github.ref }}
