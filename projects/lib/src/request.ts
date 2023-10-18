@@ -17,7 +17,6 @@ export const getDataFromUrl = async (url: string | URL): Promise<Buffer> =>
                 const rawData: Uint8Array[] = [];
                 res.on('data', (chunk: Uint8Array) => rawData.push(chunk));
                 res.once('end', () => {
-                    res.setTimeout(0);
                     res.removeAllListeners();
                     try {
                         return resolve(Buffer.concat(rawData));
