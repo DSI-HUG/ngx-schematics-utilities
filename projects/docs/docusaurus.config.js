@@ -92,7 +92,7 @@ const config = {
                         href: 'https://github.com/dsi-hug/ngx-schematics-utilities'
                     }]
                 }],
-                copyright: `Copyright © ${new Date().getFullYear()} HUG`
+                copyright: 'Copyright © 2021 HUG'
             },
             prism: {
                 theme: lightCodeTheme,

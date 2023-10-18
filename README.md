@@ -101,7 +101,7 @@ Please read and follow the [Code of Conduct][codeofconduct], and help us keep th
 
 ## Credits
 
-Copyright (C) 2023 [HUG - Hôpitaux Universitaires Genève][dsi-hug]
+Copyright (C) 2021 [HUG - Hôpitaux Universitaires Genève][dsi-hug]
 
 [![love@hug](https://img.shields.io/badge/@hug-%E2%9D%A4%EF%B8%8Flove-magenta)][dsi-hug]
 
