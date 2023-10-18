@@ -14,26 +14,20 @@
 
 <p align="center">
     <a href="https://www.npmjs.com/package/@hug/ngx-schematics-utilities">
-        <img src="https://img.shields.io/npm/v/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm version" />
-    </a>
+        <img src="https://img.shields.io/npm/v/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm version" /></a>
     <a href="https://npmcharts.com/compare/@hug/ngx-schematics-utilities?minimal=true">
-        <img src="https://img.shields.io/npm/dw/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm donwloads" />
-    </a>
+        <img src="https://img.shields.io/npm/dw/@hug/ngx-schematics-utilities.svg?color=blue&logo=npm" alt="npm donwloads" /></a>
     <a href="https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/LICENSE">
-        <img src="https://img.shields.io/badge/license-GPLv3-ff69b4.svg" alt="license GPLv3" />
-    </a>
+        <img src="https://img.shields.io/badge/license-GPLv3-ff69b4.svg" alt="license GPLv3" /></a>
     <a href="https://dsi-hug.github.io/ngx-schematics-utilities">
-        <img src="https://img.shields.io/badge/docs-site-blue" alt="docs-site" />
-    </a>
+        <img src="https://img.shields.io/badge/docs-site-blue" alt="docs-site" /></a>
 </p>
 
 <p align="center">
     <a href="https://github.com/dsi-hug/ngx-schematics-utilities/actions/workflows/ci_tests.yml">
-        <img src="https://github.com/dsi-hug/ngx-schematics-utilities/actions/workflows/ci_tests.yml/badge.svg" alt="build status" />
-    </a>
+        <img src="https://github.com/dsi-hug/ngx-schematics-utilities/actions/workflows/ci_tests.yml/badge.svg" alt="build status" /></a>
     <a href="https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/CONTRIBUTING.md#-submitting-a-pull-request-pr">
-        <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" />
-    </a>
+        <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" /></a>
 </p>
 
 <hr/>
