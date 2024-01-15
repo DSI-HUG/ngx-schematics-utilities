@@ -4,7 +4,7 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace jasmine {
         interface Matchers<T> {
-            toContainTimes: (expected: T | any, times: number) => boolean;
+            toContainTimes: (expected: T | Record<any, any>, times: number) => boolean;
         }
     }
 }

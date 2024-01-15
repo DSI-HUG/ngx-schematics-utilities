@@ -7,6 +7,8 @@ import {
 } from '@schematics/angular/utility/ast-utils';
 import { NoopChange } from '@schematics/angular/utility/change';
 import { JSONFile } from '@schematics/angular/utility/json-file';
+import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
+import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { ProjectType } from '@schematics/angular/utility/workspace-models';
 import { join } from 'path';
@@ -310,7 +312,6 @@ export const addRouteDeclarationToNgModule = (filePath: string, routeLiteral: st
  */
 export const addProviderToBootstrapApplication = (filePath: string, providerName: string, importPath: string, useImportProvidersFrom = false, indent = 2): Rule =>
     (tree: Tree): void => {
-        let sourceFile = getTsSourceFile(tree, filePath);
         let realProviderName = providerName;
 
         // Fix: manage provider import with arguments (ex: provideRouter(ROUTES))
@@ -319,18 +320,20 @@ export const addProviderToBootstrapApplication = (filePath: string, providerName
             realProviderName = matches[1].trim();
 
             // Remove any entry first
-            commitChanges(tree, filePath, [
-                ...removeProviderFromStandaloneApplication(sourceFile, filePath, realProviderName)
-            ]);
-
-            // Refresh source
-            sourceFile = getTsSourceFile(tree, filePath);
+            removeProviderFromStandaloneApplication(tree, filePath, realProviderName);
         }
 
-        commitChanges(tree, filePath, [
-            insertImport(sourceFile, filePath, realProviderName, importPath),
-            (useImportProvidersFrom) ? insertImport(sourceFile, filePath, 'importsProvidersFrom', '@angular/core') : new NoopChange(),
-            addProviderToStandaloneApplication(sourceFile, filePath, providerName, useImportProvidersFrom, indent)
+        // Add provider
+        addProviderToStandaloneApplication(tree, filePath, providerName, useImportProvidersFrom, indent);
+
+        // Manage import(s)
+        const bootstrapApplicationCall = findBootstrapApplicationCall(tree, filePath);
+        const appConfig = findAppConfig(bootstrapApplicationCall, tree, filePath);
+        const filePathToUse = (appConfig) ? appConfig.filePath : filePath;
+        const sourceFile = getTsSourceFile(tree, filePathToUse);
+        commitChanges(tree, filePathToUse, [
+            insertImport(sourceFile, filePathToUse, realProviderName, importPath),
+            (useImportProvidersFrom) ? insertImport(sourceFile, filePathToUse, 'importsProvidersFrom', '@angular/core') : new NoopChange()
         ]);
     };
 
@@ -342,9 +345,7 @@ export const addProviderToBootstrapApplication = (filePath: string, providerName
  */
 export const removeProviderFromBootstrapApplication = (filePath: string, providerName: string): Rule =>
     (tree: Tree): void => {
-        const sourceFile = getTsSourceFile(tree, filePath);
-        const changes = removeProviderFromStandaloneApplication(sourceFile, filePath, providerName);
-        commitChanges(tree, filePath, changes);
+        removeProviderFromStandaloneApplication(tree, filePath, providerName);
     };
 
 /**

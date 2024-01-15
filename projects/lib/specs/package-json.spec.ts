@@ -49,33 +49,35 @@ const test = async (
 
 // ---- TEST(s) ----
 
-[false, true].forEach(useWorkspace => {
-    describe(`package-json - (${useWorkspace ? 'using workspace project' : 'using flat project'})`, () => {
-        let tree: UnitTestTree;
+[false, true].forEach(useStandalone => {
+    [false, true].forEach(useWorkspace => {
+        describe(`package-json - (using${useStandalone ? ' standalone' : ''}${useWorkspace ? ' workspace' : ' flat'} project)`, () => {
+            let tree: UnitTestTree;
 
-        beforeEach(async () => {
-            tree = await getCleanAppTree(useWorkspace);
-        });
+            beforeEach(async () => {
+                tree = await getCleanAppTree(useWorkspace, useStandalone);
+            });
 
-        it('rule: add/remove packageJson dependencies', async () => {
-        // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/dep', { name: 'my-dep', version: '1.2.3' }]]) {
-                await test(tree, deps, addPackageJsonDependencies, removePackageJsonDependencies, 'dependencies');
-            }
-        });
+            it('rule: add/remove packageJson dependencies', async () => {
+                // eslint-disable-next-line no-loops/no-loops
+                for (const deps of [['@my/dep', { name: 'my-dep', version: '1.2.3' }]]) {
+                    await test(tree, deps, addPackageJsonDependencies, removePackageJsonDependencies, 'dependencies');
+                }
+            });
 
-        it('rule: add/remove packageJson devDependencies', async () => {
-        // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/dev-dep', { name: 'my-dev-dep', version: '1.2.3' }]]) {
-                await test(tree, deps, addPackageJsonDevDependencies, removePackageJsonDevDependencies, 'devDependencies');
-            }
-        });
+            it('rule: add/remove packageJson devDependencies', async () => {
+                // eslint-disable-next-line no-loops/no-loops
+                for (const deps of [['@my/dev-dep', { name: 'my-dev-dep', version: '1.2.3' }]]) {
+                    await test(tree, deps, addPackageJsonDevDependencies, removePackageJsonDevDependencies, 'devDependencies');
+                }
+            });
 
-        it('rule: add/remove packageJson peerDependencies', async () => {
-        // eslint-disable-next-line no-loops/no-loops
-            for (const deps of [['@my/peer-dep', { name: 'my-peer-dep', version: '1.2.3' }]]) {
-                await test(tree, deps, addPackageJsonPeerDependencies, removePackageJsonPeerDependencies, 'peerDependencies');
-            }
+            it('rule: add/remove packageJson peerDependencies', async () => {
+                // eslint-disable-next-line no-loops/no-loops
+                for (const deps of [['@my/peer-dep', { name: 'my-peer-dep', version: '1.2.3' }]]) {
+                    await test(tree, deps, addPackageJsonPeerDependencies, removePackageJsonPeerDependencies, 'peerDependencies');
+                }
+            });
         });
     });
 });
