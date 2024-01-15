@@ -5,7 +5,7 @@ import {
     application, ChainableContext, ChainableProjectContext, createOrUpdateFile, deleteFiles, getProjectFromWorkspace,
     library, ProjectDefinition, workspace
 } from '../src';
-import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
+import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 [false, true].forEach(useStandalone => {
@@ -22,18 +22,18 @@ import { customMatchers } from './jasmine.matchers';
 
             it('should throw if not an Angular workspace', async () => {
                 tree.delete('angular.json');
-                const test$ = runner.callRule(workspace().toRule(), tree).toPromise();
+                const test$ = callRule(workspace().toRule(), tree);
                 await expectAsync(test$)
                     .toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
             });
 
             it('should throw if not an Angular application', async () => {
-                const test$ = runner.callRule(application(libTest.name).toRule(), tree).toPromise();
+                const test$ = callRule(application(libTest.name).toRule(), tree);
                 await expectAsync(test$).toBeRejectedWithError('Project is not an Angular project.');
             });
 
             it('should throw if not an Angular library', async () => {
-                const test$ = runner.callRule(library(appTest1.name).toRule(), tree).toPromise();
+                const test$ = callRule(library(appTest1.name).toRule(), tree);
                 await expectAsync(test$).toBeRejectedWithError('Project is not an Angular library.');
             });
 
@@ -55,7 +55,7 @@ import { customMatchers } from './jasmine.matchers';
                         expect(context.tree).toBeDefined();
                         expect(context.schematicContext).toBeDefined();
                     }).toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('should get workspace context info', async () => {
@@ -65,7 +65,7 @@ import { customMatchers } from './jasmine.matchers';
                         expect(context.tree).toBeDefined();
                         expect(context.schematicContext).toBeDefined();
                     }).toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('should get default project context info', async () => {
@@ -75,7 +75,7 @@ import { customMatchers } from './jasmine.matchers';
                         expect(join(project?.root)).toEqual(join(appTest1.projectRoot!));
                         expect(join(project.sourceRoot!)).toEqual(join(appTest1.projectRoot ? appTest1.projectRoot : '', 'src'));
                     }).toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             if (useWorkspace) {
@@ -86,7 +86,7 @@ import { customMatchers } from './jasmine.matchers';
                             expect(join(project?.root)).toEqual(join(appTest2.projectRoot!));
                             expect(join(project.sourceRoot!)).toEqual(join(appTest2.projectRoot ? appTest2.projectRoot : '', 'src'));
                         }).toRule();
-                    await runner.callRule(rule, tree).toPromise();
+                    await callRule(rule, tree);
                 });
             }
 
@@ -98,7 +98,7 @@ import { customMatchers } from './jasmine.matchers';
                         expect(project?.sourceRoot).toEqual(`projects/${libTest.name}/src`);
 
                     }).toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('should return a single rule', () => {
@@ -128,7 +128,7 @@ import { customMatchers } from './jasmine.matchers';
                     .deleteFiles(['__SRC__/main.ts'])
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
 
                 expect(tree.exists(fileFromRoot)).toBeFalsy();
             });
@@ -143,7 +143,7 @@ import { customMatchers } from './jasmine.matchers';
                     .deleteFiles(['__SRC__/main.ts'])
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
 
                 expect(tree.exists(fileFromRoot)).toBeFalsy();
             });
@@ -159,7 +159,7 @@ import { customMatchers } from './jasmine.matchers';
                     .rule(({ project }) => createOrUpdateFile(project.pathFromRoot(file), 'hello world'))
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
 
                 expect(tree.exists(fileFromRoot)).toBeTruthy();
             });
@@ -178,7 +178,7 @@ import { customMatchers } from './jasmine.matchers';
                     })
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
 
                 expect(tree.exists(fileFromRoot)).toBeFalsy();
             });
@@ -189,7 +189,7 @@ import { customMatchers } from './jasmine.matchers';
                     //
                     })
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('customRule:async: allow return void', async () => {
@@ -198,7 +198,7 @@ import { customMatchers } from './jasmine.matchers';
                         await Promise.resolve();
                     })
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('projectContext: pathFromProjectRoot', async () => {
@@ -209,7 +209,7 @@ import { customMatchers } from './jasmine.matchers';
                 const rule = application(appTest1.name)
                     .rule(context => expect(context.project.pathFromRoot(sourceFile)).toEqual(fileFromRoot))
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('projectContext: pathFromProjectSourceRoot', async () => {
@@ -220,7 +220,7 @@ import { customMatchers } from './jasmine.matchers';
                 const rule = application(appTest1.name)
                     .rule(context => expect(context.project.pathFromSourceRoot(file)).toEqual(fileFromRoot))
                     .toRule();
-                await runner.callRule(rule, tree).toPromise();
+                await callRule(rule, tree);
             });
 
             it('rule: isAngularVersion', async () => {
@@ -236,7 +236,7 @@ import { customMatchers } from './jasmine.matchers';
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [ngVersion, `>= ${ngVersion}`]) {
                     const rule = application(appTest1.name).isAngularVersion(range, spyObject.callback).toRule();
-                    await runner.callRule(rule, tree).toPromise();
+                    await callRule(rule, tree);
                     expect(spyObject.callback).toHaveBeenCalled();
                 }
 
@@ -245,7 +245,7 @@ import { customMatchers } from './jasmine.matchers';
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [`> ${ngVersion}`, `< ${ngVersion}`]) {
                     const rule = application(appTest1.name).isAngularVersion(range, spyObject.callback).toRule();
-                    await runner.callRule(rule, tree).toPromise();
+                    await callRule(rule, tree);
                     expect(spyObject.callback).not.toHaveBeenCalled();
                 }
             });

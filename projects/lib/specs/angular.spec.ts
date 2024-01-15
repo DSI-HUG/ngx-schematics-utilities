@@ -11,7 +11,7 @@ import {
     removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
     removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../src';
-import { appTest1, appTest2, getCleanAppTree, libTest, runner } from './common.spec';
+import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 // --- HELPER(s) ---
@@ -46,14 +46,14 @@ const expectRemoveFromNgModule = async (
     expect(items.some(item => item.includes(schematicOptions.classifiedName))).toBeTrue();
 
     // After
-    await runner.callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree).toPromise();
+    await callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree);
     const newFileContent = tree.readContent(schematicOptions.filePath);
     const newItems = getNgModule(ngModuleProperty, newFileContent);
     // use `includes` in case of `forRoot/forChild` items
     expect(newItems.some(item => item.includes(schematicOptions.classifiedName))).toBeFalse();
 
     // Twice (expect no error)
-    const test$ = runner.callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree).toPromise();
+    const test$ = callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree);
     await expectAsync(test$).toBeResolved();
 };
 
@@ -77,14 +77,14 @@ const expectAddToNgModule = async (
     expect(items).not.toContain(schematicOptions.classifiedName);
 
     // After
-    await runner.callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName, schematicOptions.importPath), tree).toPromise();
+    await callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName, schematicOptions.importPath), tree);
     const newFileContent = tree.readContent(schematicOptions.filePath);
     expect(newFileContent).toContain(impt);
     const newItems = getNgModule(ngModuleProperty, newFileContent);
     expect(newItems).toContain(schematicOptions.classifiedName);
 
     // Twice (expect no duplicates)
-    await runner.callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName, schematicOptions.importPath), tree).toPromise();
+    await callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName, schematicOptions.importPath), tree);
     const newFileContent2 = tree.readContent(schematicOptions.filePath);
     expect(newFileContent2).toContainTimes(impt, 1);
     const newItems2 = getNgModule(ngModuleProperty, newFileContent);
@@ -107,28 +107,28 @@ const expectAddToNgModule = async (
                 const error = 'Project cannot be determined and no --project option was provided.';
                 const options = { project: undefined as unknown as string };
 
-                let test$: Promise<unknown> = runner.callRule(ensureIsAngularProject(options.project), tree).toPromise();
+                let test$: Promise<unknown> = callRule(ensureIsAngularProject(options.project), tree);
                 await expectAsync(test$).withContext('rule: ensureIsAngularProject').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(ensureIsAngularLibrary(options.project), tree).toPromise();
+                test$ = callRule(ensureIsAngularLibrary(options.project), tree);
                 await expectAsync(test$).withContext('rule: ensureIsAngularLibrary').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(addAngularJsonAsset('', options.project), tree).toPromise();
+                test$ = callRule(addAngularJsonAsset('', options.project), tree);
                 await expectAsync(test$).withContext('rule: addAngularJsonAsset').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(removeAngularJsonAsset('', options.project), tree).toPromise();
+                test$ = callRule(removeAngularJsonAsset('', options.project), tree);
                 await expectAsync(test$).withContext('rule: removeAngularJsonAsset').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(addAngularJsonStyle('', options.project), tree).toPromise();
+                test$ = callRule(addAngularJsonStyle('', options.project), tree);
                 await expectAsync(test$).withContext('rule: addAngularJsonStyle').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(removeAngularJsonStyle('', options.project), tree).toPromise();
+                test$ = callRule(removeAngularJsonStyle('', options.project), tree);
                 await expectAsync(test$).withContext('rule: removeAngularJsonStyle').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(addAngularJsonScript('', options.project), tree).toPromise();
+                test$ = callRule(addAngularJsonScript('', options.project), tree);
                 await expectAsync(test$).withContext('rule: addAngularJsonScript').toBeRejectedWithError(error);
 
-                test$ = runner.callRule(removeAngularJsonScript('', options.project), tree).toPromise();
+                test$ = callRule(removeAngularJsonScript('', options.project), tree);
                 await expectAsync(test$).withContext('rule: removeAngularJsonScript').toBeRejectedWithError(error);
 
                 test$ = getProjectFromWorkspace(tree, options.project);
@@ -138,31 +138,31 @@ const expectAddToNgModule = async (
             });
 
             it('rule: ensureIsAngularWorkspace', async () => {
-                const ok$ = runner.callRule(ensureIsAngularWorkspace(), tree).toPromise();
+                const ok$ = callRule(ensureIsAngularWorkspace(), tree);
                 await expectAsync(ok$).toBeResolved();
 
                 tree.delete('angular.json');
-                const ko$ = runner.callRule(ensureIsAngularWorkspace(), tree).toPromise();
+                const ko$ = callRule(ensureIsAngularWorkspace(), tree);
                 await expectAsync(ko$).toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
             });
 
             it('rule: ensureIsAngularProject', async () => {
-                const ok$ = runner.callRule(ensureIsAngularProject(appTest1.name), tree).toPromise();
+                const ok$ = callRule(ensureIsAngularProject(appTest1.name), tree);
                 await expectAsync(ok$).toBeResolved();
 
                 const angularJson = new JSONFile(tree, 'angular.json');
                 angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
-                const ko$ = runner.callRule(ensureIsAngularProject(appTest1.name), tree).toPromise();
+                const ko$ = callRule(ensureIsAngularProject(appTest1.name), tree);
                 await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular project.');
             });
 
             it('rule: ensureIsAngularLibrary', async () => {
-                const ko$ = runner.callRule(ensureIsAngularLibrary(appTest1.name), tree).toPromise();
+                const ko$ = callRule(ensureIsAngularLibrary(appTest1.name), tree);
                 await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular library.');
 
                 const angularJson = new JSONFile(tree, 'angular.json');
                 angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
-                const ok$ = runner.callRule(ensureIsAngularLibrary(appTest1.name), tree).toPromise();
+                const ok$ = callRule(ensureIsAngularLibrary(appTest1.name), tree);
                 await expectAsync(ok$).toBeResolved();
             });
 
@@ -178,7 +178,7 @@ const expectAddToNgModule = async (
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [ngVersion, `>= ${ngVersion}`]) {
-                    await runner.callRule(isAngularVersion(range, spyObject.callback), tree).toPromise();
+                    await callRule(isAngularVersion(range, spyObject.callback), tree);
                     expect(spyObject.callback).toHaveBeenCalled();
                 }
 
@@ -186,7 +186,7 @@ const expectAddToNgModule = async (
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [`> ${ngVersion}`, `< ${ngVersion}`]) {
-                    await runner.callRule(isAngularVersion(range, spyObject.callback), tree).toPromise();
+                    await callRule(isAngularVersion(range, spyObject.callback), tree);
                     expect(spyObject.callback).not.toHaveBeenCalled();
                 }
             });
@@ -200,12 +200,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'assets')).not.toContain(asset);
 
                 // After
-                await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).toContain(asset);
                 expect(getValues(tree, 'test', 'assets')).toContain(asset);
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).toContainTimes(asset, 1);
                 expect(getValues(tree, 'test', 'assets')).toContainTimes(asset, 1);
             });
@@ -222,12 +222,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'assets')).toContain(asset);
 
                 // After
-                await runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).not.toContain(asset);
                 expect(getValues(tree, 'test', 'assets')).not.toContain(asset);
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -243,12 +243,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
 
                 // After
-                await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
                 expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).toContainTimes(asset, 1);
                 expect(getValues(tree, 'test', 'assets')).toContainTimes(asset, 1);
             });
@@ -261,17 +261,17 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                await runner.callRule(addAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
                 expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
 
                 // After
-                await runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
                 expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonAsset(asset, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -284,12 +284,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'styles')).not.toContain(style);
 
                 // After
-                await runner.callRule(addAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).toContain(style);
                 expect(getValues(tree, 'test', 'styles')).toContain(style);
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).toContainTimes(style, 1);
                 expect(getValues(tree, 'test', 'styles')).toContainTimes(style, 1);
             });
@@ -306,12 +306,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'styles')).toContain(style);
 
                 // After
-                await runner.callRule(removeAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).not.toContain(style);
                 expect(getValues(tree, 'test', 'styles')).not.toContain(style);
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonStyle(style, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -327,12 +327,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'styles')).not.toContain(jasmine.objectContaining(style));
 
                 // After
-                await runner.callRule(addAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).toContain(jasmine.objectContaining(style));
                 expect(getValues(tree, 'test', 'styles')).toContain(jasmine.objectContaining(style));
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).toContainTimes(style, 1);
                 expect(getValues(tree, 'test', 'styles')).toContainTimes(style, 1);
             });
@@ -345,17 +345,17 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                await runner.callRule(addAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).toContain(jasmine.objectContaining(style));
                 expect(getValues(tree, 'test', 'styles')).toContain(jasmine.objectContaining(style));
 
                 // After
-                await runner.callRule(removeAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).not.toContain(jasmine.objectContaining(style));
                 expect(getValues(tree, 'test', 'styles')).not.toContain(jasmine.objectContaining(style));
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonStyle(style, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonStyle(style, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -368,12 +368,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'scripts')).toEqual([]);
 
                 // After
-                await runner.callRule(addAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toContain(script);
                 expect(getValues(tree, 'test', 'scripts')).toContain(script);
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toContainTimes(script, 1);
                 expect(getValues(tree, 'test', 'scripts')).toContainTimes(script, 1);
             });
@@ -390,12 +390,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'scripts')).toEqual([]);
 
                 // After
-                await runner.callRule(removeAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).not.toContain(script);
                 expect(getValues(tree, 'test', 'scripts')).not.toContain(script);
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonScript(script, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonScript(script, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -411,12 +411,12 @@ const expectAddToNgModule = async (
                 expect(getValues(tree, 'test', 'scripts')).not.toContain(jasmine.objectContaining(script));
 
                 // After
-                await runner.callRule(addAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toContain(jasmine.objectContaining(script));
                 expect(getValues(tree, 'test', 'scripts')).toContain(jasmine.objectContaining(script));
 
                 // Twice (expect no duplicates)
-                await runner.callRule(addAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toContainTimes(script, 1);
                 expect(getValues(tree, 'test', 'scripts')).toContainTimes(script, 1);
             });
@@ -429,17 +429,17 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                await runner.callRule(addAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toContain(jasmine.objectContaining(script));
                 expect(getValues(tree, 'test', 'scripts')).toContain(jasmine.objectContaining(script));
 
                 // After
-                await runner.callRule(removeAngularJsonScript(script, appTest1.name), tree).toPromise();
+                await callRule(removeAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).not.toContain(jasmine.objectContaining(script));
                 expect(getValues(tree, 'test', 'scripts')).not.toContain(jasmine.objectContaining(script));
 
                 // Twice (expect no error)
-                const test$ = runner.callRule(removeAngularJsonScript(script, appTest1.name), tree).toPromise();
+                const test$ = callRule(removeAngularJsonScript(script, appTest1.name), tree);
                 await expectAsync(test$).toBeResolved();
             });
 
@@ -558,8 +558,8 @@ const expectAddToNgModule = async (
                     expect(fileContent).not.toContain(route2);
 
                     // After
-                    await runner.callRule(addRouteDeclarationToNgModule(filePath, route1), tree).toPromise();
-                    await runner.callRule(addRouteDeclarationToNgModule(filePath, route2), tree).toPromise();
+                    await callRule(addRouteDeclarationToNgModule(filePath, route1), tree);
+                    await callRule(addRouteDeclarationToNgModule(filePath, route2), tree);
                     const newFileContent = tree.readContent(filePath);
                     expect(newFileContent).toContain(route1);
                     expect(newFileContent).toContain(route2);
@@ -578,14 +578,14 @@ const expectAddToNgModule = async (
                     expect(tree.readContent(configFilePath)).not.toContain(impt);
 
                     // After
-                    await runner.callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree).toPromise();
+                    await callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree);
                     expect(tree.readContent(mainFilePath)).not.toContain(impt);
                     expect(tree.readContent(mainFilePath)).not.toContain('provideA()');
                     expect(tree.readContent(configFilePath)).toContain(impt);
                     expect(tree.readContent(configFilePath)).toContain('provideA()');
 
                     // Twice (expect no duplicates)
-                    await runner.callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree).toPromise();
+                    await callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree);
                     expect(tree.readContent(mainFilePath)).not.toContainTimes(impt, 1);
                     expect(tree.readContent(mainFilePath)).not.toContainTimes('provideA()', 1);
                     expect(tree.readContent(configFilePath)).toContainTimes(impt, 1);
@@ -599,19 +599,19 @@ const expectAddToNgModule = async (
                     const impt = 'import { provideA } from \'provide/A';
 
                     // Before
-                    await runner.callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree).toPromise();
+                    await callRule(addProviderToBootstrapApplication(mainFilePath, 'provideA()', 'provide/A'), tree);
                     expect(tree.readContent(configFilePath)).toContain(impt);
                     expect(tree.readContent(configFilePath)).toContain('provideA()');
 
                     // After
-                    await runner.callRule(removeProviderFromBootstrapApplication(mainFilePath, 'provideA'), tree).toPromise();
+                    await callRule(removeProviderFromBootstrapApplication(mainFilePath, 'provideA'), tree);
                     expect(tree.readContent(mainFilePath)).not.toContain(impt);
                     expect(tree.readContent(mainFilePath)).not.toContain('provideA()');
                     expect(tree.readContent(configFilePath)).toContain(impt);
                     expect(tree.readContent(configFilePath)).not.toContain('provideA()');
 
                     // Twice (expect no duplicates)
-                    await runner.callRule(removeProviderFromBootstrapApplication(mainFilePath, 'provideA'), tree).toPromise();
+                    await callRule(removeProviderFromBootstrapApplication(mainFilePath, 'provideA'), tree);
                     expect(tree.readContent(mainFilePath)).not.toContainTimes(impt, 1);
                     expect(tree.readContent(mainFilePath)).toContainTimes('provideA()', 0);
                     expect(tree.readContent(configFilePath)).toContainTimes(impt, 1);

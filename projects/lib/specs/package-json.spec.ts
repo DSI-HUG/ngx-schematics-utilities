@@ -6,7 +6,7 @@ import {
     addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, PackageItem,
     removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
 } from '../src';
-import { getCleanAppTree, runner } from './common.spec';
+import { callRule, getCleanAppTree } from './common.spec';
 
 // ---- HELPER(s) ----
 
@@ -39,11 +39,11 @@ const test = async (
     deps.forEach(dep => expectDep(tree, devType, dep, false));
 
     // Add
-    await runner.callRule(addRule(deps), tree).toPromise();
+    await callRule(addRule(deps), tree);
     deps.forEach(dep => expectDep(tree, devType, dep, true));
 
     // Remove
-    await runner.callRule(removeRule(deps), tree).toPromise();
+    await callRule(removeRule(deps), tree);
     deps.forEach(dep => expectDep(tree, devType, dep, false));
 };
 
