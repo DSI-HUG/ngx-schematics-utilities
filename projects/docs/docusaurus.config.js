@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/nightOwlLight');
-const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
+const lightCodeTheme = require('prism-react-renderer').themes.nightOwlLight;
+const darkCodeTheme = require('prism-react-renderer').themes.nightOwl;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -21,11 +21,15 @@ const config = {
         defaultLocale: 'en-US',
         locales: ['en-US']
     },
-    plugins: [
+    themes: [
         [
-            require.resolve('@cmfcmf/docusaurus-search-local'),
+            require.resolve('@easyops-cn/docusaurus-search-local'),
+            /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
             {
-                language: 'en'
+                docsRouteBasePath: '/',
+                hashed: true,
+                language: 'en',
+                searchBarShortcut: false
             }
         ]
     ],
@@ -96,7 +100,8 @@ const config = {
             },
             prism: {
                 theme: lightCodeTheme,
-                darkTheme: darkCodeTheme
+                darkTheme: darkCodeTheme,
+                additionalLanguages: ['bash', 'diff', 'json']
             }
         })
 };
