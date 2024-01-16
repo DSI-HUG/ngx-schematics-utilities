@@ -381,6 +381,23 @@ export default (options: any): Rule =>
   };
 ```
 
+### `getProjectMainPath`
+
+Gets a project main file path as defined in the `angular.json` file.
+
+```ts {6}
+import { getProjectMainPath, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  (tree: Tree): Rule => {
+    const projectMainPath = getProjectMainPath(tree, 'ProjectName');
+    return schematic('my-schematic', [
+      ...
+    ]);
+  };
+```
+
 ### `getProjectFromWorkspace`
 
 Gets a project definition object from the current Angular workspace.
@@ -392,6 +409,23 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   async (tree: Tree): Promise<Rule> => {
     const project = await getProjectFromWorkspace(tree, 'ProjectName');
+    return schematic('my-schematic', [
+      ...
+    ]);
+  };
+```
+
+### `isProjectStandalone`
+
+Checks if a project if of type standalone.
+
+```ts {6}
+import { isProjectStandalone, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  (tree: Tree): Rule => {
+    const isStandalone = isProjectStandalone(tree, 'ProjectName');
     return schematic('my-schematic', [
       ...
     ]);

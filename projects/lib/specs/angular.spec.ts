@@ -7,9 +7,9 @@ import { join } from 'path';
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
     addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject,
-    ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectOutputPath, isAngularVersion, removeAngularJsonAsset, removeAngularJsonScript,
-    removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule,
-    removeProviderFromBootstrapApplication, removeProviderFromNgModule
+    ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectMainPath, getProjectOutputPath, isAngularVersion, isProjectStandalone,
+    removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
+    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -629,6 +629,17 @@ const expectAddToNgModule = async (
                 expect(getProjectOutputPath(tree, libTest.name)).toBeUndefined();
             });
 
+            it('helper: getProjectMainPath', () => {
+                if (useWorkspace) {
+                    expect(getProjectMainPath(tree, appTest1.name)).toEqual(`projects/${appTest1.name}/src/main.ts`);
+                    expect(getProjectMainPath(tree, appTest2.name)).toEqual(`projects/${appTest2.name}/src/main.ts`);
+                } else {
+                    expect(getProjectMainPath(tree, appTest1.name)).toEqual('src/main.ts');
+                    expect(getProjectMainPath(tree, appTest2.name)).toBeUndefined();
+                }
+                expect(getProjectMainPath(tree, libTest.name)).toBeUndefined();
+            });
+
             it('helper: getProjectFromWorkspace', async () => {
                 await expectAsync(getProjectFromWorkspace(tree, appTest1.name)).toBeResolved();
                 if (useWorkspace) {
@@ -642,6 +653,13 @@ const expectAddToNgModule = async (
                     .toBeRejectedWithError('Project "non-existing-name" was not found in the current workspace.');
             });
 
+            it('helper: isProjectStandalone', () => {
+                expect(isProjectStandalone(tree, appTest1.name)).toEqual(useStandalone);
+                if (useWorkspace) {
+                    expect(isProjectStandalone(tree, appTest2.name)).toEqual(useStandalone);
+                }
+                expect(isProjectStandalone(tree, libTest.name)).withContext('Library should not be standalone').toBeFalse();
+            });
         });
     });
 });

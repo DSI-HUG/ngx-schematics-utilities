@@ -10,7 +10,7 @@ import { JSONFile } from '@schematics/angular/utility/json-file';
 import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
 import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
-import { ProjectType } from '@schematics/angular/utility/workspace-models';
+import { Builders, ProjectType } from '@schematics/angular/utility/workspace-models';
 import { join } from 'path';
 import { satisfies } from 'semver';
 
@@ -362,6 +362,19 @@ export const getProjectOutputPath = (tree: Tree, projectName: string): string =>
 };
 
 /**
+ * Gets a project main file path as defined in the `angular.json` file.
+ * @param {Tree} tree The current schematic's project tree.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {string} The default project main file path.
+ */
+export const getProjectMainPath = (tree: Tree, projectName: string): string => {
+    ensureProjectIsDefined(projectName);
+    const angularJson = new JSONFile(tree, 'angular.json');
+    const buildOptions = angularJson.get(['projects', projectName, 'architect', 'build']) as { builder: string; options: Record<string, string> };
+    return (buildOptions?.builder === Builders.Application as string) ? buildOptions?.options['browser'] : buildOptions?.options['main'];
+};
+
+/**
  * Gets a project definition object from the current Angular workspace.
  * @async
  * @param {Tree} tree The current schematic's project tree.
@@ -382,6 +395,22 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName: string): 
         pathFromRoot: (path: string) => join(project.root ?? '', path),
         pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)
     };
+};
+
+/**
+ * Checks if a project if of type standalone.
+ * @param {Tree} tree The current schematic's project tree.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {boolean} Whether or not the project is of type standalone.
+ */
+export const isProjectStandalone = (tree: Tree, projectName: string): boolean => {
+    const mainFilePath = getProjectMainPath(tree, projectName);
+    try {
+        const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
+        return (bootstrapApplicationCall !== null);
+    } catch {
+        return false;
+    }
 };
 
 /**
