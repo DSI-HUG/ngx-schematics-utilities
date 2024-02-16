@@ -11,6 +11,9 @@ on:
       - '.github/workflows/ci_docs.yml'
       - 'projects/docs/**'
 
+env:
+  HUSKY: 0
+
 concurrency:
   group: deploy-docs-group-${{ github.ref }}
   cancel-in-progress: true
