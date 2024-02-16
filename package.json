@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "ncu": "npx npm-check-updates -i --format=group --packageFile '{,projects/**/}package.json'",
-        "prepare": "husky install"
+        "prepare": "husky"
     },
     "workspaces": [
         "projects/lib",
