@@ -27,6 +27,7 @@
     },
     "npm.exclude": "**/{dist,tmp}{,/**}",
     "npm.scriptExplorerExclude": [
-        "install"
+        "install",
+        "prepare"
     ]
 }
