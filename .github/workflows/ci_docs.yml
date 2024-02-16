@@ -28,7 +28,7 @@ jobs:
           node-version: latest
           registry-url: https://registry.npmjs.org/
           cache: npm
-          cache-dependency-path: projects/docs/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install latest npm
         run: npm install -g npm@latest
