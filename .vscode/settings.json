@@ -13,7 +13,7 @@
     "material-icon-theme.folders.theme": "none",
     "material-icon-theme.opacity": 0.6,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     "editor.formatOnSave": true,
     "eslint.format.enable": true,
