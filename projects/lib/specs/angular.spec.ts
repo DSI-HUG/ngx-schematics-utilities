@@ -6,10 +6,11 @@ import { join } from 'path';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
-    addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularLibrary, ensureIsAngularProject,
-    ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectMainPath, getProjectOutputPath, isAngularVersion, isProjectStandalone,
-    removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
-    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
+    addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularApplication,
+    ensureIsAngularLibrary, ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectMainFilePath, getProjectOutputPath,
+    isAngularVersion, isProjectStandalone, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle,
+    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication,
+    removeProviderFromNgModule
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -107,8 +108,8 @@ const expectAddToNgModule = async (
                 const error = 'Project cannot be determined and no --project option was provided.';
                 const options = { project: undefined as unknown as string };
 
-                let test$: Promise<unknown> = callRule(ensureIsAngularProject(options.project), tree);
-                await expectAsync(test$).withContext('rule: ensureIsAngularProject').toBeRejectedWithError(error);
+                let test$: Promise<unknown> = callRule(ensureIsAngularApplication(options.project), tree);
+                await expectAsync(test$).withContext('rule: ensureIsAngularApplication').toBeRejectedWithError(error);
 
                 test$ = callRule(ensureIsAngularLibrary(options.project), tree);
                 await expectAsync(test$).withContext('rule: ensureIsAngularLibrary').toBeRejectedWithError(error);
@@ -146,14 +147,14 @@ const expectAddToNgModule = async (
                 await expectAsync(ko$).toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
             });
 
-            it('rule: ensureIsAngularProject', async () => {
-                const ok$ = callRule(ensureIsAngularProject(appTest1.name), tree);
+            it('rule: ensureIsAngularApplication', async () => {
+                const ok$ = callRule(ensureIsAngularApplication(appTest1.name), tree);
                 await expectAsync(ok$).toBeResolved();
 
                 const angularJson = new JSONFile(tree, 'angular.json');
                 angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
-                const ko$ = callRule(ensureIsAngularProject(appTest1.name), tree);
-                await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular project.');
+                const ko$ = callRule(ensureIsAngularApplication(appTest1.name), tree);
+                await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular application.');
             });
 
             it('rule: ensureIsAngularLibrary', async () => {
@@ -629,15 +630,15 @@ const expectAddToNgModule = async (
                 expect(getProjectOutputPath(tree, libTest.name)).toBeUndefined();
             });
 
-            it('helper: getProjectMainPath', () => {
+            it('helper: getProjectMainFilePath', () => {
                 if (useWorkspace) {
-                    expect(getProjectMainPath(tree, appTest1.name)).toEqual(`projects/${appTest1.name}/src/main.ts`);
-                    expect(getProjectMainPath(tree, appTest2.name)).toEqual(`projects/${appTest2.name}/src/main.ts`);
+                    expect(getProjectMainFilePath(tree, appTest1.name)).toEqual(`projects/${appTest1.name}/src/main.ts`);
+                    expect(getProjectMainFilePath(tree, appTest2.name)).toEqual(`projects/${appTest2.name}/src/main.ts`);
                 } else {
-                    expect(getProjectMainPath(tree, appTest1.name)).toEqual('src/main.ts');
-                    expect(getProjectMainPath(tree, appTest2.name)).toBeUndefined();
+                    expect(getProjectMainFilePath(tree, appTest1.name)).toEqual('src/main.ts');
+                    expect(getProjectMainFilePath(tree, appTest2.name)).toBeUndefined();
                 }
-                expect(getProjectMainPath(tree, libTest.name)).toBeUndefined();
+                expect(getProjectMainFilePath(tree, libTest.name)).toBeUndefined();
             });
 
             it('helper: getProjectFromWorkspace', async () => {

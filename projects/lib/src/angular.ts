@@ -1,5 +1,4 @@
 import { JsonObject, JsonValue } from '@angular-devkit/core';
-import { ProjectDefinition as NgDevKitProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
     addDeclarationToModule, addExportToModule, addImportToModule, addProviderToModule,
@@ -15,15 +14,11 @@ import { join } from 'path';
 import { satisfies } from 'semver';
 
 import {
-    addProviderToStandaloneApplication, removeProviderFromStandaloneApplication, removeSymbolFromNgModuleMetadata
+    addProviderToStandaloneApplication, getStandaloneApplicationConfig, removeProviderFromStandaloneApplication,
+    removeSymbolFromNgModuleMetadata
 } from './ast-utils';
+import { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
 import { commitChanges, getTsSourceFile } from './file';
-
-export interface ProjectDefinition extends NgDevKitProjectDefinition {
-    name: string;
-    pathFromRoot: (path: string) => string;
-    pathFromSourceRoot: (path: string) => string;
-}
 
 // --- RULE(s) ----
 
@@ -42,17 +37,17 @@ export const ensureIsAngularWorkspace = (): Rule =>
     };
 
 /**
- * Ensures that a project is actually an Angular project or throws an exception otherwise.
- * @throws {SchematicsException} An exception if the project is not an Angular project.
+ * Ensures that a project is actually an Angular application or throws an exception otherwise.
+ * @throws {SchematicsException} An exception if the project is not an Angular application.
  * @param {string} projectName The name of the project to look for.
  * @returns {Rule}
  */
-export const ensureIsAngularProject = (projectName: string): Rule =>
+export const ensureIsAngularApplication = (projectName: string): Rule =>
     async (tree: Tree): Promise<void> => {
         ensureProjectIsDefined(projectName);
         const project = await getProjectFromWorkspace(tree, projectName);
         if (project.extensions['projectType'] !== ProjectType.Application) {
-            throw new SchematicsException('Project is not an Angular project.');
+            throw new SchematicsException('Project is not an Angular application.');
         }
     };
 
@@ -367,11 +362,23 @@ export const getProjectOutputPath = (tree: Tree, projectName: string): string =>
  * @param {string} projectName The name of the project to look for.
  * @returns {string} The default project main file path.
  */
-export const getProjectMainPath = (tree: Tree, projectName: string): string => {
+export const getProjectMainFilePath = (tree: Tree, projectName: string): string => {
     ensureProjectIsDefined(projectName);
     const angularJson = new JSONFile(tree, 'angular.json');
     const buildOptions = angularJson.get(['projects', projectName, 'architect', 'build']) as { builder: string; options: Record<string, string> };
     return (buildOptions?.builder === Builders.Application as string) ? buildOptions?.options['browser'] : buildOptions?.options['main'];
+};
+
+/**
+ * Gets a standalone project main config file path.
+ * @param {Tree} tree The current schematic's project tree.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {string|null} The project main config file path if any or null otherwise.
+ */
+export const getProjectMainConfigFilePath = (tree: Tree, projectName: string): string | null => {
+    ensureProjectIsDefined(projectName);
+    const appConfig = getStandaloneApplicationConfig(tree, getProjectMainFilePath(tree, projectName));
+    return appConfig ? appConfig.filePath : null;
 };
 
 /**
@@ -380,21 +387,33 @@ export const getProjectMainPath = (tree: Tree, projectName: string): string => {
  * @param {Tree} tree The current schematic's project tree.
  * @param {string} projectName The name of the project to look for.
  * @throws {SchematicsException} An exception if no project was found.
- * @returns {Promise<ProjectDefinition>} A project definition object.
+ * @returns {Promise<LibraryDefinition | ApplicationDefinition>} A project definition object.
  */
-export const getProjectFromWorkspace = async (tree: Tree, projectName: string): Promise<ProjectDefinition> => {
+export const getProjectFromWorkspace = async <T extends LibraryDefinition | ApplicationDefinition>(tree: Tree, projectName: string): Promise<T> => {
     ensureProjectIsDefined(projectName);
     const workspace = await getWorkspace(tree);
     const project = workspace.projects.get(projectName);
     if (!project) {
         throw new SchematicsException(`Project "${projectName}" was not found in the current workspace.`);
     }
-    return {
+
+    const options = {
         name: projectName,
         ...project,
         pathFromRoot: (path: string) => join(project.root ?? '', path),
         pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)
     };
+
+    if (project.extensions['projectType'] === ProjectType.Application) {
+        return {
+            ...options,
+            isStandalone: isProjectStandalone(tree, projectName),
+            mainFilePath: getProjectMainFilePath(tree, projectName),
+            mainConfigFilePath: getProjectMainConfigFilePath(tree, projectName),
+            outputPath: getProjectOutputPath(tree, projectName)
+        } as T;
+    }
+    return options as T;
 };
 
 /**
@@ -404,8 +423,8 @@ export const getProjectFromWorkspace = async (tree: Tree, projectName: string): 
  * @returns {boolean} Whether or not the project is of type standalone.
  */
 export const isProjectStandalone = (tree: Tree, projectName: string): boolean => {
-    const mainFilePath = getProjectMainPath(tree, projectName);
     try {
+        const mainFilePath = getProjectMainFilePath(tree, projectName);
         const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
         return (bootstrapApplicationCall !== null);
     } catch {

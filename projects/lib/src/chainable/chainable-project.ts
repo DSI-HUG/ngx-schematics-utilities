@@ -1,22 +1,20 @@
 import { JsonObject } from '@angular-devkit/core';
+import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
     addImportToNgModule, addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule,
-    ensureIsAngularLibrary, ensureIsAngularProject, ensureProjectIsDefined, getProjectFromWorkspace, ProjectDefinition,
-    removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
-    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
+    ensureIsAngularApplication, ensureIsAngularLibrary, ensureProjectIsDefined, getProjectFromWorkspace,
+    removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule,
+    removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../angular';
-import { Chainable, ChainableContext, ChainableType } from './chainable';
+import { Chainable, ChainableType } from './chainable';
+import { ChainableWorkspaceContext } from './chainable-workspace';
 
-export interface ChainableProjectContext extends ChainableContext {
-    project: ProjectDefinition;
-}
-
-export class ChainableProject extends Chainable<ChainableProjectContext> {
-    protected _project?: ProjectDefinition;
+class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C extends ChainableWorkspaceContext> extends Chainable<C> {
+    protected _project?: P;
 
     constructor(
         protected override chainableType: ChainableType,
@@ -28,7 +26,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
         ensureProjectIsDefined(projectName);
         switch (this.chainableType) {
             case ChainableType.APPLICATION:
-                this.addRuleToChain(() => ensureIsAngularProject(this.projectName));
+                this.addRuleToChain(() => ensureIsAngularApplication(this.projectName));
                 break;
             case ChainableType.LIBRARY:
                 this.addRuleToChain(() => ensureIsAngularLibrary(this.projectName));
@@ -39,7 +37,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
 
         // Make sure the second thing we do in the chain (ie. after the super) is to get a reference to the project
         this.addRuleToChain(() => async (tree: Tree): Promise<void> => {
-            this._project = await getProjectFromWorkspace(tree, this.projectName);
+            this._project = await getProjectFromWorkspace<P>(tree, this.projectName);
         });
     }
 
@@ -180,7 +178,7 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
 
     // --- OVERRIDE(s) ---
 
-    protected override getContext(): ChainableProjectContext {
+    protected override getContext(): C {
         return {
             ...super.getContext(),
             project: this._project!
@@ -195,6 +193,27 @@ export class ChainableProject extends Chainable<ChainableProjectContext> {
     }
 }
 
-export const application = (projectName: string): ChainableProject => new ChainableProject(ChainableType.APPLICATION, projectName);
+export interface LibraryDefinition extends ProjectDefinition {
+    name: string;
+    pathFromRoot: (path: string) => string;
+    pathFromSourceRoot: (path: string) => string;
+}
 
-export const library = (projectName: string): ChainableProject => new ChainableProject(ChainableType.LIBRARY, projectName);
+export interface ApplicationDefinition extends LibraryDefinition {
+    isStandalone?: boolean;
+    mainFilePath?: string;
+    mainConfigFilePath?: string | null;
+    outputPath?: string;
+}
+
+export interface ChainableApplicationContext extends ChainableWorkspaceContext {
+    project: ApplicationDefinition;
+}
+export class ChainableApplication extends ChainableProject<ApplicationDefinition, ChainableApplicationContext> {}
+export const application = (projectName: string): ChainableApplication => new ChainableApplication(ChainableType.APPLICATION, projectName);
+
+export interface ChainableLibraryContext extends ChainableWorkspaceContext {
+    project: LibraryDefinition;
+}
+export class ChainableLibrary extends ChainableProject<LibraryDefinition, ChainableLibraryContext> {}
+export const library = (projectName: string): ChainableLibrary => new ChainableLibrary(ChainableType.LIBRARY, projectName);

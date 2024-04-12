@@ -1,17 +1,17 @@
 import { JsonObject } from '@angular-devkit/core';
-import { TaskId } from '@angular-devkit/schematics';
+import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
+import { SchematicContext, TaskId, Tree } from '@angular-devkit/schematics';
 
 import {
-    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, removeAngularJsonAsset, removeAngularJsonScript,
-    removeAngularJsonStyle
+    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle
 } from '../angular';
 import {
-    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, packageInstallTask,
-    PackageItem, removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
+    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, packageInstallTask, PackageItem,
+    removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
 } from '../package-json';
 import { Chainable, ChainableType } from './chainable';
 
-export class ChainableWorkspace extends Chainable {
+export class ChainableWorkspace extends Chainable<ChainableWorkspaceContext> {
     /**
      * @see {@link addPackageJsonDependencies}
      * @returns {this}
@@ -115,6 +115,12 @@ export class ChainableWorkspace extends Chainable {
     public removeAngularJsonScript(value: JsonObject | string, projectName: string): this {
         return this.addRuleToChain(() => removeAngularJsonScript(value, projectName));
     }
+}
+
+export interface ChainableWorkspaceContext {
+    tree: Tree;
+    schematicContext: SchematicContext;
+    workspace: WorkspaceDefinition;
 }
 
 export const workspace = (): ChainableWorkspace => new ChainableWorkspace(ChainableType.WORKSPACE);

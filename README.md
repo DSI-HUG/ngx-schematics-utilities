@@ -66,7 +66,7 @@ export default (options: MySchematicOptions): Rule =>
       .deployFiles(options)
       .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
       .deleteFiles(['karma.conf.js'])
-      .rule(({ project }: ChainableProjectContext) => {
+      .rule(({ project }: ChainableApplicationContext) => {
         return createOrUpdateFile(project.pathFromRoot('README.md'), project.name);
       })
       .toRule()

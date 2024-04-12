@@ -22,17 +22,17 @@ export default (options: any): Rule =>
   ]);
 ```
 
-### `ensureIsAngularProject`
+### `ensureIsAngularApplication`
 
-Ensures that a project is actually an Angular project or throws an exception otherwise.
+Ensures that a project is actually an Angular application or throws an exception otherwise.
 
 ```ts {6}
-import { ensureIsAngularProject, schematic } from '@hug/ngx-schematics-utilities';
+import { ensureIsAngularApplication, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    ensureIsAngularProject('ProjectName')
+    ensureIsAngularApplication('ProjectName')
   ]);
 ```
 
@@ -381,17 +381,34 @@ export default (options: any): Rule =>
   };
 ```
 
-### `getProjectMainPath`
+### `getProjectMainFilePath`
 
 Gets a project main file path as defined in the `angular.json` file.
 
 ```ts {6}
-import { getProjectMainPath, schematic } from '@hug/ngx-schematics-utilities';
+import { getProjectMainFilePath, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   (tree: Tree): Rule => {
-    const projectMainPath = getProjectMainPath(tree, 'ProjectName');
+    const projectMainPath = getProjectMainFilePath(tree, 'ProjectName');
+    return schematic('my-schematic', [
+      ...
+    ]);
+  };
+```
+
+### `getProjectMainConfigFilePath`
+
+Gets a standalone project main config file path.
+
+```ts {6}
+import { getProjectMainConfigFilePath, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  (tree: Tree): Rule => {
+    const projectMainPath = getProjectMainConfigFilePath(tree, 'ProjectName');
     return schematic('my-schematic', [
       ...
     ]);

@@ -52,14 +52,14 @@ Allow you to act at a *project* level and make sure the specified project is an 
 :::
 
 ```ts {6-14}
-import { application, ChainableProjectContext, createOrUpdateFile, schematic } from '@hug/ngx-schematics-utilities';
+import { application, ChainableApplicationContext, createOrUpdateFile, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
     application(options.project)
       .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
-      .rule(({ project }: ChainableProjectContext) => {
+      .rule(({ project }: ChainableApplicationContext) => {
         return createOrUpdateFile(project.pathFromRoot('README.md'), project.name);
       })
       .isAngularVersion('<= 11', () => {

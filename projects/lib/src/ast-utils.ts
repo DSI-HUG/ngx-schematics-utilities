@@ -1,11 +1,11 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
-    ArrayLiteralExpression, CallExpression, isArrayLiteralExpression, isCallExpression, isIdentifier, isObjectLiteralExpression, isPropertyAssignment,
-    ObjectLiteralExpression, PropertyAssignment, SourceFile
+    ArrayLiteralExpression, CallExpression, isArrayLiteralExpression, isCallExpression, isIdentifier,
+    isObjectLiteralExpression, isPropertyAssignment, ObjectLiteralExpression, PropertyAssignment, SourceFile
 } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { getDecoratorMetadata, getMetadataField } from '@schematics/angular/utility/ast-utils';
 import { Change, InsertChange, NoopChange, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
-import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
+import { findAppConfig, ResolvedAppConfig } from '@schematics/angular/utility/standalone/app_config';
 import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
 
 import { commitChanges, getTsSourceFile } from './file';
@@ -101,7 +101,7 @@ export const addProviderToStandaloneApplication = (
     if (bootstrapApplicationCall) {
         const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
 
-        // Options is a variable => new appConfig object introduces with ng16
+        // Options is a variable => new appConfig object introduced with ng16
         if (boostrapApplicationOptions && isIdentifier(boostrapApplicationOptions)) {
             const appConfig = findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
             if (appConfig) {
@@ -127,6 +127,24 @@ export const addProviderToStandaloneApplication = (
         }
     } else {
         throw new SchematicsException(`Could not find bootstrapApplication call in ${mainFilePath}`);
+    }
+};
+
+/**
+ * @internal
+ */
+export const getStandaloneApplicationConfig = (tree: Tree, mainFilePath: string): ResolvedAppConfig | null => {
+    try {
+        const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
+        if (bootstrapApplicationCall) {
+            const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
+            if (boostrapApplicationOptions && isIdentifier(boostrapApplicationOptions)) {
+                return findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
+            }
+        }
+        return null;
+    } catch {
+        return null;
     }
 };
 

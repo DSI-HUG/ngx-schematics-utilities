@@ -2,8 +2,8 @@ import { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { join } from 'path';
 
 import {
-    application, ChainableContext, ChainableProjectContext, createOrUpdateFile, deleteFiles, getProjectFromWorkspace,
-    library, ProjectDefinition, workspace
+    application, ApplicationDefinition, ChainableApplicationContext, ChainableLibraryContext, ChainableWorkspaceContext,
+    createOrUpdateFile, deleteFiles, getProjectFromWorkspace, library, workspace
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -12,7 +12,7 @@ import { customMatchers } from './jasmine.matchers';
     [false, true].forEach(useWorkspace => {
         describe(`chainable - (using${useStandalone ? ' standalone' : ''}${useWorkspace ? ' workspace' : ' flat'} project)`, () => {
             let tree: UnitTestTree;
-            let projectDef: ProjectDefinition;
+            let projectDef: ApplicationDefinition;
 
             beforeEach(async () => {
                 jasmine.addMatchers(customMatchers);
@@ -29,7 +29,7 @@ import { customMatchers } from './jasmine.matchers';
 
             it('should throw if not an Angular application', async () => {
                 const test$ = callRule(application(libTest.name).toRule(), tree);
-                await expectAsync(test$).toBeRejectedWithError('Project is not an Angular project.');
+                await expectAsync(test$).toBeRejectedWithError('Project is not an Angular application.');
             });
 
             it('should throw if not an Angular library', async () => {
@@ -44,11 +44,33 @@ import { customMatchers } from './jasmine.matchers';
                 expect(() => library(options.project)).withContext('library').toThrowError(error);
             });
 
-            it('should get project context info', async () => {
+            it('should get application context info', async () => {
                 const rule = application(appTest1.name)
-                    .rule((context: ChainableProjectContext) => {
+                    .rule((context: ChainableApplicationContext) => {
                         expect(context.project).toBeDefined();
-                        expect(context.project.name).toBeDefined();
+                        expect(context.project.name).toBe(appTest1.name);
+                        expect(context.project.isStandalone).toBe(useStandalone);
+                        expect(context.project.mainFilePath).toBeDefined();
+                        if (useStandalone) {
+                            expect(context.project.mainConfigFilePath).toBeDefined();
+                        } else {
+                            expect(context.project.mainConfigFilePath).toBeNull();
+                        }
+                        expect(context.project.outputPath).toBeDefined();
+                        expect(context.project.pathFromRoot).toBeDefined();
+                        expect(context.project.pathFromSourceRoot).toBeDefined();
+                        expect(context.workspace).toBeDefined();
+                        expect(context.tree).toBeDefined();
+                        expect(context.schematicContext).toBeDefined();
+                    }).toRule();
+                await callRule(rule, tree);
+            });
+
+            it('should get library context info', async () => {
+                const rule = library(libTest.name)
+                    .rule((context: ChainableLibraryContext) => {
+                        expect(context.project).toBeDefined();
+                        expect(context.project.name).toBe(libTest.name);
                         expect(context.project.pathFromRoot).toBeDefined();
                         expect(context.project.pathFromSourceRoot).toBeDefined();
                         expect(context.workspace).toBeDefined();
@@ -60,7 +82,7 @@ import { customMatchers } from './jasmine.matchers';
 
             it('should get workspace context info', async () => {
                 const rule = workspace()
-                    .rule((context: ChainableContext) => {
+                    .rule((context: ChainableWorkspaceContext) => {
                         expect(context.workspace).toBeDefined();
                         expect(context.tree).toBeDefined();
                         expect(context.schematicContext).toBeDefined();
@@ -70,7 +92,7 @@ import { customMatchers } from './jasmine.matchers';
 
             it('should get default project context info', async () => {
                 const rule = application(appTest1.name)
-                    .rule(({ project }: ChainableProjectContext) => {
+                    .rule(({ project }: ChainableApplicationContext) => {
                         expect(project?.name).toEqual(appTest1.name);
                         expect(join(project?.root)).toEqual(join(appTest1.projectRoot!));
                         expect(join(project.sourceRoot!)).toEqual(join(appTest1.projectRoot ? appTest1.projectRoot : '', 'src'));
@@ -81,7 +103,7 @@ import { customMatchers } from './jasmine.matchers';
             if (useWorkspace) {
                 it('should get specific project context info', async () => {
                     const rule = application(appTest2.name)
-                        .rule(({ project }: ChainableProjectContext) => {
+                        .rule(({ project }: ChainableApplicationContext) => {
                             expect(project?.name).toEqual(appTest2.name);
                             expect(join(project?.root)).toEqual(join(appTest2.projectRoot!));
                             expect(join(project.sourceRoot!)).toEqual(join(appTest2.projectRoot ? appTest2.projectRoot : '', 'src'));
@@ -92,7 +114,7 @@ import { customMatchers } from './jasmine.matchers';
 
             it('should get specific library context info', async () => {
                 const rule = library(libTest.name)
-                    .rule(({ project }: ChainableProjectContext) => {
+                    .rule(({ project }: ChainableLibraryContext) => {
                         expect(project?.name).toEqual(libTest.name);
                         expect(project?.root).toEqual(`projects/${libTest.name}`);
                         expect(project?.sourceRoot).toEqual(`projects/${libTest.name}/src`);

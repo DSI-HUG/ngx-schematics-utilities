@@ -19,13 +19,7 @@ export enum ChainableType {
 
 export type ChainableRule<T> = (context: T) => Promise<Rule | void> | Rule | void;
 
-export interface ChainableContext {
-    tree: Tree;
-    schematicContext: SchematicContext;
-    workspace: WorkspaceDefinition;
-}
-
-export class Chainable<T extends ChainableContext = ChainableContext> {
+export class Chainable<T> {
     /*
      * We need an array of lazy loaded rules because we have to make sure that a rule has everything she needs.
      * (ex: access to project, tree, workspace, etc.)
