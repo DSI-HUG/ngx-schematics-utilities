@@ -200,10 +200,10 @@ export interface LibraryDefinition extends ProjectDefinition {
 }
 
 export interface ApplicationDefinition extends LibraryDefinition {
-    isStandalone?: boolean;
-    mainFilePath?: string;
-    mainConfigFilePath?: string | null;
-    outputPath?: string;
+    isStandalone: boolean;
+    mainFilePath: string;
+    mainConfigFilePath: string | null;
+    outputPath: string;
 }
 
 export interface ChainableApplicationContext extends ChainableWorkspaceContext {
