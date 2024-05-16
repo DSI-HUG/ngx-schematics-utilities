@@ -56,10 +56,10 @@
         "@schematics/angular": ">= 17"
     },
     "dependencies": {
-        "@badisi/latest-version": "^7.0.3",
+        "@badisi/latest-version": "^7.0.4",
         "@colors/colors": "^1.6.0",
         "ora": "5.4.1",
-        "semver": "^7.6.0"
+        "semver": "^7.6.2"
     },
     "engines": {
         "node": ">= 18.12.0"
