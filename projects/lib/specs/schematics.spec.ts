@@ -51,7 +51,7 @@ describe('schematics', () => {
     });
 
     it('helper: getSchematicSchemaOptions - non existing package external', async () => {
-        const test$ = getSchematicSchemaOptions(context, 'sentry', '@hug/non-existing-package', true);
+        const test$ = getSchematicSchemaOptions(context, 'sentry', '@hug/non-existing-package', true, 0);
         await expectAsync(test$).toBeRejectedWith('Request error (404): https://cdn.jsdelivr.net//npm/@hug/non-existing-package@latest/package.json');
     });
 });

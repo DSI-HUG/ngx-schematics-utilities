@@ -1,3 +1,4 @@
+
 import { getDataFromUrl, getJsonFromUrl } from '../src';
 
 describe('request', () => {
@@ -13,7 +14,7 @@ describe('request', () => {
     });
 
     it('helper: getDataFromUrl - non existing url', async () => {
-        const test$ = getDataFromUrl('non existing url');
+        const test$ = getDataFromUrl('http://non-existing-url', 0);
         await expectAsync(test$).toBeRejected();
     });
 
@@ -23,7 +24,7 @@ describe('request', () => {
     });
 
     it('helper: getJsonFromUrl - non existing url', async () => {
-        const test$ = getJsonFromUrl('non existing url');
+        const test$ = getJsonFromUrl('http://non-existing-url', 0);
         await expectAsync(test$).toBeRejected();
     });
 });

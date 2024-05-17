@@ -6,9 +6,11 @@ import { get } from 'https';
  * Returns the response data of a given url as a buffer object.
  * @async
  * @param {string|URL} url The url where to get the data from.
+ * @param {number} [retries=3] The number of times to retry the request in case of failure.
+ * @param {number} [backoff=300] The delay (in milliseconds) between retries.
  * @returns {Promise<Buffer>} A `Buffer` object.
  */
-export const getDataFromUrl = async (url: string | URL): Promise<Buffer> =>
+export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 300): Promise<Buffer> =>
     new Promise((resolve, reject) => {
         const { hostname, pathname } = (typeof url === 'string') ? new URL(url) : url;
         // eslint-disable-next-line consistent-return
@@ -19,21 +21,27 @@ export const getDataFromUrl = async (url: string | URL): Promise<Buffer> =>
                 res.once('end', () => {
                     res.removeAllListeners();
                     try {
-                        return resolve(Buffer.concat(rawData));
+                        resolve(Buffer.concat(rawData));
                     } catch (err) {
-                        return reject(err);
+                        reject(err);
                     }
                 });
+            } else if (retries > 0) {
+                setTimeout(() => void getDataFromUrl(url, retries - 1, backoff * 2), backoff);
             } else {
                 res.removeAllListeners();
                 res.resume(); // consume response data to free up memory
-                return reject(`Request error (${String(res.statusCode)}): https://${hostname}/${pathname}`);
+                reject(`Request error (${String(res.statusCode)}): https://${hostname}/${pathname}`);
             }
         });
         const abort = (error: Error | string): void => {
-            req.removeAllListeners();
-            req.destroy();
-            return reject(error);
+            if (retries > 0) {
+                setTimeout(() => void getDataFromUrl(url, retries - 1, backoff * 2), backoff);
+            } else {
+                req.removeAllListeners();
+                req.destroy();
+                reject(error);
+            }
         };
         req.once('timeout', () => abort(`Request timed out: https://${hostname}/${pathname}`));
         req.once('error', err => abort(err));
@@ -43,9 +51,11 @@ export const getDataFromUrl = async (url: string | URL): Promise<Buffer> =>
  * Returns the response data of a given url as a JSON object.
  * @async
  * @param {string|URL} url The url where to get the data from.
+ * @param {number} [retries=3] The number of times to retry the request in case of failure.
+ * @param {number} [backoff=300] The delay (in milliseconds) between retries.
  * @returns {Promise<JsonObject>} A `JsonObject` object.
  */
-export const getJsonFromUrl = async (url: string | URL): Promise<JsonObject> => {
-    const data = await getDataFromUrl(url);
+export const getJsonFromUrl = async (url: string | URL, retries = 3, backoff = 300): Promise<JsonObject> => {
+    const data = await getDataFromUrl(url, retries, backoff);
     return JSON.parse(data.toString('utf-8')) as JsonObject;
 };

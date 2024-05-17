@@ -89,12 +89,14 @@ export const createOrUpdateFile = (filePath: string, data: unknown): Rule =>
  * @param {string|URL} source The path or url to the filename to download.
  * @param {string} destination The path to the destination filename of the download operation.
  * @param {boolean} [replace=false] Whether or not to overwrite the destination file if it already exists.
+ * @param {number} [retries=3] The number of times to retry the request in case of failure.
+ * @param {number} [backoff=300] The delay (in milliseconds) between retries.
  * @returns {Rule}
  */
-export const downloadFile = (source: string | URL, destination: string, replace = false): Rule =>
+export const downloadFile = (source: string | URL, destination: string, replace = false, retries = 3, backoff = 300): Rule =>
     async (tree: Tree): Promise<void> => {
-        if (!tree.exists(destination) || replace) {
-            const data = await getDataFromUrl(source);
+        if (!tree.exists(destination) ?? replace) {
+            const data = await getDataFromUrl(source, retries, backoff);
             if (!tree.exists(destination)) {
                 tree.create(destination, data);
             } else {

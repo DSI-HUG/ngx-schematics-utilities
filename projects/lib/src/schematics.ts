@@ -11,18 +11,18 @@ export interface NgCliOption extends Option {
     hint: string;
 }
 
-const getExternalSchemaJson = async (packageName: string, schematicName = 'ng-add'): Promise<JsonObject> => {
+const getExternalSchemaJson = async (packageName: string, schematicName = 'ng-add', retries = 3, backoff = 300): Promise<JsonObject> => {
     const url = `http://cdn.jsdelivr.net/npm/${packageName}@latest`;
 
-    const pkgJson = await getJsonFromUrl(pathJoin(url, 'package.json'));
+    const pkgJson = await getJsonFromUrl(pathJoin(url, 'package.json'), retries, backoff);
     if (pkgJson?.['schematics']) {
-        const collectionJson = await getJsonFromUrl(pathJoin(url, pkgJson['schematics'] as string));
+        const collectionJson = await getJsonFromUrl(pathJoin(url, pkgJson['schematics'] as string), retries, backoff);
         if (collectionJson?.['schematics']) {
             const schema = ((collectionJson['schematics'] as JsonObject)[schematicName] as JsonObject)?.['schema'] as string;
             if (!schema) {
                 throw new Error(`Schematic "${schematicName}" not found in collection "${packageName}".`);
             }
-            return await getJsonFromUrl(pathJoin(url, pathDirname(pkgJson['schematics'] as string), schema));
+            return await getJsonFromUrl(pathJoin(url, pathDirname(pkgJson['schematics'] as string), schema), retries, backoff);
         }
     }
 
@@ -36,9 +36,18 @@ const getExternalSchemaJson = async (packageName: string, schematicName = 'ng-ad
  * @param {string} [schematicName="ng-add"] Name of the schematic schema (ex: "drag-drop").
  * @param {string} [packageName="current-schematic-collection-name"] Name of the package containing the schematic schema (ex: "@angular/cli").
  * @param {boolean} [external=false] Whether the schematic is local or external.
+ * @param {number} [retries=3] The number of times to retry the request in case of failure.
+ * @param {number} [backoff=300] The delay (in milliseconds) between retries.
  * @returns {Promise<NgCliOption[]>} A collection of `NgCliOption` objects.
  */
-export const getSchematicSchemaOptions = async (context: SchematicContext, schematicName = 'ng-add', packageName?: string, external = false): Promise<NgCliOption[]> => {
+export const getSchematicSchemaOptions = async (
+    context: SchematicContext,
+    schematicName = 'ng-add',
+    packageName?: string,
+    external = false,
+    retries = 3,
+    backoff = 300
+): Promise<NgCliOption[]> => {
     let schemaJson: JsonObject | undefined;
     if (!packageName) {
         packageName = context.schematic?.collection?.description?.name;
@@ -48,7 +57,7 @@ export const getSchematicSchemaOptions = async (context: SchematicContext, schem
         const schematic = collection.createSchematic(schematicName, false);
         schemaJson = (schematic.description as unknown as { schemaJson: JsonObject }).schemaJson;
     } else {
-        schemaJson = await getExternalSchemaJson(packageName, schematicName);
+        schemaJson = await getExternalSchemaJson(packageName, schematicName, retries, backoff);
     }
     if (schemaJson?.['properties']) {
         const schemaPropertiesOrdered = Object.keys(schemaJson?.['properties'] as JsonObject);

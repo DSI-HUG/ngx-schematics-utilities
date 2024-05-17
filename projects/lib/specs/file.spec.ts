@@ -192,16 +192,16 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 expect(tree.exists('./test.json')).toBeTruthy();
 
                 const content = `{
-            "root": true,
-            "extends": [
-                "@hug/eslint-config/moderate"
-            ]
-        }`.replace((/ {2}|\r\n|\n|\r/gm), '');
+                    "root": true,
+                    "extends": [
+                        "@hug/eslint-config/moderate"
+                    ]
+                }`.replace((/ {2}|\r\n|\n|\r/gm), '');
                 expect(tree.readContent('./test.json').replace((/ {2}|\r\n|\n|\r/gm), '')).toEqual(content);
             });
 
             it('rule: downloadFile - non existing source', async () => {
-                const rule = downloadFile('nonExistingFile', './test.json');
+                const rule = downloadFile('http://non-existing-file', './test.json', false, 0);
                 const test$ = callRule(rule, tree);
                 await expectAsync(test$).toBeRejected();
             });
