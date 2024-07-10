@@ -109,7 +109,7 @@ export default async (options: any): Rule => {
 
       addImportToFile(project.pathFromSourceRoot('main.ts'), 'environment', './environments/environment'),
 
-      (): Rule => {
+      (tree, context): Rule => {
         ...
       },
 

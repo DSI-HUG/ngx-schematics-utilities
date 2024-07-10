@@ -32,7 +32,7 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    (); Rule => {
+    (): Rule => {
       const url = 'https://cdn.jsdelivr.net/npm/@angular/core@latest/package.json';
       const packageJson = await getJsonFromUrl(url);
       ...
