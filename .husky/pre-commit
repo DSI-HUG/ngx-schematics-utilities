@@ -1,0 +1,14 @@
+printf "> Validating user email... "
+
+gitUserEmail="$(git config user.email)"
+if [[ $gitUserEmail =~ ^.*@(hcuge|hug).ch$  ]] ; then
+    printf "\n"
+    printf "For privacy, git user email should not end with @hcuge.ch or @hug.ch\n"
+    printf "Received: %s\n" $gitUserEmail
+    printf "\n"
+    printf "You can fix this with the following command:\n"
+    printf "git config --global user.email <your_email>\n"
+    exit 1
+else
+    printf "OK\n"
+fi
