@@ -47,7 +47,8 @@
         "test": "node ./make.mjs test-lib",
         "test:ci": "node ./make.mjs test-ci",
         "build": "node ./make.mjs build",
-        "build:global": "node ./make.mjs build-global"
+        "build:global": "node ./make.mjs build-global",
+        "release": "npm publish ./dist --access public"
     },
     "peerDependencies": {
         "@angular-devkit/core": ">= 17",

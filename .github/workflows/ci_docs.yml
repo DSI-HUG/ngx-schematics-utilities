@@ -22,25 +22,12 @@ jobs:
   ci_docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: latest
-          registry-url: https://registry.npmjs.org/
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install latest npm
-        run: npm install -g npm@latest
+      - name: Setup
+        uses: dsi-hug/actions/setup@v2
 
       - name: Build docs
         working-directory: projects/docs
-        run: |
-          npm clean-install --engine-strict
-          npm run build
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -48,4 +35,4 @@ jobs:
           github_token: ${{ secrets.DSI_HUG_BOT_GITHUB_TOKEN }}
           publish_dir: ./projects/docs/build
           user_name: dsi-hug-bot
-          user_email: dsi-hug-github@hcuge.ch
+          user_email: 'dsi-hug-bot@users.noreply.github.com'
