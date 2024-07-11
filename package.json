@@ -15,10 +15,10 @@
         "@colors/colors": "^1.6.0",
         "@commitlint/cli": "^19.3.0",
         "@commitlint/config-conventional": "^19.2.2",
-        "@hug/eslint-config": "^17.0.3",
         "@schematics/angular": "^17.3.7",
+        "@hug/eslint-config": "^19.0.0",
         "@types/jasmine": "^5.1.4",
-        "@types/node": "^20.12.12",
+        "@types/node": "^20.14.10",
         "@types/semver": "^7.5.8",
         "chokidar": "^3.6.0",
         "cpy": "^11.0.1",
@@ -27,9 +27,9 @@
         "husky": "^9.0.11",
         "jasmine": "^5.1.0",
         "jasmine-spec-reporter": "^7.0.0",
-        "lint-staged": "^15.2.2",
+        "lint-staged": "^15.2.7",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^5.4.5"
+        "typescript": "^5.5.3"
     },
     "commitlint": {
         "extends": [
