@@ -400,8 +400,8 @@ export const getProjectFromWorkspace = async <T extends LibraryDefinition | Appl
     const options = {
         name: projectName,
         ...project,
-        pathFromRoot: (path: string) => join(project.root ?? '', path),
-        pathFromSourceRoot: (path: string) => join(project.sourceRoot ?? '', path)
+        pathFromRoot: (path: string): string => join(project.root ?? '', path),
+        pathFromSourceRoot: (path: string): string => join(project.sourceRoot ?? '', path)
     };
 
     if (project.extensions['projectType'] === ProjectType.Application) {

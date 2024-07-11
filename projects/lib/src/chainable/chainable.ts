@@ -229,7 +229,7 @@ export class Chainable<T> {
         this.addRuleToChain(ensureIsAngularWorkspace);
 
         // Make sure the first thing we do in the chain is to get all the needed references
-        this.addRuleToChain(() => async (tree: Tree, schematicContext: SchematicContext) => {
+        this.addRuleToChain(() => async (tree: Tree, schematicContext: SchematicContext): Promise<void> => {
             this._tree = tree;
             this._schematicContext = schematicContext;
             this._workspace = await getWorkspace(tree);
