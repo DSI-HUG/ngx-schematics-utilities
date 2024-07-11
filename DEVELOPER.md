@@ -1,18 +1,19 @@
 # Development
 
-This document describes how you can test, build and publish the library and its documentation.
+This document describes how you can lint, test, build and publish this project.
 
 ## Prerequisite
 
-Before you can build and test this library you must install and configure the following products on your development machine:
+Before you can start you must install and configure the following products on your development machine:
 
-* [Git][git]
 * [Node.js][nodejs]
+* [Git][git]
 
-You will then need to install the required dependencies:
+You will then need to clone this project and install the required dependencies:
 
 ```sh
-cd <library-path>
+git clone <repository_url> <dir_name>
+cd <dir_name>
 npm install
 ```
 
@@ -21,22 +22,41 @@ npm install
 Check that the code is properly formatted and adheres to coding style.
 
 ```sh
-npm run lint --prefix=projets/lib
+npm run lint -w projects/lib
 ```
 
 ## Unit testing
 
-Unit tests can be executed with the following command:
+Ensure that each unit of the library performs as expected.
 
 ```sh
-npm run test:ci --prefix=projects/lib
+npm run test -w projects/lib
 ```
 
-## Developing the library
+## Testing locally
+
+You can test the library while developing it, as follow:
 
 ```sh
-npm run start --prefix=projects/lib
+npm run start -w projects/lib
 ```
+
+## Building the library
+
+The library will be built in the `./dist` directory.
+
+```sh
+npm run build -w projects/lib
+```
+
+## Publishing to NPM repository
+
+This project comes with automatic continuous delivery (CD) using *GitHub Actions*.
+
+1. Bump the library version in `./projects/lib/package.json`
+2. Push the changes
+3. Create a new [GitHub release](https://github.com/dsi-hug/ngx-schematics-utilities/releases/new)
+4. Watch the results in: [Actions](https://github.com/dsi-hug/ngx-schematics-utilities/actions)
 
 ## Developing the documentation
 
@@ -44,20 +64,11 @@ npm run start --prefix=projects/lib
 npm run start --prefix=projects/docs
 ```
 
-## Publishing the library to NPM repository
-
-This project comes with automatic continuous delivery (CD) using *GitHub Actions*.
-
-1. Bump the library version in `./projects/lib/package.json`
-2. Push the changes
-3. Create a new: [GitHub release](https://github.com/dsi-hug/ngx-schematics-utilities/releases/new)
-4. Watch the results in: [Actions](https://github.com/dsi-hug/ngx-schematics-utilities/actions)
-
 ## Publishing the documentation to GitHub Pages
 
 This project comes with automatic continuous delivery (CD) using *GitHub Actions*.
 
-1. Make any changes in the `./projects/docs` directory
+1. Make any changes under `./projects/docs/`
 2. Push the changes
 3. Watch the results in: [Actions](https://github.com/dsi-hug/ngx-schematics-utilities/actions)
 
