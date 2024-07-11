@@ -5,8 +5,7 @@
         "outDir": "../../dist/src",
         "declaration": true,
         "declarationMap": true,
-        "inlineSources": true,
-        "types": []
+        "inlineSources": true
     },
     "exclude": [
         "specs/**",
