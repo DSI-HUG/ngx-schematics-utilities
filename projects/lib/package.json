@@ -59,7 +59,7 @@
     "dependencies": {
         "@badisi/latest-version": "^7.0.6",
         "@colors/colors": "^1.6.0",
-        "ora": "5.4.1",
+        "ora": "^8.0.1",
         "semver": "^7.6.2"
     },
     "engines": {

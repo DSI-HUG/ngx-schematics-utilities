@@ -3,7 +3,6 @@ import {
     bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
 } from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'child_process';
-import ora from 'ora';
 
 interface BufferOutput {
     stream: NodeJS.WriteStream;
@@ -89,43 +88,46 @@ export const logAction = (message: string): Rule =>
  * @returns {Rule}
  */
 export const spawn = (command: string, args: string[], showOutput = false): Rule =>
-    async (): Promise<void> => new Promise((resolve, reject) => {
-        const bufferedOutput: BufferOutput[] = [];
-        const verbose = showOutput || process.argv.includes('--verbose');
-        const cmdText = `${command} ${args.join(' ')}`;
+    async (): Promise<void> => {
+        const ora = (await import('ora')).default;
+        return new Promise((resolve, reject) => {
+            const bufferedOutput: BufferOutput[] = [];
+            const verbose = showOutput || process.argv.includes('--verbose');
+            const cmdText = `${command} ${args.join(' ')}`;
 
-        const spinner = ora({ text: cyan(cmdText) });
-        if (!verbose) {
-            spinner.start();
-        }
+            const spinner = ora({ text: cyan(cmdText) });
+            if (!verbose) {
+                spinner.start();
+            }
 
-        const childProcess = childProcessSpawn(command, args, {
-            stdio: (verbose) ? 'inherit' : 'pipe',
-            shell: true
-        });
-        childProcess.once('disconnect', resolve);
-        childProcess.once('error', error => reject(error));
-        childProcess.on('close', (code: number) => {
-            if (code === 0) {
-                if (!verbose) {
-                    spinner.succeed(cyan(cmdText));
-                    spinner.stop();
+            const childProcess = childProcessSpawn(command, args, {
+                stdio: (verbose) ? 'inherit' : 'pipe',
+                shell: true
+            });
+            childProcess.once('disconnect', resolve);
+            childProcess.once('error', error => reject(error));
+            childProcess.on('close', (code: number) => {
+                if (code === 0) {
+                    if (!verbose) {
+                        spinner.succeed(cyan(cmdText));
+                        spinner.stop();
+                    }
+                    return resolve();
+                } else {
+                    if (!verbose) {
+                        spinner.fail(red(`${cmdText}\n`));
+                        bufferedOutput.forEach(({ stream, data }) => stream.write(data));
+                    }
+                    return reject(new UnsuccessfulWorkflowExecution());
                 }
-                return resolve();
-            } else {
-                if (!verbose) {
-                    spinner.fail(red(`${cmdText}\n`));
-                    bufferedOutput.forEach(({ stream, data }) => stream.write(data));
-                }
-                return reject(new UnsuccessfulWorkflowExecution());
+            });
+            if (!verbose) {
+                childProcess.stdout?.on('data', (data: Buffer) =>
+                    bufferedOutput.push({ stream: process.stdout, data: data })
+                );
+                childProcess.stderr?.on('data', (data: Buffer) =>
+                    bufferedOutput.push({ stream: process.stderr, data: data })
+                );
             }
         });
-        if (!verbose) {
-            childProcess.stdout?.on('data', (data: Buffer) =>
-                bufferedOutput.push({ stream: process.stdout, data: data })
-            );
-            childProcess.stderr?.on('data', (data: Buffer) =>
-                bufferedOutput.push({ stream: process.stderr, data: data })
-            );
-        }
-    });
+    };
