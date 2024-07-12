@@ -1,0 +1,9 @@
+{
+    "name": "tests-app",
+    "scripts": {
+        "start": "ng add ./tests-schematic --skip-confirmation"
+    },
+    "devDependencies": {
+        "tests-schematic": "file:tests-schematic"
+    }
+}

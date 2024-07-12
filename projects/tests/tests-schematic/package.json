@@ -1,0 +1,7 @@
+{
+    "name": "tests-schematic",
+    "schematics": "./collection.json",
+    "ng-add": {
+        "save": "devDependencies"
+    }
+}

@@ -41,6 +41,12 @@ You can test the library while developing it, as follow:
 npm run start -w projects/lib
 ```
 
+And then:
+
+```sh
+npm run start -w projects/tests
+```
+
 ## Building the library
 
 The library will be built in the `./dist` directory.

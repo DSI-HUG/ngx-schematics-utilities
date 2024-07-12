@@ -1,0 +1,8 @@
+{
+    "schematics": {
+        "ng-add": {
+            "description": "Run ng-add schematic",
+            "factory": "./index"
+        }
+    }
+}

@@ -6,7 +6,8 @@
     },
     "workspaces": [
         "projects/lib",
-        "projects/docs"
+        "projects/docs",
+        "projects/tests"
     ],
     "devDependencies": {
         "@angular-devkit/core": "^17.3.7",
@@ -15,8 +16,8 @@
         "@colors/colors": "^1.6.0",
         "@commitlint/cli": "^19.3.0",
         "@commitlint/config-conventional": "^19.2.2",
-        "@schematics/angular": "^17.3.7",
         "@hug/eslint-config": "^19.0.0",
+        "@schematics/angular": "^17.3.7",
         "@types/jasmine": "^5.1.4",
         "@types/node": "^20.14.10",
         "@types/semver": "^7.5.8",
