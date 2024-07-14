@@ -1,4 +1,7 @@
-import { chain, Rule, SchematicContext, Tree, UnsuccessfulWorkflowExecution } from '@angular-devkit/schematics';
+import {
+    chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution, callRule
+} from '@angular-devkit/schematics';
+import { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import {
     bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
 } from '@colors/colors/safe';
@@ -7,6 +10,11 @@ import { spawn as childProcessSpawn } from 'child_process';
 interface BufferOutput {
     stream: NodeJS.WriteStream;
     data: Buffer;
+}
+
+type SchematicContextExtended = SchematicContext & {
+    _scheduledTasks?: Record<string, TaskId>
+    readonly engine: SchematicContext['engine'] & { _host: FileSystemEngineHostBase }
 }
 
 /**
@@ -39,7 +47,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
         log(`${magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)}`),
         log(''),
         ...rules,
-        log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)
+        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]))
     ]);
 };
 
@@ -130,4 +138,34 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
                 );
             }
         });
+    };
+
+/**
+ * Executes a rule at the very end of the schematic.
+ * Beware that most of the other helper rules won't work here (especially those that manipulate the tree).
+ * Because, at that time, the Angular schematic has already finished running.
+ * @param {Rule} rule The rule to execute.
+ * @returns {Rule}
+ */
+export const runAtEnd = (rule: Rule): Rule =>
+    (tree: Tree, context: SchematicContext): void => {
+        const _context = context as SchematicContextExtended;
+        _context._scheduledTasks ??= {};
+
+        // Register the task
+        const name = `__task_${Object.keys(_context._scheduledTasks).length}__`;
+        if (!_context._scheduledTasks[name]) {
+            _context.engine._host.registerTaskExecutor({
+                // @ts-expect-error: `callRule` returns Observable<Tree> where Observable<void> is expected, but that's acceptable
+                name, create: async () => Promise.resolve(() => callRule(rule, tree, context))
+            });
+        } else {
+            throw new Error(`Task with name '${name}' already registered.`);
+        }
+
+        // Schedule the task
+        _context._scheduledTasks[name] = _context.addTask(
+            { toConfiguration: () => ({ name }) },
+            Object.values(_context._scheduledTasks)
+        );
     };
