@@ -170,3 +170,10 @@ export const runAtEnd = (rule: Rule): Rule =>
             Object.values(_context._scheduledTasks)
         );
     };
+
+/**
+ * Executes a rule.
+ * @param {Rule} rule The rule to execute.
+ * @returns {Rule}
+ */
+export const rule = (rule: Rule): Rule => rule; // eslint-disable-line @typescript-eslint/no-shadow
