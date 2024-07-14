@@ -58,7 +58,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
  * @returns {Rule}
  */
 export const logInfo = (message: string): Rule =>
-    log(`${blue('>')} ${black(bgBlue(' INFO '))} ${blue(message)}\n`);
+    log(`${blue('>')} ${black(bgBlue(' INFO '))} ${blue(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
@@ -66,7 +66,7 @@ export const logInfo = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logWarning = (message: string): Rule =>
-    log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}\n`);
+    log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ERROR" printed in red.
@@ -74,7 +74,7 @@ export const logWarning = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logError = (message: string): Rule =>
-    log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}\n`);
+    log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
@@ -82,7 +82,7 @@ export const logError = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logAction = (message: string): Rule =>
-    log(`${yellow('>')} ${black(bgYellow(' ACTION '))} ${yellow(message)}\n`);
+    log(`${yellow('>')} ${black(bgYellow(' ACTION '))} ${yellow(message)}`);
 
 /**
  * Spawns a new process using the given command and arguments.
