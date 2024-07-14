@@ -1,15 +1,41 @@
+const { chain } = require('@angular-devkit/schematics');
 const {
-    spawn, schematic, log, logInfo, logWarning, logError, logAction, modifyJsonFile
+    spawn, schematic, log, logInfo, logWarning, logError, logAction, modifyJsonFile,
+    runAtEnd, rule, workspace
 } = require('../../../dist/src');
 
 exports.default = () => schematic('My Schematic', [
-    logInfo('This is an info'),
     log('This is a normal log\n'),
-    spawn('npm', ['--version']),
-    log(''),
+    logInfo('This is an info\n'),
+    logWarning('This is a warning\n'),
+    logError('This is an error\n'),
+    logAction('This is an action\n'),
+
     modifyJsonFile('package.json', ['version'], '1.0.0'),
     modifyJsonFile('package.json', ['version'], undefined),
-    logWarning('This is a warning'),
-    logError('This is an error'),
-    logAction('This is an action')
+
+    spawn('npm', ['--version']),
+    log(''),
+
+    rule(() => {
+        // do something..
+        log('Custom rule\n');
+    }),
+
+    runAtEnd(chain([
+        rule(() => {
+            // do something..
+            console.log('\nDo something at the end...\n');
+        }),
+        logInfo('Run at the end\n')
+    ])),
+
+    workspace()
+        .rule(() =>
+            // do something...
+            log('Custom rule from chainable\n')
+        )
+        .log('Log from workspace\n')
+        .runAtEnd(logAction('Have a look at `./package.json` file and make modifications as needed.'))
+        .toRule()
 ]);
