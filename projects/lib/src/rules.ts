@@ -1,5 +1,6 @@
 import {
-    chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution, callRule
+    callRule,
+    chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution
 } from '@angular-devkit/schematics';
 import { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import {
@@ -13,9 +14,9 @@ interface BufferOutput {
 }
 
 type SchematicContextExtended = SchematicContext & {
-    _scheduledTasks?: Record<string, TaskId>
-    readonly engine: SchematicContext['engine'] & { _host: FileSystemEngineHostBase }
-}
+    _scheduledTasks?: Record<string, TaskId>;
+    readonly engine: SchematicContext['engine'] & { _host: FileSystemEngineHostBase };
+};
 
 /**
  * Outputs a message to the console.
