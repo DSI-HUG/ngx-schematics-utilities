@@ -22,6 +22,22 @@ export default (options: any): Rule =>
   ]);
 ```
 
+### `rule`
+
+Executes a rule.
+
+```ts {6-8}
+import { rule, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    rule(() => {
+        ...
+    }))
+  ]);
+```
+
 ### `log`
 
 Outputs a message to the console.
@@ -121,6 +137,24 @@ export default (options: any): Rule =>
 
     // Display the command outputs directly to the console
     spawn('npx', ['-p', 'package-name', 'some-command'], true)
+  ]);
+```
+
+### `runAtEnd`
+
+Executes a rule at the very end of the schematic.
+Beware that most of the other helper rules won't work here (especially those that manipulate the tree).
+Because, at that time, the Angular schematic has already finished running.
+
+```ts {6-8}
+import { runAtEnd, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  schematic('my-schematic', [
+    runAtEnd(() => {
+        ...
+    }))
   ]);
 ```
 
