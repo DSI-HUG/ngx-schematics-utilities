@@ -48,6 +48,8 @@ This library provide a large set of utilities that can be used while developing 
 
 #### Example
 
+![preview](preview.gif "Preview")
+
 ```ts
 export default (options: MySchematicOptions): Rule =>
   schematic('my-schematic', [
