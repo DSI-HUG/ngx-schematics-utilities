@@ -48,7 +48,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
         log(`${magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)}`),
         log(''),
         ...rules,
-        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]))
+        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__')
     ]);
 };
 
@@ -148,27 +148,25 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
  * @param {Rule} rule The rule to execute.
  * @returns {Rule}
  */
-export const runAtEnd = (rule: Rule): Rule =>
+export const runAtEnd = (rule: Rule, taskName?: string): Rule =>
     (tree: Tree, context: SchematicContext): void => {
         const _context = context as SchematicContextExtended;
         _context._scheduledTasks ??= {};
 
         // Register the task
-        const name = `__task_${Object.keys(_context._scheduledTasks).length}__`;
+        const name = taskName ?? `__task_${Object.keys(_context._scheduledTasks).length}__`;
         if (!_context._scheduledTasks[name]) {
             _context.engine._host.registerTaskExecutor({
                 // @ts-expect-error: `callRule` returns Observable<Tree> where Observable<void> is expected, but that's acceptable
                 name, create: async () => Promise.resolve(() => callRule(rule, tree, context))
             });
-        } else {
-            throw new Error(`Task with name '${name}' already registered.`);
-        }
 
-        // Schedule the task
-        _context._scheduledTasks[name] = _context.addTask(
-            { toConfiguration: () => ({ name }) },
-            Object.values(_context._scheduledTasks)
-        );
+            // Schedule the task
+            _context._scheduledTasks[name] = _context.addTask(
+                { toConfiguration: () => ({ name }) },
+                Object.values(_context._scheduledTasks)
+            );
+        }
     };
 
 /**
