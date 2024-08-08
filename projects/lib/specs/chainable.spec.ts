@@ -147,7 +147,7 @@ import { customMatchers } from './jasmine.matchers';
 
                 const rule = application(appTest1.name)
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
-                    .deleteFiles(['__SRC__/main.ts'])
+                    .deleteFiles(['__MAIN__'])
                     .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
                     .toRule();
                 await callRule(rule, tree);
@@ -156,19 +156,48 @@ import { customMatchers } from './jasmine.matchers';
             });
 
             it('should transpile __SRC__', async () => {
-                const fileFromRoot = join(projectDef.root, 'src/main.ts');
-
-                expect(tree.exists(fileFromRoot)).toBeTruthy();
-
+                const truePath = join(projectDef.root, 'src/test.ts');
+                expect(tree.exists(truePath)).toBeFalsy();
                 const rule = application(appTest1.name)
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
-                    .deleteFiles(['__SRC__/main.ts'])
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
+                    .createOrUpdateFile('__SRC__/test.ts', 'Test')
                     .toRule();
                 await callRule(rule, tree);
-
-                expect(tree.exists(fileFromRoot)).toBeFalsy();
+                expect(tree.exists(truePath)).toBeTruthy();
             });
+
+            it('should transpile __OUTPUT__', async () => {
+                const truePath = `dist/${appTest1.name}/test.ts`;
+                expect(tree.exists(truePath)).toBeFalsy();
+                const rule = application(appTest1.name)
+                    .createOrUpdateFile('__OUTPUT__/test.ts', 'Test')
+                    .toRule();
+                await callRule(rule, tree);
+                expect(tree.exists(truePath)).toBeTruthy();
+            });
+
+            it('should transpile __MAIN__', async () => {
+                const truePath = join(projectDef.root, 'src/main.ts');
+                expect(tree.exists(truePath)).toBeTruthy();
+                expect(tree.readContent(truePath)).not.toEqual('Test');
+                const rule = application(appTest1.name)
+                    .createOrUpdateFile('__MAIN__', 'Test')
+                    .toRule();
+                await callRule(rule, tree);
+                expect(tree.readContent(truePath)).toEqual('Test');
+            });
+
+            if (useStandalone) {
+                it('should transpile __CONFIG__', async () => {
+                    const truePath = join(projectDef.root, 'src/app/app.config.ts');
+                    expect(tree.exists(truePath)).toBeTruthy();
+                    expect(tree.readContent(truePath)).not.toEqual('Test');
+                    const rule = application(appTest1.name)
+                        .createOrUpdateFile('__CONFIG__', 'Test')
+                        .toRule();
+                    await callRule(rule, tree);
+                    expect(tree.readContent(truePath)).toEqual('Test');
+                });
+            }
 
             it('customRule:sync: allow return rule', async () => {
                 const file = 'test.md';

@@ -1,6 +1,7 @@
 import { JsonObject } from '@angular-devkit/core';
 import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
+import { ProjectType } from '@schematics/angular/utility/workspace-models';
 import { join } from 'path';
 
 import {
@@ -188,6 +189,15 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
     protected override pathFromRoot(path: string): string {
         if (path.startsWith('__SRC__')) {
             return path.replace('__SRC__', this._project?.sourceRoot ?? 'src');
+        } else if (this._project?.extensions['projectType'] === ProjectType.Application) {
+            const p = this._project as ApplicationDefinition;
+            if (path.startsWith('__OUTPUT__')) {
+                return path.replace('__OUTPUT__', p.outputPath ?? 'dist');
+            } else if (path === '__MAIN__') {
+                return p.mainFilePath ?? path;
+            } else if (path === '__CONFIG__') {
+                return p.mainConfigFilePath ?? path;
+            }
         }
         return join(this._project?.root ?? '', path);
     }

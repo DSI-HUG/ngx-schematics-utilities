@@ -52,7 +52,10 @@ export default (options: any): Rule =>
 Allow you to act at a *project* level and make sure the specified project is an *application*.
 
 :::tip
-`__SRC__` will be interpolated with the project **sourceRoot** specified in the **angular.json** file.
+`__SRC__` will be interpolated with **sourceRoot** specified in the project's **angular.json** file.<br/>
+`__OUTPUT__` will be interpolated with **outputPath** specified in the project's **angular.json** file.<br/>
+`__MAIN__` will be interpolated with **browser** or **main** specified in the project's **angular.json** file.<br/>
+`__CONFIG__` will be interpolated with the project's **config** file path *(for standalone only)*.
 :::
 
 ```ts {6-14}
@@ -63,7 +66,7 @@ export default (options: any): Rule =>
   schematic('my-schematic', [
     application(options.project)
       .deployFiles(options)
-      .addProviderToBootstrapApplication('__SRC__/main.ts', 'provideAnimations()', '@angular/platform-browser/animations'),
+      .addProviderToBootstrapApplication('__MAIN__', 'provideAnimations()', '@angular/platform-browser/animations'),
       .addImportToFile('__SRC__/file.ts', 'environment', './environments/environment')
       .deleteFiles(['karma.conf.js'])
       .rule(({ project }: ChainableApplicationContext) => {

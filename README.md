@@ -70,7 +70,7 @@ export default (options: MySchematicOptions): Rule =>
 
     application(options.project)
       .deployFiles(options)
-      .addProviderToBootstrapApplication('__SRC__/main.ts', 'provideAnimations()', '@angular/platform-browser/animations'),
+      .addProviderToBootstrapApplication('__MAIN__', 'provideAnimations()', '@angular/platform-browser/animations'),
       .addImportToFile('__SRC__/file.ts', 'environment', './environments/environment')
       .deleteFiles(['karma.conf.js'])
       .rule(({ project }: ChainableApplicationContext) => {

@@ -160,7 +160,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     application(options.project)
-      .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
+      .addImportToFile('__MAIN__', 'environment', './environments/environment')
       .toRule()
   ]);
 ```
@@ -183,7 +183,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     project(options.project)
-      .modifyImportInFile('__SRC__/main.ts', 'name', 'newName', 'src/my-file')
+      .modifyImportInFile('__MAIN__', 'name', 'newName', 'src/my-file')
       .toRule()
   ]);
 ```
@@ -202,7 +202,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     project(options.project)
-      .removeImportFromFile('__SRC__/main.ts', 'environment', 'src/environments/environment')
+      .removeImportFromFile('__MAIN__', 'environment', 'src/environments/environment')
       .toRule()
   ]);
 ```

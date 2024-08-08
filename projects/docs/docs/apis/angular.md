@@ -444,7 +444,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     application(options.project)
-      .addProviderToBootstrapApplication('__SRC__/main.ts', 'provideAnimations()', '@angular/platform-browser/animations')
+      .addProviderToBootstrapApplication('__MAIN__', 'provideAnimations()', '@angular/platform-browser/animations')
       .toRule()
   ]);
 ```
@@ -467,7 +467,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     application(options.project)
-      .removeProviderFromBootstrapApplication('__SRC__/main.ts', 'provideRouter')
+      .removeProviderFromBootstrapApplication('__MAIN__', 'provideRouter')
       .toRule()
   ]);
 ```
