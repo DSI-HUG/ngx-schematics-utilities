@@ -8,8 +8,8 @@ title: File
 
 Deploys assets files and optionally applies computation to them.
 
-```ts {7,10,13,16}
-import { deployFiles, schematic } from '@hug/ngx-schematics-utilities';
+```ts {7,10,13,16,20}
+import { deployFiles, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -25,6 +25,11 @@ export default (options: any): Rule =>
 
     // Use a different destination folder
     deployFiles(undefined, './files', './my-dest-folder'),
+
+    // Using chainable
+    workspace()
+      .deployFiles()
+      .toRule()
   ]);
 ```
 
@@ -32,8 +37,8 @@ export default (options: any): Rule =>
 
 Deletes a collection of files or folders
 
-```ts {6-9,12}
-import { deleteFiles, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6-9,12,16}
+import { deleteFiles, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -44,7 +49,12 @@ export default (options: any): Rule =>
     ]),
 
     // Folder deletion needs to be forced
-    deleteFiles(['src'], true)
+    deleteFiles(['src'], true),
+
+    // Using chainable
+    workspace()
+      .deleteFiles(['file.txt'])
+      .toRule()
   ]);
 ```
 
@@ -52,13 +62,18 @@ export default (options: any): Rule =>
 
 Rename a file
 
-```ts {6}
-import { renameFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { renameFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    renameFile('src/old/a.ts', 'src/new/b.ts')
+    renameFile('src/old/a.ts', 'src/new/b.ts'),
+
+    // Using chainable
+    workspace()
+      .renameFile('old.txt', 'new.txt')
+      .toRule()
   ]);
 ```
 
@@ -66,13 +81,18 @@ export default (options: any): Rule =>
 
 Creates or updates a file.
 
-```ts {6}
-import { createOrUpdateFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { createOrUpdateFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    createOrUpdateFile('README.md', 'My readme content')
+    createOrUpdateFile('README.md', 'My readme content'),
+
+    // Using chainable
+    workspace()
+      .createOrUpdateFile('README.md', 'My readme Content')
+      .toRule()
   ]);
 ```
 
@@ -80,13 +100,13 @@ export default (options: any): Rule =>
 
 Downloads a file.
 
-```ts {9-12}
-import { downloadFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {9-12,18}
+import { downloadFile, rule, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { chain, Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    (): Rule => {
+    rule(() => {
       const sizes = ['72', '96', '128', '144', '152', '192', '384', '512'];
       return chain(
         sizes.map(size => downloadFile(
@@ -94,7 +114,12 @@ export default (options: any): Rule =>
           `src/assets/icons/icon-${size}x${size}.png`
         ))
       );
-    }
+    }),
+
+    // Using chainable
+    workspace()
+      .downloadFile('https://my-cdn.com/icons/icon.png', './icon.png')
+      .toRule()
   ]);
 ```
 
@@ -102,13 +127,18 @@ export default (options: any): Rule =>
 
 Replaces text in a file, using a regular expression or a search string.
 
-```ts {6}
-import { replaceInFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { replaceInFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    replaceInFile('.editorconfig', /(indent_size = )(.*)/gm, '$14')
+    replaceInFile('.editorconfig', /(indent_size = )(.*)/gm, '$14'),
+
+    // Using chainable
+    workspace()
+      .replaceInFile('.editorconfig', /(indent_size = )(.*)/gm, '$14')
+      .toRule()
   ]);
 ```
 
@@ -116,8 +146,8 @@ export default (options: any): Rule =>
 
 Adds an import to a file.
 
-```ts {7,10}
-import { addImportToFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {7,10,14}
+import { addImportToFile, schematic, project } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -126,7 +156,12 @@ export default (options: any): Rule =>
     addImportToFile('src/main.ts', 'environment', './environments/environment'),
 
     // Default format : `import packageJson from 'package.json';`
-    addImportToFile('src/main.ts', 'packageJson', 'package.json', true)
+    addImportToFile('src/main.ts', 'packageJson', 'package.json', true),
+
+    // Using chainable
+    application(options.project)
+      .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
+      .toRule()
   ]);
 ```
 
@@ -134,17 +169,22 @@ export default (options: any): Rule =>
 
 Modifies or removes an import inside a file.
 
-```ts {7,10}
-import { modifyImportInFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {7,10,14}
+import { modifyImportInFile, schematic, project } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
     // Rename an import
-    modifyImportInFile('src/main.ts', 'name', 'newName', 'src/my-file');
+    modifyImportInFile('src/main.ts', 'name', 'newName', 'src/my-file'),
 
     // Remove an import
-    modifyImportInFile('src/main.ts', 'environment', undefined, 'src/environments/environment');
+    modifyImportInFile('src/main.ts', 'environment', undefined, 'src/environments/environment'),
+
+    // Using chainable
+    project(options.project)
+      .modifyImportInFile('__SRC__/main.ts', 'name', 'newName', 'src/my-file')
+      .toRule()
   ]);
 ```
 
@@ -152,13 +192,18 @@ export default (options: any): Rule =>
 
 Removes an import inside a file.
 
-```ts {6}
-import { modifyImportInFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { modifyImportInFile, schematic, project } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeImportFromFile('src/main.ts', 'environment', 'src/environments/environment');
+    removeImportFromFile('src/main.ts', 'environment', 'src/environments/environment'),
+
+    // Using chainable
+    project(options.project)
+      .removeImportFromFile('__SRC__/main.ts', 'environment', 'src/environments/environment')
+      .toRule()
   ]);
 ```
 
@@ -166,8 +211,8 @@ export default (options: any): Rule =>
 
 Adds, modifies or removes an element in a JSON file.
 
-```ts {7,10,13}
-import { modifyJsonFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {7,10,13,17}
+import { modifyJsonFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -179,7 +224,12 @@ export default (options: any): Rule =>
     modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], undefined),
 
     // Add an element at the beginning
-    modifyJsonFile('tsconfig.json', ['extends'], './my-tsconfig.json', () => 0)
+    modifyJsonFile('tsconfig.json', ['extends'], './my-tsconfig.json', () => 0),
+
+    // Using chainable
+    workspace()
+      .modifyJsonFile('tsconfig.json', ['compilerOptions', 'emitDecoratorMetadata'], true)
+      .toRule()
   ]);
 ```
 
@@ -187,13 +237,18 @@ export default (options: any): Rule =>
 
 Removes an element inside a JSON file.
 
-```ts {6}
-import { removeFromJsonFile, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { removeFromJsonFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeFromJsonFile('package.json', ['scripts', 'start'])
+    removeFromJsonFile('package.json', ['scripts', 'start']),
+
+    // Using chainable
+    workspace()
+      .removeFromJsonFile('package.json', ['scripts', 'start'])
+      .toRule()
   ]);
 ```
 
@@ -208,16 +263,16 @@ Uses a default indentation of 2.
 :::
 
 ```ts {8}
-import { serializeToJson, schematic } from '@hug/ngx-schematics-utilities';
+import { serializeToJson, schematic, rule } from '@hug/ngx-schematics-utilities';
 import { chain, Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    (): Rule => {
+    rule((): Rule => {
       const data = { key: 'value' };
       const str = serializeToJson(data);
       ...
-    }
+    })
   ]);
 ```
 
@@ -226,14 +281,14 @@ export default (options: any): Rule =>
 Gets the source of a TypeScript file.
 
 ```ts {6}
-import { getTsSourceFile, schematic } from '@hug/ngx-schematics-utilities';
+import { getTsSourceFile, schematic, rule } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export const myRule = (filePath: string): Rule =>
-  (tree: Tree): void => {
+  rule((tree: Tree): void => {
     const sourceFile = getTsSourceFile(tree, filePath);
     ...
-  };
+  });
 ```
 
 ### `commitChanges`
@@ -241,12 +296,12 @@ export const myRule = (filePath: string): Rule =>
 Applies changes on a file inside the current schematic's project tree.
 
 ```ts {7}
-import { commitChanges } from '@hug/ngx-schematics-utilities';
+import { commitChanges, rule } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export const myRule = (filePath: string): Rule =>
-  (tree: Tree): void => {
+  rule((tree: Tree): void => {
     ...
     commitChanges(tree, filePath, changes);
-  };
+  });
 ```

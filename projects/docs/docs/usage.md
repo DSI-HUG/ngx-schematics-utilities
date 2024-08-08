@@ -29,7 +29,7 @@ ng add YourSchematic --project ProjectName
 
 Allow you to act at the *workspace* level.
 
-```ts {6-10}
+```ts {6-14}
 import { schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
@@ -39,7 +39,11 @@ export default (options: any): Rule =>
       .spawn('ng', ['add', '@angular/material', '--skip-confirmation'])
       .addPackageJsonDevDependencies(['eslint'])
       .packageInstallTask()
-      .toRule()
+      .logInfo('Doing some cool stuff')
+      .isAngularVersion('<= 11', (): Rule => {
+        ...
+      })
+      .toRule(),
   ], options);
 ```
 
@@ -58,12 +62,12 @@ import { Rule } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   schematic('my-schematic', [
     application(options.project)
-      .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
+      .deployFiles(options)
+      .addProviderToBootstrapApplication('__SRC__/main.ts', 'provideAnimations()', '@angular/platform-browser/animations'),
+      .addImportToFile('__SRC__/file.ts', 'environment', './environments/environment')
+      .deleteFiles(['karma.conf.js'])
       .rule(({ project }: ChainableApplicationContext) => {
         return createOrUpdateFile(project.pathFromRoot('README.md'), project.name);
-      })
-      .isAngularVersion('<= 11', () => {
-        ...
       })
       .toRule()
   ], options);
@@ -84,7 +88,7 @@ import { Rule } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   schematic('my-schematic', [
     library(options.project)
-      .downloadFile('https://my-cdn.com/icons/iconx.png', '__SRC__/assets/icons/icon.png')
+      .downloadFile('https://my-cdn.com/icons/icon.png', '__SRC__/assets/icons/icon.png')
       .toRule()
   ], options);
 ```
@@ -97,9 +101,9 @@ You will have to make sure any modifications on a project are made in a generic 
 To help you with that, the [getProjectFromWorkspace()](/apis/angular#getprojectfromworkspace) helper is a good start.
 :::
 
-```ts {6,8,10,12-14,16-17}
-import { addImportToFile, addPackageJsonDevDependencies, getProjectFromWorkspace, modifyJsonFile, packageInstallTask, schematic } from '@hug/ngx-schematics-utilities';
-import { Rule, Tree } from '@angular-devkit/schematics';
+```ts {6,8,10,12-16,18-19}
+import { addImportToFile, addPackageJsonDevDependencies, getProjectFromWorkspace, modifyJsonFile, packageInstallTask, schematic, rule, renameFile } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree, chain, noop } from '@angular-devkit/schematics';
 
 export default async (options: any): Rule => {
   async (tree: Tree): Promise<Rule> => {
@@ -109,9 +113,11 @@ export default async (options: any): Rule => {
 
       addImportToFile(project.pathFromSourceRoot('main.ts'), 'environment', './environments/environment'),
 
-      (tree, context): Rule => {
-        ...
-      },
+      rule((tree, context): Rule => {
+        ... return renameFile('old-file', 'new-file');
+        ... return chain([]);
+        ... return noop();
+      }),
 
       addPackageJsonDevDependencies(['eslint']),
       packageInstallTask()

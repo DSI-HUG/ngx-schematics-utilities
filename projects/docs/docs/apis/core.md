@@ -26,15 +26,22 @@ export default (options: any): Rule =>
 
 Executes a rule.
 
-```ts {6-8}
-import { rule, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6-8,12-14}
+import { rule, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    rule(() => {
+    rule((): Rule => {
         ...
-    }))
+    })),
+
+    // Using chainable
+    workspace()
+      .rule((): Rule => {
+        ...
+      })
+      .toRule()
   ]);
 ```
 
@@ -47,13 +54,18 @@ By default, the Angular schematic's logger will misplace messages with breaking 
 This method makes sure that messages are always displayed at the beginning of the current console line.
 :::
 
-```ts {6}
-import { log, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { log, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    log('My log message')
+    log('My log message'),
+
+    // Using chainable
+    workspace()
+      .log('My other log message\n')
+      .toRule()
   ]);
 ```
 
@@ -61,13 +73,18 @@ export default (options: any): Rule =>
 
 Outputs a message to the console, prefixed by the word "INFO" printed in blue.
 
-```ts {6}
-import { logInfo, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { logInfo, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    logInfo('My info message')
+    logInfo('My info message'),
+
+    // Using chainable
+    workspace()
+      .logInfo('My other info message\n')
+      .toRule()
   ]);
 ```
 
@@ -75,13 +92,18 @@ export default (options: any): Rule =>
 
 Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
 
-```ts {6}
-import { logWarning, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { logWarning, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    logWarning('My warn message')
+    logWarning('My warn message'),
+
+    // Using chainable
+    workspace()
+      .logWarning('My other warn message\n')
+      .toRule()
   ]);
 ```
 
@@ -89,13 +111,18 @@ export default (options: any): Rule =>
 
 Outputs a message to the console, prefixed by the word "ERROR" printed in red.
 
-```ts {6}
-import { logError, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { logError, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    logError('My error message')
+    logError('My error message'),
+
+    // Using chainable
+    workspace()
+      .logError('My other error message\n')
+      .toRule()
   ]);
 ```
 
@@ -103,13 +130,18 @@ export default (options: any): Rule =>
 
 Outputs a message to the console, prefixed by the word "ACTION" printed in green.
 
-```ts {6}
-import { logAction, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6,10}
+import { logAction, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    logAction('My action message')
+    logAction('My action message'),
+
+    // Using chainable
+    workspace()
+      .logAction('My other action message\n')
+      .toRule()
   ]);
 ```
 
@@ -126,8 +158,8 @@ indicates the current process activity, as well as the command and its options d
 in cyan.
 :::
 
-```ts {7,10}
-import { spawn, schematic } from '@hug/ngx-schematics-utilities';
+```ts {7,10,14}
+import { spawn, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
@@ -137,24 +169,34 @@ export default (options: any): Rule =>
 
     // Display the command outputs directly to the console
     spawn('npx', ['-p', 'package-name', 'some-command'], true)
+
+    // Using chainable
+    workspace()
+      .spawn('ls', ['-l'])
+      .toRule()
   ]);
 ```
 
 ### `runAtEnd`
 
-Executes a rule at the very end of the schematic.
-Beware that most of the other helper rules won't work here (especially those that manipulate the tree).
+Executes a rule at the very end of the schematic.<br/>
+Beware that most of the other helper rules won't work here (especially those that manipulate the tree).<br/>
 Because, at that time, the Angular schematic has already finished running.
 
-```ts {6-8}
-import { runAtEnd, schematic } from '@hug/ngx-schematics-utilities';
+```ts {6-8,12}
+import { runAtEnd, logAction, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    runAtEnd(() => {
+    runAtEnd((): Rule => {
         ...
-    }))
+    })),
+
+    // Using chainable
+    workspace()
+      .runAtEnd(logAction('Have a look at `./package.json` file and make modifications as needed.'))
+      .toRule()
   ]);
 ```
 
@@ -171,7 +213,7 @@ import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 export default (options: any): Rule =>
   (tree: Tree, context: SchematicContext): Rule =>
     schematic('my-schematic', [
-        async(): Rule => {
+        async (): Rule => {
             // Get the `ng-add` schema of the current running schematic
             const opts1 = await getSchematicSchemaOptions(context);
 

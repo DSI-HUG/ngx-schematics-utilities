@@ -52,24 +52,37 @@ This library provide a large set of utilities that can be used while developing 
 export default (options: MySchematicOptions): Rule =>
   schematic('my-schematic', [
     modifyJsonFile('tsconfig.json', ['compilerOptions', 'strict'], true),
+    rule((tree, context): Rule => {
+      ... return renameFile('old-file', 'new-file');
+      ... return chain([]);
+      ... return noop();
+    }),
 
     workspace()
       .spawn('ng', ['add', '@angular/material', '--skip-confirmation'])
       .addPackageJsonDevDependencies(['eslint'])
       .packageInstallTask()
-      .isAngularVersion('<= 11', () => {
+      .logInfo('Doing some cool stuff')
+      .isAngularVersion('<= 11', (): Rule => {
         ...
       })
       .toRule(),
 
     application(options.project)
       .deployFiles(options)
-      .addImportToFile('__SRC__/main.ts', 'environment', './environments/environment')
+      .addProviderToBootstrapApplication('__SRC__/main.ts', 'provideAnimations()', '@angular/platform-browser/animations'),
+      .addImportToFile('__SRC__/file.ts', 'environment', './environments/environment')
       .deleteFiles(['karma.conf.js'])
       .rule(({ project }: ChainableApplicationContext) => {
         return createOrUpdateFile(project.pathFromRoot('README.md'), project.name);
       })
-      .toRule()
+      .toRule(),
+
+    library(options.project)
+      .downloadFile('https://my-cdn.com/icons/icon.png', '__SRC__/assets/icons/icon.png')
+      .toRule(),
+
+    runAtEnd(logAction('Have a look at `./package.json` file and make modifications as needed.'))
 
   ], options);
 ```
