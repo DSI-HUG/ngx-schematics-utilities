@@ -23,7 +23,7 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
                     try {
                         resolve(Buffer.concat(rawData));
                     } catch (err) {
-                        reject(err);
+                        reject((err instanceof Error) ? err : new Error(String(err)));
                     }
                 });
             } else if (retries > 0) {
@@ -31,7 +31,7 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
             } else {
                 res.removeAllListeners();
                 res.resume(); // consume response data to free up memory
-                reject(`Request error (${String(res.statusCode)}): https://${hostname}/${pathname}`);
+                reject(new Error(`Request error (${String(res.statusCode)}): https://${hostname}/${pathname}`));
             }
         });
         const abort = (error: Error | string): void => {
@@ -40,7 +40,7 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
             } else {
                 req.removeAllListeners();
                 req.destroy();
-                reject(error);
+                reject((error instanceof Error) ? error : new Error(String(error)));
             }
         };
         req.once('timeout', () => abort(`Request timed out: https://${hostname}/${pathname}`));
