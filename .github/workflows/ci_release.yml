@@ -13,5 +13,5 @@ jobs:
       working-directory: projects/lib
       lint: true
       test: true
-      build: false
+      build: true
       release: true
