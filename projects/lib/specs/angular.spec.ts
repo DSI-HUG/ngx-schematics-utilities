@@ -213,19 +213,20 @@ const expectAddToNgModule = async (
 
             it('rule: removeAngularJsonAsset(string)', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                let asset = `${project.root}/src/favicon.ico`;
-                if (asset.startsWith('/') || asset.startsWith('\\')) {
-                    asset = asset.substring(1, asset.length);
+                let input = `${project.root}/public`;
+                if (input.startsWith('/') || input.startsWith('\\')) {
+                    input = input.substring(1, input.length);
                 }
+                const asset = { glob: '**/*', input };
 
                 // Before
-                expect(getValues(tree, 'build', 'assets')).toContain(asset);
-                expect(getValues(tree, 'test', 'assets')).toContain(asset);
+                expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
 
                 // After
                 await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).not.toContain(asset);
-                expect(getValues(tree, 'test', 'assets')).not.toContain(asset);
+                expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
