@@ -39,12 +39,11 @@
 
 [More info][schematics]
 
-
 ## Getting started
 
 This library provide a large set of utilities that can be used while developing a schematic for Angular.
 
-👉 Learn about it on the [docs site][docs-site].
+👉 Learn about it on the 📚 [docs site][docs-site].
 
 #### Example
 
@@ -89,11 +88,9 @@ export default (options: MySchematicOptions): Rule =>
   ], options);
 ```
 
-
 ## Development
 
 See the [developer docs][developer].
-
 
 ## Contributing
 
@@ -107,15 +104,11 @@ But please read up first on the guidelines for [contributing][contributing], and
 
 Please read and follow the [Code of Conduct][codeofconduct], and help us keep this project open and inclusive.
 
-
 ## Credits
 
 Copyright (C) 2021 [HUG - Hôpitaux Universitaires Genève][dsi-hug]
 
 [![love@hug](https://img.shields.io/badge/@hug-%E2%9D%A4%EF%B8%8Flove-magenta)][dsi-hug]
-
-
-
 
 [developer]: https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/DEVELOPER.md
 [contributing]: https://github.com/dsi-hug/ngx-schematics-utilities/blob/main/CONTRIBUTING.md
