@@ -1,5 +1,4 @@
 printf "> Validating user email... "
-
 gitUserEmail="$(git config user.email)"
 if [[ $gitUserEmail =~ ^.*@(hcuge|hug).ch$  ]] ; then
     printf "\n"
@@ -12,3 +11,7 @@ if [[ $gitUserEmail =~ ^.*@(hcuge|hug).ch$  ]] ; then
 else
     printf "OK\n"
 fi
+
+printf "> Linting staged files... "
+npx --no -- lint-staged --quiet
+printf "OK\n"
