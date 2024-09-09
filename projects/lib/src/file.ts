@@ -95,7 +95,7 @@ export const createOrUpdateFile = (filePath: string, data: unknown): Rule =>
  */
 export const downloadFile = (source: string | URL, destination: string, replace = false, retries = 3, backoff = 300): Rule =>
     async (tree: Tree): Promise<void> => {
-        if (!tree.exists(destination) ?? replace) {
+        if (!tree.exists(destination) || replace) {
             const data = await getDataFromUrl(source, retries, backoff);
             if (!tree.exists(destination)) {
                 tree.create(destination, data);
