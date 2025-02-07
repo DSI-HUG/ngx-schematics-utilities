@@ -373,7 +373,7 @@ export const getProjectMainFilePath = (tree: Tree, projectName: string): string 
  * Gets a standalone project main config file path.
  * @param {Tree} tree The current schematic's project tree.
  * @param {string} projectName The name of the project to look for.
- * @returns {string|null} The project main config file path if any or null otherwise.
+ * @returns {string|null} The project main config file path if found or null otherwise.
  */
 export const getProjectMainConfigFilePath = (tree: Tree, projectName: string): string | null => {
     ensureProjectIsDefined(projectName);
@@ -405,12 +405,24 @@ export const getProjectFromWorkspace = async <T extends LibraryDefinition | Appl
     };
 
     if (project.extensions['projectType'] === ProjectType.Application) {
+        /**
+         *  Using tree.getDir().subfiles as tree.exists() does not work for directory only
+         */
+        let assetsPath: string | null = options.pathFromRoot('public');
+        if (!tree.getDir(assetsPath).subfiles.length) {
+            assetsPath = options.pathFromSourceRoot('assets');
+            if (!tree.getDir(assetsPath).subfiles.length) {
+                assetsPath = null;
+            }
+        }
+
         return {
             ...options,
             isStandalone: isProjectStandalone(tree, projectName),
             mainFilePath: getProjectMainFilePath(tree, projectName),
             mainConfigFilePath: getProjectMainConfigFilePath(tree, projectName),
-            outputPath: getProjectOutputPath(tree, projectName)
+            outputPath: getProjectOutputPath(tree, projectName),
+            assetsPath
         } as T;
     }
     return options as T;

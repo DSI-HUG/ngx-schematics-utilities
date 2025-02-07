@@ -193,6 +193,8 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
             const p = this._project as ApplicationDefinition;
             if (path.startsWith('__OUTPUT__')) {
                 return path.replace('__OUTPUT__', p.outputPath ?? 'dist');
+            } else if (path.startsWith('__ASSETS__')) {
+                return path.replace('__ASSETS__', p.assetsPath ?? 'public');
             } else if (path === '__MAIN__') {
                 return p.mainFilePath ?? path;
             } else if (path === '__CONFIG__') {
@@ -214,6 +216,7 @@ export interface ApplicationDefinition extends LibraryDefinition {
     mainFilePath: string;
     mainConfigFilePath: string | null;
     outputPath: string;
+    assetsPath: string | null;
 }
 
 export interface ChainableApplicationContext extends ChainableWorkspaceContext {

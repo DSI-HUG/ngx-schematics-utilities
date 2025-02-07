@@ -54,6 +54,7 @@ Allow you to act at a *project* level and make sure the specified project is an 
 :::tip
 `__SRC__` will be interpolated with **sourceRoot** specified in the project's **angular.json** file.<br/>
 `__OUTPUT__` will be interpolated with **outputPath** specified in the project's **angular.json** file.<br/>
+`__ASSETS__` will be interpolated with **assetsPath** *(if found, either /public or /src/assets)*.<br/>
 `__MAIN__` will be interpolated with **browser** or **main** specified in the project's **angular.json** file.<br/>
 `__CONFIG__` will be interpolated with the project's **config** file path *(for standalone only)*.
 :::

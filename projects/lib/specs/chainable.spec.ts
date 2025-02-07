@@ -57,6 +57,7 @@ import { customMatchers } from './jasmine.matchers';
                             expect(context.project.mainConfigFilePath).toBeNull();
                         }
                         expect(context.project.outputPath).toBeDefined();
+                        expect(context.project.assetsPath).not.toBeNull();
                         expect(context.project.pathFromRoot).toBeDefined();
                         expect(context.project.pathFromSourceRoot).toBeDefined();
                         expect(context.workspace).toBeDefined();
@@ -170,6 +171,16 @@ import { customMatchers } from './jasmine.matchers';
                 expect(tree.exists(truePath)).toBeFalsy();
                 const rule = application(appTest1.name)
                     .createOrUpdateFile('__OUTPUT__/test.ts', 'Test')
+                    .toRule();
+                await callRule(rule, tree);
+                expect(tree.exists(truePath)).toBeTruthy();
+            });
+
+            it('should transpile __ASSETS__', async () => {
+                const truePath = join(projectDef.root, 'public/test.txt');
+                expect(tree.exists(truePath)).toBeFalsy();
+                const rule = application(appTest1.name)
+                    .createOrUpdateFile('__ASSETS__/test.txt', 'Test')
                     .toRule();
                 await callRule(rule, tree);
                 expect(tree.exists(truePath)).toBeTruthy();
