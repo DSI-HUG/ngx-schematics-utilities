@@ -54,6 +54,7 @@
         "@angular-devkit/schematics": ">= 14",
         "@angular-devkit/core": ">= 14",
         "@angular/cli": ">= 14",
+        "@angular/core": ">= 14",
         "@schematics/angular": ">= 17"
     },
     "dependencies": {

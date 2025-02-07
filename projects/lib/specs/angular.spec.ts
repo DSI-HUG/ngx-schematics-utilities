@@ -5,12 +5,12 @@ import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'path';
 
 import {
-    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule, addImportToNgModule,
-    addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule, ensureIsAngularApplication,
-    ensureIsAngularLibrary, ensureIsAngularWorkspace, getProjectFromWorkspace, getProjectMainFilePath, getProjectOutputPath,
-    isAngularVersion, isProjectStandalone, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle,
-    removeDeclarationFromNgModule, removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication,
-    removeProviderFromNgModule
+    addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
+    addImportToNgModule, addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule,
+    ensureIsAngularApplication, ensureIsAngularLibrary, ensureIsAngularWorkspace, getAngularVersion, getProjectFromWorkspace,
+    getProjectMainFilePath, getProjectOutputPath, isAngularVersion, isProjectStandalone, removeAngularJsonAsset,
+    removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
+    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -620,6 +620,10 @@ const expectAddToNgModule = async (
                     expect(tree.readContent(configFilePath)).toContainTimes('provideA()', 0);
                 });
             }
+
+            it('helper: getAngularVersion', () => {
+                expect(getAngularVersion()).toBeDefined();
+            });
 
             it('helper: getProjectOutputPath', () => {
                 expect(getProjectOutputPath(tree, appTest1.name)).toEqual(`dist/${appTest1.name}`);

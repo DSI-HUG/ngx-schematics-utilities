@@ -1,3 +1,4 @@
+import { VERSION, Version } from '@angular/core';
 import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
@@ -73,11 +74,9 @@ export const ensureIsAngularLibrary = (projectName: string): Rule =>
  * @returns {Rule}
  */
 export const isAngularVersion = (range: string, rule: Rule): Rule =>
-    async (): Promise<Rule> => {
+    (): Rule => {
         try {
-            const angularPkgJsonPath = require.resolve(join('@angular/core', 'package.json'), { paths: ['.'] });
-            const ngVersion = (await import(angularPkgJsonPath) as { version: string }).version;
-            return (satisfies(ngVersion, range)) ? rule : noop();
+            return (satisfies(getAngularVersion().full, range)) ? rule : noop();
         } catch {
             return noop();
         }
@@ -343,6 +342,14 @@ export const removeProviderFromBootstrapApplication = (filePath: string, provide
         removeProviderFromStandaloneApplication(tree, filePath, providerName);
     };
 
+// --- HELPER(s) ---
+
+/**
+ * Gets the version of Angular currently used in the project.
+ * @returns {Version}
+ */
+export const getAngularVersion = (): Version => VERSION;
+
 /**
  * Gets a project output path as defined in the `angular.json` file.
  * @param {Tree} tree The current schematic's project tree.
@@ -452,8 +459,6 @@ export const ensureProjectIsDefined = (projectName: string | undefined): void =>
         throw new SchematicsException('Project cannot be determined and no --project option was provided.');
     }
 };
-
-// --- HELPER(s) ---
 
 const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', option: string, tree: Tree, value: JsonValue, projectName: string): void => {
     const angularJson = new JSONFile(tree, 'angular.json');

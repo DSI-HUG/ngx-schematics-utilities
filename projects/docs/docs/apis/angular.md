@@ -474,6 +474,23 @@ export default (options: any): Rule =>
 
 ## Helpers
 
+### `getAngularVersion`
+
+Gets the version of Angular currently used in the project.
+
+```ts {6}
+import { getAngularVersion, schematic } from '@hug/ngx-schematics-utilities';
+import { Rule, Tree } from '@angular-devkit/schematics';
+
+export default (options: any): Rule =>
+  (tree: Tree): Rule => {
+    const ngVersion = getAngularVersion();
+    return schematic('my-schematic', [
+      ...
+    ]);
+  };
+```
+
 ### `getProjectOutputPath`
 
 Gets a project output path as defined in the `angular.json` file.
