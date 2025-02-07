@@ -16,10 +16,10 @@ concurrency:
 
 jobs:
   ci_tests:
-    uses: dsi-hug/actions/.github/workflows/action.yml@v2
+    uses: dsi-hug/actions/.github/workflows/action.yml@v3
     with:
       runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
-      node-versions: '[18, 20]'
+      node-versions: '[22]'
       working-directory: projects/lib
       lint: true
       test: true

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup
-        uses: dsi-hug/actions/setup@v2
+        uses: dsi-hug/actions/setup@v3
 
       - name: Build docs
         working-directory: projects/docs
