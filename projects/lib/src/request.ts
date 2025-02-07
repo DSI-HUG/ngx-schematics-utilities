@@ -31,7 +31,7 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
             } else {
                 res.removeAllListeners();
                 res.resume(); // consume response data to free up memory
-                reject(new Error(`Request error (${String(res.statusCode)}): https://${hostname}/${pathname}`));
+                reject(new Error(`Request error (${String(res.statusCode)}): https://${hostname}${pathname}`));
             }
         });
         const abort = (error: Error | string): void => {

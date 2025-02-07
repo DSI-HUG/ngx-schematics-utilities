@@ -3,7 +3,7 @@ import { JsonObject } from '@angular-devkit/core';
 import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema/index';
 import { SchematicContext } from '@angular-devkit/schematics';
 import { NodeWorkflow } from '@angular-devkit/schematics/tools';
-import { dirname as pathDirname, join as pathJoin } from 'path';
+import { dirname as pathDirname, posix } from 'path';
 
 import { getJsonFromUrl } from './request';
 
@@ -14,15 +14,15 @@ export interface NgCliOption extends Option {
 const getExternalSchemaJson = async (packageName: string, schematicName = 'ng-add', retries = 3, backoff = 300): Promise<JsonObject> => {
     const url = `http://cdn.jsdelivr.net/npm/${packageName}@latest`;
 
-    const pkgJson = await getJsonFromUrl(pathJoin(url, 'package.json'), retries, backoff);
+    const pkgJson = await getJsonFromUrl(posix.join(url, 'package.json'), retries, backoff);
     if (pkgJson?.['schematics']) {
-        const collectionJson = await getJsonFromUrl(pathJoin(url, pkgJson['schematics'] as string), retries, backoff);
+        const collectionJson = await getJsonFromUrl(posix.join(url, pkgJson['schematics'] as string), retries, backoff);
         if (collectionJson?.['schematics']) {
             const schema = ((collectionJson['schematics'] as JsonObject)[schematicName] as JsonObject)?.['schema'] as string;
             if (!schema) {
                 throw new Error(`Schematic "${schematicName}" not found in collection "${packageName}".`);
             }
-            return await getJsonFromUrl(pathJoin(url, pathDirname(pkgJson['schematics'] as string), schema), retries, backoff);
+            return await getJsonFromUrl(posix.join(url, pathDirname(pkgJson['schematics'] as string), schema), retries, backoff);
         }
     }
 
