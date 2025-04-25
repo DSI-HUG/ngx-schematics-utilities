@@ -186,7 +186,7 @@ const testLib = (ci = false) => {
 };
 
 const lint = () => {
-    const lintArgs = ['--ignore-pattern', '**/files/**/*'];
+    const lintArgs = ['--ignore-pattern', '**/files/**/*', '--ignore-pattern', '**/*/esm-wrapper/index.js'];
     if (existsSync(SCHEMATICS_SRC_PATH)) {
         lintArgs.unshift(`./{${LIBRARY_SRC},${SCHEMATICS_SRC}}/**/*.{ts,js,html}`);
     } else {
