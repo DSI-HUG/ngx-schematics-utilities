@@ -1,4 +1,4 @@
-import { VERSION, Version } from '@angular/core';
+import { Version } from '@angular/core';
 import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import {
@@ -19,6 +19,7 @@ import {
     removeSymbolFromNgModuleMetadata
 } from './ast-utils';
 import { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
+import { getAngularVersionFromEsm } from './esm-wrapper';
 import { commitChanges, getTsSourceFile } from './file';
 
 // --- RULE(s) ----
@@ -74,9 +75,10 @@ export const ensureIsAngularLibrary = (projectName: string): Rule =>
  * @returns {Rule}
  */
 export const isAngularVersion = (range: string, rule: Rule): Rule =>
-    (): Rule => {
+    async (): Promise<Rule> => {
         try {
-            return (satisfies(getAngularVersion().full, range)) ? rule : noop();
+            const ngVersion = await getAngularVersion();
+            return (satisfies(ngVersion.full, range)) ? rule : noop();
         } catch {
             return noop();
         }
@@ -346,9 +348,12 @@ export const removeProviderFromBootstrapApplication = (filePath: string, provide
 
 /**
  * Gets the version of Angular currently used in the project.
- * @returns {Version}
+ * @async
+ * @returns {Promise<Version>}
  */
-export const getAngularVersion = (): Version => VERSION;
+export const getAngularVersion = async (): Promise<Version> =>
+    await getAngularVersionFromEsm();
+
 
 /**
  * Gets a project output path as defined in the `angular.json` file.

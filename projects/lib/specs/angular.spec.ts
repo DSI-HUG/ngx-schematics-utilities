@@ -621,8 +621,14 @@ const expectAddToNgModule = async (
                 });
             }
 
-            it('helper: getAngularVersion', () => {
-                expect(getAngularVersion()).toBeDefined();
+            it('helper: getAngularVersion', async () => {
+                const version = await getAngularVersion();
+                expect(version).toEqual(jasmine.objectContaining({
+                    full: jasmine.any(String),
+                    patch: jasmine.any(String),
+                    minor: jasmine.any(String),
+                    major: jasmine.any(String)
+                }));
             });
 
             it('helper: getProjectOutputPath', () => {

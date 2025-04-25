@@ -1,12 +1,13 @@
 import {
-    callRule,
-    chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution
+    callRule, chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution
 } from '@angular-devkit/schematics';
 import { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import {
     bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
 } from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'child_process';
+
+import { getOraFromEsm } from './esm-wrapper';
 
 interface BufferOutput {
     stream: NodeJS.WriteStream;
@@ -98,17 +99,16 @@ export const logAction = (message: string): Rule =>
  */
 export const spawn = (command: string, args: string[], showOutput = false): Rule =>
     async (): Promise<void> => {
-        const ora = (await import('ora')).default;
+        const bufferedOutput: BufferOutput[] = [];
+        const cmdText = `${command} ${args.join(' ')}`;
+        const verbose = showOutput || process.argv.includes('--verbose');
+
+        const spinner = await getOraFromEsm({ text: cyan(cmdText) });
+        if (!verbose) {
+            spinner.start();
+        }
+
         return new Promise((resolve, reject) => {
-            const bufferedOutput: BufferOutput[] = [];
-            const verbose = showOutput || process.argv.includes('--verbose');
-            const cmdText = `${command} ${args.join(' ')}`;
-
-            const spinner = ora({ text: cyan(cmdText) });
-            if (!verbose) {
-                spinner.start();
-            }
-
             const childProcess = childProcessSpawn(command, args, {
                 stdio: (verbose) ? 'inherit' : 'pipe',
                 shell: true

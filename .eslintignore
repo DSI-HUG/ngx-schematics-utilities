@@ -45,3 +45,6 @@ Thumbs.db
 capacitor.config.ts
 /android
 /ios
+
+# Project
+**/*/esm-wrapper/index.js

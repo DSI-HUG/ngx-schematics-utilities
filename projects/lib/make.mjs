@@ -29,6 +29,7 @@ const DIST_PATH = pathResolve(WORKSPACE_PATH, 'dist');
 const copyAssets = async () => {
     await cpy(`${WORKSPACE_PATH}/README.md`, DIST_PATH, { flat: true });
     await cpy(`${WORKSPACE_PATH}/LICENSE`, DIST_PATH, { flat: true });
+    await cpy(pathResolve(__dirname, 'src/esm-wrapper'), `${DIST_PATH}/src/esm-wrapper`, { flat: true });
     if (existsSync(pathResolve(__dirname, 'bin'))) {
         await cpy(pathResolve(__dirname, 'bin'), `${DIST_PATH}/bin`, { flat: true });
     }
