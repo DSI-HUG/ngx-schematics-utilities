@@ -483,8 +483,8 @@ import { getAngularVersion, schematic } from '@hug/ngx-schematics-utilities';
 import { Rule, Tree } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
-  (tree: Tree): Rule => {
-    const ngVersion = getAngularVersion();
+  async (tree: Tree): Rule => {
+    const ngVersion = await getAngularVersion();
     return schematic('my-schematic', [
       ...
     ]);
