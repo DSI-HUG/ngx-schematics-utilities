@@ -109,7 +109,7 @@ export const addProviderToStandaloneApplication = (
                     tree, appConfig.filePath, appConfig.node, providerName, useImportProvidersFrom, indent
                 )]);
             } else {
-                throw new SchematicsException('Could not find application config');
+                throw new SchematicsException(`Could not find application config from ${mainFilePath}`);
             }
         // Options is an object
         } else if (boostrapApplicationOptions && isObjectLiteralExpression(boostrapApplicationOptions)) {
@@ -138,7 +138,7 @@ export const getStandaloneApplicationConfig = (tree: Tree, mainFilePath: string)
         const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
         if (bootstrapApplicationCall) {
             const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
-            if (boostrapApplicationOptions && isIdentifier(boostrapApplicationOptions)) {
+            if (boostrapApplicationOptions && !isObjectLiteralExpression(boostrapApplicationOptions)) {
                 return findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
             }
         }
