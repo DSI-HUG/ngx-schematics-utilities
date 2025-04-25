@@ -10,17 +10,17 @@
         "projects/tests"
     ],
     "devDependencies": {
-        "@angular-devkit/core": "^19.2.6",
-        "@angular-devkit/schematics": "^19.2.6",
-        "@angular/cli": "^19.2.6",
+        "@angular-devkit/core": "^19.2.9",
+        "@angular-devkit/schematics": "^19.2.9",
+        "@angular/cli": "^19.2.9",
         "rxjs": "7.8.1",
         "@colors/colors": "^1.6.0",
         "@commitlint/cli": "^19.8.0",
         "@commitlint/config-conventional": "^19.8.0",
         "@hug/eslint-config": "^20.3.3",
-        "@schematics/angular": "^19.2.6",
+        "@schematics/angular": "^19.2.9",
         "@types/jasmine": "^5.1.7",
-        "@types/node": "^22.14.0",
+        "@types/node": "^22.15.2",
         "@types/semver": "^7.7.0",
         "chokidar": "^4.0.3",
         "cpy": "^11.1.0",
@@ -29,9 +29,9 @@
         "husky": "^9.1.7",
         "jasmine": "^5.6.0",
         "jasmine-spec-reporter": "^7.0.0",
-        "lint-staged": "^15.5.0",
+        "lint-staged": "^15.5.1",
         "ts-node-dev": "^2.0.0",
-        "typescript": "^5.7"
+        "typescript": "^5.8"
     },
     "commitlint": {
         "extends": [
@@ -43,5 +43,5 @@
             "eslint --fix"
         ]
     },
-    "packageManager": "npm@11.2.0"
+    "packageManager": "npm@11.3.0"
 }

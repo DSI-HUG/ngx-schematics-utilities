@@ -354,7 +354,6 @@ export const removeProviderFromBootstrapApplication = (filePath: string, provide
 export const getAngularVersion = async (): Promise<Version> =>
     await getAngularVersionFromEsm();
 
-
 /**
  * Gets a project output path as defined in the `angular.json` file.
  * @param {Tree} tree The current schematic's project tree.
