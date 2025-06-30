@@ -38,13 +38,13 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
             if (retries > 0) {
                 setTimeout(() => void getDataFromUrl(url, retries - 1, backoff * 2), backoff);
             } else {
-                req.removeAllListeners();
                 req.destroy();
                 reject((error instanceof Error) ? error : new Error(String(error)));
             }
         };
         req.once('timeout', () => abort(`Request timed out: https://${hostname}/${pathname}`));
         req.once('error', err => abort(err));
+        req.once('close', () => req.removeAllListeners());
     });
 
 /**
