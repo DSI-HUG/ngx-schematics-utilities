@@ -254,9 +254,9 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
                 const options = {
                     filePath: join(project.root, 'src/main.ts'),
-                    symbolName: (useStandalone) ? 'AppComponent' : 'AppModule',
+                    symbolName: (useStandalone) ? 'App' : 'AppModule',
                     newSymbolName: 'NewName',
-                    fileName: (useStandalone) ? './app/app.component' : './app/app.module'
+                    fileName: (useStandalone) ? './app/app' : './app/app-module'
                 };
                 const impt = `import { ${options.symbolName} } from '${options.fileName}';`;
                 const newImpt = `import { ${options.newSymbolName} } from '${options.fileName}';`;
@@ -277,8 +277,8 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
                 const options = {
                     filePath: join(project.root, 'src/main.ts'),
-                    symbolName: (useStandalone) ? 'AppComponent' : 'AppModule',
-                    fileName: (useStandalone) ? './app/app.component' : './app/app.module'
+                    symbolName: (useStandalone) ? 'App' : 'AppModule',
+                    fileName: (useStandalone) ? './app/app' : './app/app-module'
                 };
                 const impt = `import { ${options.symbolName} } from '${options.fileName}';`;
 

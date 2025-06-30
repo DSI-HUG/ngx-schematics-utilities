@@ -167,14 +167,14 @@ describe('ast-utils - using standalone project', () => {
 
             // Before
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(AppComponent${(useCase.state1 !== '') ? `, ${useCase.state1}` : ''})`
+                `bootstrapApplication(App${(useCase.state1 !== '') ? `, ${useCase.state1}` : ''})`
             );
 
             // After
             addProviderToStandaloneApplication(
                 tree, mainFilePath, useCase.providerName, useCase.useImportProvidersFrom, useCase.indent
             );
-            expect(tree.readContent(mainFilePath)).toContain(`bootstrapApplication(AppComponent, ${useCase.state2})`);
+            expect(tree.readContent(mainFilePath)).toContain(`bootstrapApplication(App, ${useCase.state2})`);
         });
 
         it(`addProviderToStandaloneApplication: use case ${index} (appConfig)`, async () => {
@@ -212,13 +212,13 @@ describe('ast-utils - using standalone project', () => {
 
             // Before
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(AppComponent${(useCase.state2 !== '') ? `, ${useCase.state2}` : ''})`
+                `bootstrapApplication(App${(useCase.state2 !== '') ? `, ${useCase.state2}` : ''})`
             );
 
             // After
             removeProviderFromStandaloneApplication(tree, mainFilePath, useCase.realProviderName ?? useCase.providerName);
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(AppComponent, ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n})'}`
+                `bootstrapApplication(App, ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n})'}`
             );
         });
 

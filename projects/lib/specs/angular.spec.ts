@@ -366,8 +366,8 @@ const expectAddToNgModule = async (
                 const script = join(project.root, 'src/my-script.js');
 
                 // Before
-                expect(getValues(tree, 'build', 'scripts')).toEqual([]);
-                expect(getValues(tree, 'test', 'scripts')).toEqual([]);
+                expect(getValues(tree, 'build', 'scripts')).toBeUndefined();
+                expect(getValues(tree, 'test', 'scripts')).toBeUndefined();
 
                 // After
                 await callRule(addAngularJsonScript(script, appTest1.name), tree);
@@ -388,8 +388,9 @@ const expectAddToNgModule = async (
                 }
 
                 // Before
-                expect(getValues(tree, 'build', 'scripts')).toEqual([]);
-                expect(getValues(tree, 'test', 'scripts')).toEqual([]);
+                await callRule(addAngularJsonScript(script, appTest1.name), tree);
+                expect(getValues(tree, 'build', 'scripts')).toEqual([script]);
+                expect(getValues(tree, 'test', 'scripts')).toEqual([script]);
 
                 // After
                 await callRule(removeAngularJsonScript(script, appTest1.name), tree);
@@ -447,7 +448,7 @@ const expectAddToNgModule = async (
 
             it('rule: add/remove declaration in NgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app.module.ts');
+                const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -466,7 +467,7 @@ const expectAddToNgModule = async (
 
             it('rule: add/remove simple import in NgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app.module.ts');
+                const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -485,7 +486,7 @@ const expectAddToNgModule = async (
 
             it('rule: add/remove forRoot import in NgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app.module.ts');
+                const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -508,7 +509,7 @@ const expectAddToNgModule = async (
 
             it('rule: add/remove export in NgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app.module.ts');
+                const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -527,7 +528,7 @@ const expectAddToNgModule = async (
 
             it('rule: add/remove provider in NgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app.module.ts');
+                const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -546,7 +547,7 @@ const expectAddToNgModule = async (
 
             it('rule: addRouteDeclarationToNgModule', async () => {
                 const project = await getProjectFromWorkspace(tree, appTest1.name);
-                const filePath = join(project.root, 'src/app/app-routing.module.ts');
+                const filePath = join(project.root, 'src/app/app-routing-module.ts');
 
                 if (useStandalone) {
                     expect(tree.exists(filePath)).toBeFalse();
@@ -633,12 +634,8 @@ const expectAddToNgModule = async (
 
             it('helper: getProjectOutputPath', () => {
                 expect(getProjectOutputPath(tree, appTest1.name)).toEqual(`dist/${appTest1.name}`);
-                if (useWorkspace) {
-                    expect(getProjectOutputPath(tree, appTest2.name)).toEqual(`dist/${appTest2.name}`);
-                } else {
-                    expect(getProjectOutputPath(tree, appTest2.name)).toBeUndefined();
-                }
-                expect(getProjectOutputPath(tree, libTest.name)).toBeUndefined();
+                expect(getProjectOutputPath(tree, appTest2.name)).toEqual(`dist/${appTest2.name}`);
+                expect(getProjectOutputPath(tree, libTest.name)).toEqual(`dist/${libTest.name}`);
             });
 
             it('helper: getProjectMainFilePath', () => {

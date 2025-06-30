@@ -364,7 +364,8 @@ export const getAngularVersion = async (): Promise<Version> =>
 export const getProjectOutputPath = (tree: Tree, projectName: string): string => {
     ensureProjectIsDefined(projectName);
     const angularJson = new JSONFile(tree, 'angular.json');
-    return angularJson.get(['projects', projectName, 'architect', 'build', 'options', 'outputPath']) as string;
+    const outputPath = angularJson.get(['projects', projectName, 'architect', 'build', 'options', 'outputPath']) as string;
+    return outputPath ?? `dist/${projectName}`;
 };
 
 /**
@@ -377,7 +378,8 @@ export const getProjectMainFilePath = (tree: Tree, projectName: string): string 
     ensureProjectIsDefined(projectName);
     const angularJson = new JSONFile(tree, 'angular.json');
     const buildOptions = angularJson.get(['projects', projectName, 'architect', 'build']) as { builder: string; options: Record<string, string> };
-    return (buildOptions?.builder === Builders.Application as string) ? buildOptions?.options['browser'] : buildOptions?.options['main'];
+    const appBuilders: string[] = [Builders.Application, Builders.BuildApplication];
+    return appBuilders.includes(buildOptions?.builder) ? buildOptions?.options?.['browser'] : buildOptions?.options?.['main'];
 };
 
 /**
@@ -470,7 +472,7 @@ const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', optio
 
     ['build', 'test'].forEach(configName => {
         const path = [...architectPath, configName, 'options', option];
-        const values = angularJson.get(path) as (string | JsonValue)[];
+        const values = (angularJson.get(path) ?? []) as (string | JsonValue)[];
         const stringifiedValue = values.map(opt => JSON.stringify(opt));
         if ((action === 'add') && !stringifiedValue.includes(JSON.stringify(value))) {
             values.push(value);
