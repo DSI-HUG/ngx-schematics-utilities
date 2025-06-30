@@ -45,7 +45,7 @@ export default (options: any): Rule =>
   schematic('my-schematic', [
     deleteFiles([
       'src/assets/.gitkeep',
-      'src/app/app.component.spec.ts'
+      'src/app/app.spec.ts'
     ]),
 
     // Folder deletion needs to be forced

@@ -209,11 +209,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addDeclarationToNgModule('src/app/app.module.ts', 'TestComponent', './components/test'),
+    addDeclarationToNgModule('src/app/app-module.ts', 'TestComponent', './components/test'),
 
     // Using chainable
     application(options.project)
-      .addDeclarationToNgModule('__SRC__/app/app.module.ts', 'TestComponent', './components/test')
+      .addDeclarationToNgModule('__SRC__/app/app-module.ts', 'TestComponent', './components/test')
       .toRule()
   ]);
 ```
@@ -232,11 +232,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeDeclarationFromNgModule('src/app/app.module.ts', 'AppComponent'),
+    removeDeclarationFromNgModule('src/app/app-module.ts', 'AppComponent'),
 
     // Using chainable
     application(options.project)
-      .removeDeclarationFromNgModule('__SRC__/app/app.module.ts', 'AppComponent')
+      .removeDeclarationFromNgModule('__SRC__/app/app-module.ts', 'AppComponent')
       .toRule()
   ]);
 ```
@@ -253,11 +253,11 @@ import { tags } from '@angular-devkit/core';
 export default (options: any): Rule =>
   schematic('my-schematic', [
     // Import simple module
-    addImportToNgModule('src/app/app.module.ts', 'HttpClientModule', '@angular/common/http'),
+    addImportToNgModule('src/app/app-module.ts', 'HttpClientModule', '@angular/common/http'),
 
     // Import forRoot module
     addImportToNgModule(
-      'src/app/app.module.ts',
+      'src/app/app-module.ts',
       tags.stripIndent`
         TestModule.forRoot({
           enabled: environment.production
@@ -268,7 +268,7 @@ export default (options: any): Rule =>
 
     // Using chainable
     application(options.project)
-      .addImportToNgModule('__SRC__/app/app.module.ts', 'HttpClientModule', '@angular/common/http')
+      .addImportToNgModule('__SRC__/app/app-module.ts', 'HttpClientModule', '@angular/common/http')
       .toRule()
   ]);
 ```
@@ -287,11 +287,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeImportFromNgModule('src/app/app.module.ts', 'TestModule'),
+    removeImportFromNgModule('src/app/app-module.ts', 'TestModule'),
 
     // Using chainable
     application(options.project)
-      .removeImportFromNgModule('__SRC__/app/app.module.ts', 'TestModule')
+      .removeImportFromNgModule('__SRC__/app/app-module.ts', 'TestModule')
       .toRule()
   ]);
 ```
@@ -306,11 +306,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addExportToNgModule('src/app/app.module.ts', 'TestComponent', './components/test'),
+    addExportToNgModule('src/app/app-module.ts', 'TestComponent', './components/test'),
 
     // Using chainable
     application(options.project)
-      .addExportToNgModule('__SRC__/app/app.module.ts', 'TestComponent', './components/test')
+      .addExportToNgModule('__SRC__/app/app-module.ts', 'TestComponent', './components/test')
       .toRule()
   ]);
 ```
@@ -329,11 +329,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeExportFromNgModule('src/app/app.module.ts', 'TestComponent'),
+    removeExportFromNgModule('src/app/app-module.ts', 'TestComponent'),
 
     // Using chainable
     application(options.project)
-      .removeExportFromNgModule('__SRC__/app/app.module.ts', 'TestComponent')
+      .removeExportFromNgModule('__SRC__/app/app-module.ts', 'TestComponent')
       .toRule()
   ]);
 ```
@@ -348,11 +348,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    addProviderToNgModule('src/app/app.module.ts', 'TestService', './services/test'),
+    addProviderToNgModule('src/app/app-module.ts', 'TestService', './services/test'),
 
     // Using chainable
     application(options.project)
-      .addProviderToNgModule('__SRC__/app/app.module.ts', 'TestService', './services/test')
+      .addProviderToNgModule('__SRC__/app/app-module.ts', 'TestService', './services/test')
       .toRule()
   ]);
 ```
@@ -371,11 +371,11 @@ import { Rule } from '@angular-devkit/schematics';
 
 export default (options: any): Rule =>
   schematic('my-schematic', [
-    removeProviderFromNgModule('src/app/app.module.ts', 'TestService'),
+    removeProviderFromNgModule('src/app/app-module.ts', 'TestService'),
 
     // Using chainable
     application(options.project)
-      .removeProviderFromNgModule('__SRC__/app/app.module.ts', 'TestService')
+      .removeProviderFromNgModule('__SRC__/app/app-module.ts', 'TestService')
       .toRule()
   ]);
 ```

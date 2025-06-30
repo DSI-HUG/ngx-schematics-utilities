@@ -359,7 +359,7 @@ export const getAngularVersion = async (): Promise<Version> =>
  * @param {Tree} tree The current schematic's project tree.
  * @param {string} projectName The name of the project to look for.
  * @throws {SchematicsException} An exception if a `defaultProject` property was not found in the `angular.json` file.
- * @returns {string} The default project output path.
+ * @returns {string} The default project output path or `dist/<projectName>` if not defined.
  */
 export const getProjectOutputPath = (tree: Tree, projectName: string): string => {
     ensureProjectIsDefined(projectName);
