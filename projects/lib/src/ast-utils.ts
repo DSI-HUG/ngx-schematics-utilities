@@ -41,7 +41,7 @@ export const removeSymbolFromNgModuleMetadata = (
 ): Change => {
     const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
     const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
-    const arrayLiteral = (ngModuleImports[0] as PropertyAssignment).initializer as ArrayLiteralExpression;
+    const arrayLiteral = ngModuleImports[0].initializer as ArrayLiteralExpression;
     const symbolIndex = arrayLiteral.elements.findIndex(el => el.getText().includes(classifiedName));
     if (symbolIndex !== -1) {
         const el = arrayLiteral.elements[symbolIndex];

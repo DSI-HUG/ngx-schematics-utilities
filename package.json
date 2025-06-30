@@ -40,7 +40,7 @@
     },
     "lint-staged": {
         "**/*.{js,json,ts,html}": [
-            "eslint --fix"
+            "eslint . --fix"
         ]
     },
     "packageManager": "npm@11.4.2"
