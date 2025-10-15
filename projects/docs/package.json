@@ -11,9 +11,9 @@
         "write-heading-ids": "docusaurus write-heading-ids"
     },
     "dependencies": {
-        "@easyops-cn/docusaurus-search-local": "^0.51.1",
-        "@docusaurus/core": "3.8.1",
-        "@docusaurus/preset-classic": "3.8.1"
+        "@easyops-cn/docusaurus-search-local": "^0.52.1",
+        "@docusaurus/core": "3.9.1",
+        "@docusaurus/preset-classic": "3.9.1"
     },
     "browserslist": {
         "production": [
