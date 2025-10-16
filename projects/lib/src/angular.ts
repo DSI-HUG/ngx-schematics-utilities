@@ -1,6 +1,6 @@
-import { Version } from '@angular/core';
-import { JsonObject, JsonValue } from '@angular-devkit/core';
-import { noop, Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
+import type { Version } from '@angular/core';
+import type { JsonObject, JsonValue } from '@angular-devkit/core';
+import { noop, type Rule, SchematicsException, type Tree } from '@angular-devkit/schematics';
 import {
     addDeclarationToModule, addExportToModule, addImportToModule, addProviderToModule,
     addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport
@@ -11,14 +11,14 @@ import { findAppConfig } from '@schematics/angular/utility/standalone/app_config
 import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { Builders, ProjectType } from '@schematics/angular/utility/workspace-models';
-import { join } from 'path';
+import { join } from 'node:path';
 import { satisfies } from 'semver';
 
 import {
     addProviderToStandaloneApplication, getStandaloneApplicationConfig, removeProviderFromStandaloneApplication,
     removeSymbolFromNgModuleMetadata
 } from './ast-utils';
-import { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
+import type { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
 import { getAngularVersionFromEsm } from './esm-wrapper';
 import { commitChanges, getTsSourceFile } from './file';
 
@@ -145,11 +145,11 @@ export const addAngularJsonScript = (value: JsonObject | string, projectName: st
     };
 
 /**
-* Removes a script from the `build` and `test` sections of the `angular.json` file.
-* @param {JsonObject|string} value The style to remove.
-* @param {string} projectName The name of the project to look for.
-* @returns {Rule}
-*/
+ * Removes a script from the `build` and `test` sections of the `angular.json` file.
+ * @param {JsonObject|string} value The style to remove.
+ * @param {string} projectName The name of the project to look for.
+ * @returns {Rule}
+ */
 export const removeAngularJsonScript = (value: JsonObject | string, projectName: string): Rule =>
     (tree: Tree): void => {
         ensureProjectIsDefined(projectName);
@@ -458,6 +458,8 @@ export const isProjectStandalone = (tree: Tree, projectName: string): boolean =>
 };
 
 /**
+ * Ensures a project is defined.
+ * @param {string} projectName The name of the project to look for.
  * @internal
  */
 export const ensureProjectIsDefined = (projectName: string | undefined): void => {

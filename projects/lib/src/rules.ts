@@ -1,11 +1,11 @@
 import {
-    callRule, chain, Rule, SchematicContext, TaskId, Tree, UnsuccessfulWorkflowExecution
+    callRule, chain, type Rule, type SchematicContext, type TaskId, type Tree, UnsuccessfulWorkflowExecution
 } from '@angular-devkit/schematics';
-import { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
+import type { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import {
     bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
 } from '@colors/colors/safe';
-import { spawn as childProcessSpawn } from 'child_process';
+import { spawn as childProcessSpawn } from 'node:child_process';
 
 import { getOraFromEsm } from './esm-wrapper';
 
@@ -46,7 +46,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
     const opts = process.argv.includes('--verbose') ? JSON.stringify(options) : undefined;
     return chain([
         log(''),
-        log(`${magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)}`),
+        log(magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)),
         log(''),
         ...rules,
         runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__')
@@ -114,20 +114,26 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
                 shell: true
             });
             childProcess.once('disconnect', resolve);
-            childProcess.once('error', error => reject(error));
+            childProcess.once('error', error => {
+                reject(error);
+            });
             childProcess.on('close', (code: number) => {
                 if (code === 0) {
                     if (!verbose) {
                         spinner.succeed(cyan(cmdText));
                         spinner.stop();
                     }
-                    return resolve();
+                    resolve();
+                    return;
                 } else {
                     if (!verbose) {
                         spinner.fail(red(`${cmdText}\n`));
-                        bufferedOutput.forEach(({ stream, data }) => stream.write(data));
+                        bufferedOutput.forEach(({ stream, data }) => {
+                            stream.write(data);
+                        });
                     }
-                    return reject(new UnsuccessfulWorkflowExecution());
+                    reject(new UnsuccessfulWorkflowExecution());
+                    return;
                 }
             });
             if (!verbose) {
@@ -146,6 +152,7 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
  * Beware that most of the other helper rules won't work here (especially those that manipulate the tree).
  * Because, at that time, the Angular schematic has already finished running.
  * @param {Rule} rule The rule to execute.
+ * @param {string} taskName A name to give to the task that will execute the rule.
  * @returns {Rule}
  */
 export const runAtEnd = (rule: Rule, taskName?: string): Rule =>

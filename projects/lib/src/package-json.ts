@@ -1,4 +1,4 @@
-import { Rule, SchematicContext, SchematicsException, TaskId, Tree } from '@angular-devkit/schematics';
+import { type Rule, type SchematicContext, SchematicsException, type TaskId, type Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import latestVersion from '@badisi/latest-version';
 import { JSONFile } from '@schematics/angular/utility/json-file';
@@ -56,7 +56,7 @@ const modifyDeps = async (tree: Tree, type: 'dependencies' | 'devDependencies' |
  */
 export const packageInstallTask = (callback?: (taskId?: TaskId) => void, force = false): Rule =>
     (_tree: Tree, context: SchematicContext): void => {
-        let taskId;
+        let taskId: TaskId | undefined;
         if (packageJsonDepsModified || force) {
             packageJsonDepsModified = false;
             taskId = context.addTask(new NodePackageInstallTask());
@@ -77,18 +77,18 @@ export const addPackageJsonDependencies = (deps: (string | PackageItem)[]): Rule
     (tree: Tree): Promise<void> => modifyDeps(tree, 'dependencies', deps);
 
 /**
-* Adds items to the `devDependencies` section of `package.json` file.
-* @param {(string|PackageItem)[]} deps List of items to be added.
-* @returns {Rule}
-*/
+ * Adds items to the `devDependencies` section of `package.json` file.
+ * @param {(string|PackageItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
 export const addPackageJsonDevDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'devDependencies', deps);
 
 /**
-* Adds items to the `peerDependencies` section of `package.json` file.
-* @param {(string|PackageItem)[]} deps List of items to be added.
-* @returns {Rule}
-*/
+ * Adds items to the `peerDependencies` section of `package.json` file.
+ * @param {(string|PackageItem)[]} deps List of items to be added.
+ * @returns {Rule}
+ */
 export const addPackageJsonPeerDependencies = (deps: (string | PackageItem)[]): Rule =>
     (tree: Tree): Promise<void> => modifyDeps(tree, 'peerDependencies', deps);
 

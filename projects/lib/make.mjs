@@ -1,5 +1,3 @@
-/* eslint-disable array-element-newline */
-
 /**
  * Usage: $ node ./make.mjs <watch|lint|test-lib|test-schematics|test-ci|build|build-global>
  */
@@ -9,8 +7,8 @@ import { watch as chokidarWatch } from 'chokidar';
 import cpy from 'cpy';
 import crossSpawn from 'cross-spawn';
 import fxExtra from 'fs-extra';
-import { dirname, resolve as pathResolve } from 'path';
-import { fileURLToPath } from 'url';
+import { dirname, resolve as pathResolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } = fxExtra;
 const { green, magenta } = colors;
@@ -144,7 +142,7 @@ const buildLib = async (exitOnError = true) => {
         if (LIBRARY_TYPE === 'ng') {
             spawnCmd('ng', ['build', NG_PROJECT_LIBRARY_NAME, '--configuration', 'production'], true, exitOnError);
         } else {
-            spawnCmd('tsc', ['-p', './tsconfig.lib.prod.json'], true, exitOnError);
+            spawnCmd('tsc', ['-p', './tsconfig.prod.json'], true, exitOnError);
         }
     }
 
@@ -180,7 +178,7 @@ const testLib = (ci = false) => {
             }
             spawnCmd('ng', ligArgs);
         } else {
-            test('tsconfig.lib.spec.json', ci);
+            test('tsconfig.spec.json', ci);
         }
     }
 };

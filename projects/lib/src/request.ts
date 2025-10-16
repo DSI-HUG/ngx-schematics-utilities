@@ -1,6 +1,6 @@
-import { JsonObject } from '@angular-devkit/core';
-import { IncomingMessage } from 'http';
-import { get } from 'https';
+import type { JsonObject } from '@angular-devkit/core';
+import type { IncomingMessage } from 'node:http';
+import { get } from 'node:https';
 
 /**
  * Returns the response data of a given url as a buffer object.
@@ -13,7 +13,7 @@ import { get } from 'https';
 export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 300): Promise<Buffer> =>
     new Promise((resolve, reject) => {
         const { hostname, pathname } = (typeof url === 'string') ? new URL(url) : url;
-        // eslint-disable-next-line consistent-return
+
         const req = get({ hostname, path: pathname }, (res: IncomingMessage) => {
             if (res.statusCode === 200) {
                 const rawData: Uint8Array[] = [];
@@ -39,11 +39,15 @@ export const getDataFromUrl = async (url: string | URL, retries = 3, backoff = 3
                 setTimeout(() => void getDataFromUrl(url, retries - 1, backoff * 2), backoff);
             } else {
                 req.destroy();
-                reject((error instanceof Error) ? error : new Error(String(error)));
+                reject((error instanceof Error) ? error : new Error(error));
             }
         };
-        req.once('timeout', () => abort(`Request timed out: https://${hostname}/${pathname}`));
-        req.once('error', err => abort(err));
+        req.once('timeout', () => {
+            abort(`Request timed out: https://${hostname}/${pathname}`);
+        });
+        req.once('error', err => {
+            abort(err);
+        });
         req.once('close', () => req.removeAllListeners());
     });
 

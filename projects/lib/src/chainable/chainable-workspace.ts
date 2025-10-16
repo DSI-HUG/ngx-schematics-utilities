@@ -1,12 +1,13 @@
-import { JsonObject } from '@angular-devkit/core';
-import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
-import { SchematicContext, TaskId, Tree } from '@angular-devkit/schematics';
+/* eslint-disable jsdoc/require-param */
+import type { JsonObject } from '@angular-devkit/core';
+import type { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
+import type { SchematicContext, TaskId, Tree } from '@angular-devkit/schematics';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle
 } from '../angular';
 import {
-    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, packageInstallTask, PackageItem,
+    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, packageInstallTask, type PackageItem,
     removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
 } from '../package-json';
 import { Chainable, ChainableType } from './chainable';

@@ -1,8 +1,9 @@
-import { JsonObject } from '@angular-devkit/core';
-import { ProjectDefinition } from '@angular-devkit/core/src/workspace';
-import { SchematicsException, Tree } from '@angular-devkit/schematics';
+/* eslint-disable jsdoc/require-param, jsdoc/require-returns */
+import type { JsonObject } from '@angular-devkit/core';
+import type { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import { SchematicsException, type Tree } from '@angular-devkit/schematics';
 import { ProjectType } from '@schematics/angular/utility/workspace-models';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
@@ -12,12 +13,12 @@ import {
     removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
 } from '../angular';
 import { Chainable, ChainableType } from './chainable';
-import { ChainableWorkspaceContext } from './chainable-workspace';
+import type { ChainableWorkspaceContext } from './chainable-workspace';
 
 class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C extends ChainableWorkspaceContext> extends Chainable<C> {
     protected _project?: P;
 
-    constructor(
+    public constructor(
         protected override chainableType: ChainableType,
         protected projectName: string
     ) {
@@ -182,6 +183,7 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
     protected override getContext(): C {
         return {
             ...super.getContext(),
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             project: this._project!
         };
     }

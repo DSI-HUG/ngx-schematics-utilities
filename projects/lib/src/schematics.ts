@@ -1,9 +1,9 @@
-import { Option, parseJsonSchemaToOptions } from '@angular/cli/src/command-builder/utilities/json-schema';
-import { JsonObject } from '@angular-devkit/core';
+import { type Option, parseJsonSchemaToOptions } from '@angular/cli/src/command-builder/utilities/json-schema';
+import type { JsonObject } from '@angular-devkit/core';
 import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema/index';
-import { SchematicContext } from '@angular-devkit/schematics';
-import { NodeWorkflow } from '@angular-devkit/schematics/tools';
-import { dirname as pathDirname, posix } from 'path';
+import type { SchematicContext } from '@angular-devkit/schematics';
+import type { NodeWorkflow } from '@angular-devkit/schematics/tools';
+import { dirname as pathDirname, posix } from 'node:path';
 
 import { getJsonFromUrl } from './request';
 
@@ -64,15 +64,11 @@ export const getSchematicSchemaOptions = async (
         const registry = (context.engine.workflow as NodeWorkflow)?.registry ?? new CoreSchemaRegistry();
         const options = await parseJsonSchemaToOptions(registry, schemaJson) as NgCliOption[];
         options
-            /**
-             * Fix: @angular/cli is not keeping the options in the same order as they are declared in schema.json
-             */
+            // Fix: @angular/cli is not keeping the options in the same order as they are declared in schema.json
             .sort((a, b) => schemaPropertiesOrdered.indexOf(a.name) - schemaPropertiesOrdered.indexOf(b.name))
 
-            /**
-             * Feat: add support for "hint" property
-             * Fix: @angular/cli is not handling "required" and "default" properties
-             */
+            // Feat: add support for "hint" property
+            // Fix: @angular/cli is not handling "required" and "default" properties
             .forEach(option => {
                 const props = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject);
                 if (props?.['hint']) {
@@ -82,6 +78,7 @@ export const getSchematicSchemaOptions = async (
                     option.default = props?.['default'] as string;
                 }
                 if ((schemaJson?.['required'] as string[])?.includes(option.name)) {
+                    // eslint-disable-next-line @typescript-eslint/no-deprecated
                     option.required = true;
                 }
             });

@@ -1,13 +1,13 @@
-import { JsonValue, normalize, strings } from '@angular-devkit/core';
+import { type JsonValue, normalize, strings } from '@angular-devkit/core';
 import {
-    apply, applyTemplates, MergeStrategy, mergeWith, move, Rule, SchematicsException, Tree, url
+    apply, applyTemplates, MergeStrategy, mergeWith, move, type Rule, SchematicsException, type Tree, url
 } from '@angular-devkit/schematics';
 import {
-    createSourceFile, isStringLiteral, ScriptTarget, SourceFile, SyntaxKind
+    createSourceFile, isStringLiteral, ScriptTarget, type SourceFile, SyntaxKind
 } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { findNodes, insertImport } from '@schematics/angular/utility/ast-utils';
-import { applyToUpdateRecorder, Change, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
-import { InsertionIndex, JSONFile, JSONPath } from '@schematics/angular/utility/json-file';
+import { applyToUpdateRecorder, type Change, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
+import { type InsertionIndex, JSONFile, type JSONPath } from '@schematics/angular/utility/json-file';
 
 import { getDataFromUrl } from './request';
 
@@ -15,7 +15,7 @@ import { getDataFromUrl } from './request';
 
 /**
  * Deploys assets files and optionally applies computation to them.
- * @param {{}} [templateOptions={}] A set of options to be applied on each `.template` file to deploy.
+ * @param {Record<string, string>} [templateOptions={}] A set of options to be applied on each `.template` file to deploy.
  * @param {string} [source="./files"] The path to the folder containing the files to deploy.
  * @param {string} [destination=""] The path to the destination folder of the deploy operation.
  * @param {MergeStrategy} [strategy=MergeStrategy.Overwrite] The merge strategy to apply on the files to deploy.
@@ -217,11 +217,11 @@ export const modifyJsonFile = (filePath: string, jsonPath: JSONPath, value: Json
     };
 
 /**
-* Removes an element inside a JSON file.
-* @param {string} filePath The path of the file to modify.
-* @param {JSONPath} jsonPath A path to the element to remove in the JSON structure (separated by dot notation).
-* @returns {Rule}
-*/
+ * Removes an element inside a JSON file.
+ * @param {string} filePath The path of the file to modify.
+ * @param {JSONPath} jsonPath A path to the element to remove in the JSON structure (separated by dot notation).
+ * @returns {Rule}
+ */
 export const removeFromJsonFile = (filePath: string, jsonPath: JSONPath): Rule =>
     (tree: Tree): void => {
         if (tree.exists(filePath)) {

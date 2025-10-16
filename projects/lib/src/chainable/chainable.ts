@@ -1,7 +1,8 @@
-import { JsonValue } from '@angular-devkit/core';
-import { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
-import { chain, MergeStrategy, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-import { InsertionIndex, JSONPath } from '@schematics/angular/utility/json-file';
+/* eslint-disable jsdoc/require-param */
+import type { JsonValue } from '@angular-devkit/core';
+import type { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
+import { chain, MergeStrategy, type Rule, type SchematicContext, type Tree } from '@angular-devkit/schematics';
+import type { InsertionIndex, JSONPath } from '@schematics/angular/utility/json-file';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 
 import { ensureIsAngularWorkspace, isAngularVersion } from '../angular';
@@ -17,6 +18,7 @@ export enum ChainableType {
     LIBRARY
 }
 
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type ChainableRule<T> = (context: T) => Promise<Rule | void> | Rule | void;
 
 export class Chainable<T> {
@@ -30,7 +32,7 @@ export class Chainable<T> {
     protected _schematicContext?: SchematicContext;
     protected _workspace?: WorkspaceDefinition;
 
-    constructor(
+    public constructor(
         protected chainableType: ChainableType
     ) {
         this.init();
@@ -221,11 +223,8 @@ export class Chainable<T> {
     }
 
     protected getContext(): T {
-        return {
-            tree: this._tree!,
-            schematicContext: this._schematicContext!,
-            workspace: this._workspace!
-        } as T;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return { tree: this._tree!, schematicContext: this._schematicContext!, workspace: this._workspace! } as T;
     }
 
     protected pathFromRoot(path: string): string {
