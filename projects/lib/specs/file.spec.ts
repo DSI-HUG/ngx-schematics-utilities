@@ -193,19 +193,12 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
             it('rule: downloadFile - existing source', async () => {
                 const rule = downloadFile(
-                    'https://raw.githubusercontent.com/DSI-HUG/ngx-sentry/master/.eslintrc.json',
+                    'https://raw.githubusercontent.com/DSI-HUG/ngx-sentry/main/projects/lib/package.json',
                     './test.json',
                 );
                 await callRule(rule, tree);
                 expect(tree.exists('./test.json')).toBeTruthy();
-
-                const content = `{
-                    "root": true,
-                    "extends": [
-                        "@hug/eslint-config/moderate"
-                    ]
-                }`.replace((/ {2}|\r\n|\n|\r/gm), '');
-                expect(tree.readContent('./test.json').replace((/ {2}|\r\n|\n|\r/gm), '')).toEqual(content);
+                expect(tree.readContent('./test.json')).toContain('"name": "@hug/ngx-sentry",');
             });
 
             it('rule: downloadFile - non existing source', async () => {

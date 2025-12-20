@@ -3,14 +3,8 @@ import { getDataFromUrl, getJsonFromUrl } from '../src';
 
 describe('request', () => {
     it('helper: getDataFromUrl - existing url', async () => {
-        const data = await getDataFromUrl('https://raw.githubusercontent.com/DSI-HUG/ngx-sentry/master/.eslintrc.json');
-        const result = `{
-            "root": true,
-            "extends": [
-                "@hug/eslint-config/moderate"
-            ]
-        }`;
-        expect(data.toString().replace((/ {2}|\r\n|\n|\r/gm), '')).toEqual(result.replace((/ {2}|\r\n|\n|\r/gm), ''));
+        const data = await getDataFromUrl('https://raw.githubusercontent.com/DSI-HUG/ngx-sentry/main/projects/lib/package.json');
+        expect(data.toString()).toContain('"name": "@hug/ngx-sentry",');
     });
 
     it('helper: getDataFromUrl - non existing url', async () => {
