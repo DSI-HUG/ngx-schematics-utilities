@@ -15,11 +15,15 @@ const config = {
     deploymentBranch: 'gh-pages',
     trailingSlash: false,
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',
     i18n: {
         defaultLocale: 'en-US',
         locales: ['en-US'],
+    },
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
     },
     themes: [
         [
