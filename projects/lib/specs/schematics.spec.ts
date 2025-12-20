@@ -1,4 +1,4 @@
-import { MergeStrategy, SchematicContext } from '@angular-devkit/schematics';
+import { MergeStrategy, type SchematicContext } from '@angular-devkit/schematics';
 
 import { getSchematicSchemaOptions } from '../src';
 import { runner } from './common.spec';
@@ -7,7 +7,7 @@ const context = ({
     schematic: { collection: { description: { name: 'ngx-schematics-utilities' } } },
     engine: runner.engine,
     strategy: MergeStrategy.Default,
-    debug: false
+    debug: false,
 }) as unknown as SchematicContext;
 
 describe('schematics', () => {

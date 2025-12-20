@@ -2,7 +2,7 @@
 import { SchematicsException, type Tree } from '@angular-devkit/schematics';
 import {
     type ArrayLiteralExpression, type CallExpression, isArrayLiteralExpression, isCallExpression, isIdentifier,
-    isObjectLiteralExpression, isPropertyAssignment, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile
+    isObjectLiteralExpression, isPropertyAssignment, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile,
 } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { getDecoratorMetadata, getMetadataField } from '@schematics/angular/utility/ast-utils';
 import { type Change, InsertChange, NoopChange, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
@@ -38,7 +38,7 @@ export const removeSymbolFromNgModuleMetadata = (
     sourceFile: SourceFile,
     filePath: string,
     metadataField: string,
-    classifiedName: string
+    classifiedName: string,
 ): Change => {
     const ngModuleNodes = getDecoratorMetadata(sourceFile, 'NgModule', '@angular/core');
     const ngModuleImports = getMetadataField(ngModuleNodes[0] as ObjectLiteralExpression, metadataField);
@@ -65,7 +65,7 @@ export const removeSymbolFromNgModuleMetadata = (
 export const removeProviderFromStandaloneApplication = (
     tree: Tree,
     mainFilePath: string,
-    providerName: string
+    providerName: string,
 ): void => {
     const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
     if (bootstrapApplicationCall) {
@@ -96,7 +96,7 @@ export const addProviderToStandaloneApplication = (
     mainFilePath: string,
     providerName: string,
     useImportProvidersFrom = false,
-    indent = 2
+    indent = 2,
 ): void => {
     const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
     if (bootstrapApplicationCall) {
@@ -107,7 +107,7 @@ export const addProviderToStandaloneApplication = (
             const appConfig = findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
             if (appConfig) {
                 commitChanges(tree, appConfig.filePath, [addProviderToConfig(
-                    tree, appConfig.filePath, appConfig.node, providerName, useImportProvidersFrom, indent
+                    tree, appConfig.filePath, appConfig.node, providerName, useImportProvidersFrom, indent,
                 )]);
             } else {
                 throw new SchematicsException(`Could not find application config from ${mainFilePath}`);
@@ -115,7 +115,7 @@ export const addProviderToStandaloneApplication = (
         // Options is an object
         } else if (boostrapApplicationOptions && isObjectLiteralExpression(boostrapApplicationOptions)) {
             commitChanges(tree, mainFilePath, [addProviderToConfig(
-                tree, mainFilePath, boostrapApplicationOptions, providerName, useImportProvidersFrom, indent
+                tree, mainFilePath, boostrapApplicationOptions, providerName, useImportProvidersFrom, indent,
             )]);
         // No options
         } else {
@@ -123,7 +123,7 @@ export const addProviderToStandaloneApplication = (
             const indentedProviderName = providerName.replace(/\r?\n|\r/gm, `$&${indentBy(indent * 2)}`);
             const toAdd = `, {\n${indentBy(indent)}providers: [\n${indentBy(indent * 2)}${indentedProviderName}\n${indentBy(indent)}]\n${indentBy(0)}}`;
             commitChanges(tree, mainFilePath, [new InsertChange(
-                mainFilePath, bootstrapApplicationCall.arguments?.[0].getEnd(), toAdd
+                mainFilePath, bootstrapApplicationCall.arguments?.[0].getEnd(), toAdd,
             )]);
         }
     } else {
@@ -157,7 +157,7 @@ export const getStandaloneApplicationConfig = (tree: Tree, mainFilePath: string)
 const removeProviderFromConfig = (
     filePath: string,
     config: ObjectLiteralExpression,
-    providerName: string
+    providerName: string,
 ): Change[] => {
     const providersArrayProp = config.properties?.find(prop => (
         isPropertyAssignment(prop) &&
@@ -197,7 +197,7 @@ const addProviderToConfig = (
     config: ObjectLiteralExpression,
     providerName: string,
     useImportProvidersFrom = false,
-    indent = 2
+    indent = 2,
 ): Change => {
     const indentBy = getIndentBy(tree, filePath, config.getStart());
 
@@ -219,7 +219,7 @@ const addProviderToConfig = (
                 return new InsertChange(
                     filePath,
                     providersArray.getStart() + 1,
-                    (providersArray.elements.length) ? `${toAdd},` : toAdd
+                    (providersArray.elements.length) ? `${toAdd},` : toAdd,
                 );
             } else if (!importProvidersFromProp.getText().includes(providerName)) {
                 return new InsertChange(filePath, importProvidersFromProp.arguments?.[0].getStart(), `${providerName}, `);
@@ -232,7 +232,7 @@ const addProviderToConfig = (
             return new InsertChange(
                 filePath,
                 providersArray.getStart() + 1,
-                (providersArray.elements.length) ? `${toAdd},` : toAdd
+                (providersArray.elements.length) ? `${toAdd},` : toAdd,
             );
         }
     } else {
@@ -241,7 +241,7 @@ const addProviderToConfig = (
         return new InsertChange(
             filePath,
             config.getStart() + 1,
-            (config.properties.length) ? `${toAdd},` : `${toAdd}\n`
+            (config.properties.length) ? `${toAdd},` : `${toAdd}\n`,
         );
     }
 };

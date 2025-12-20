@@ -57,28 +57,32 @@ const logHeader = str => {
 
 const spawnCmd = (cmd, args, verbose = true, exitOnError = true) => {
     const ret = spawnSync(cmd, args, {
-        stdio: verbose ? 'inherit' : 'pipe'
+        stdio: verbose ? 'inherit' : 'pipe',
     });
-    if (exitOnError && (ret.status !== 0)) {
+    if (exitOnError && ret.status !== 0) {
         process.exit(1);
     }
 };
 
-const cleanDir = (path, removeFolder = false) => new Promise(resolve => {
-    const exists = existsSync(path);
-    if (exists) {
-        rmSync(path, { recursive: true });
-    }
-    if (!removeFolder) {
-        // Give time to rmSync to unlock the file on Windows
-        setTimeout(() => {
-            mkdirSync(path, { recursive: true });
+const cleanDir = (path, removeFolder = false) =>
+    new Promise(resolve => {
+        const exists = existsSync(path);
+        if (exists) {
+            rmSync(path, { recursive: true });
+        }
+        if (!removeFolder) {
+            // Give time to rmSync to unlock the file on Windows
+            setTimeout(
+                () => {
+                    mkdirSync(path, { recursive: true });
+                    resolve();
+                },
+                exists ? 1000 : 0,
+            );
+        } else {
             resolve();
-        }, exists ? 1000 : 0);
-    } else {
-        resolve();
-    }
-});
+        }
+    });
 
 const cleanUp = async () => {
     if (chokidarWatcher) {
@@ -155,7 +159,11 @@ const buildLib = async (exitOnError = true) => {
 
 const test = (tsconfigPath, ci = false) => {
     if (existsSync(tsconfigPath)) {
-        const args = [`--project=${tsconfigPath}`, '../../node_modules/jasmine/bin/jasmine.js', '--config=jasmine.json'];
+        const args = [
+            `--project=${tsconfigPath}`,
+            '../../node_modules/jasmine/bin/jasmine.js',
+            '--config=jasmine.json',
+        ];
         if (!ci) {
             args.unshift('--respawn', '--transpile-only');
         }
@@ -243,7 +251,8 @@ const watch = async () => {
                 await packDistAndInstallGlobally();
                 log(`> ${green('Done!')}\n`);
                 break;
-            default: break;
+            default:
+                break;
         }
     } catch (err) {
         console.error(err);

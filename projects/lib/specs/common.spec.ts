@@ -1,21 +1,22 @@
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { Schema as ApplicationOptions, Style } from '@schematics/angular/application/schema';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
-import { join } from 'path';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { SchematicTestRunner, type UnitTestTree } from '@angular-devkit/schematics/testing';
+import { type Schema as ApplicationOptions, Style } from '@schematics/angular/application/schema';
+import type { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
+import { join } from 'node:path';
 import { lastValueFrom } from 'rxjs';
 
 export const workspaceOptions: WorkspaceOptions = {
     name: 'workspace',
     newProjectRoot: 'projects',
     strict: true,
-    version: '0.0.0'
+    version: '0.0.0',
 };
 
 export const libTest: ApplicationOptions = {
     name: 'lib-test',
     skipPackageJson: false,
-    standalone: false
+    standalone: false,
 };
 
 export const appTest1: ApplicationOptions = {
@@ -27,7 +28,7 @@ export const appTest1: ApplicationOptions = {
     style: Style.Scss,
     skipTests: false,
     skipPackageJson: false,
-    standalone: false
+    standalone: false,
 };
 
 export const appTest2: ApplicationOptions = {
@@ -39,7 +40,7 @@ export const appTest2: ApplicationOptions = {
     style: Style.Scss,
     skipTests: false,
     skipPackageJson: false,
-    standalone: false
+    standalone: false,
 };
 
 export const collectionPath = join(__dirname, './collection.json');

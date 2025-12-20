@@ -8,6 +8,6 @@ export default [
         'jsdoc/no-defaults': 'off',
         'jsdoc/no-types': 'off',
         'jsdoc/require-param-type': 'warn',
-        'jsdoc/require-returns-type': 'warn'
-    })
+        'jsdoc/require-returns-type': 'warn',
+    }),
 ];

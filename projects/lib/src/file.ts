@@ -1,9 +1,9 @@
 import { type JsonValue, normalize, strings } from '@angular-devkit/core';
 import {
-    apply, applyTemplates, MergeStrategy, mergeWith, move, type Rule, SchematicsException, type Tree, url
+    apply, applyTemplates, MergeStrategy, mergeWith, move, type Rule, SchematicsException, type Tree, url,
 } from '@angular-devkit/schematics';
 import {
-    createSourceFile, isStringLiteral, ScriptTarget, type SourceFile, SyntaxKind
+    createSourceFile, isStringLiteral, ScriptTarget, type SourceFile, SyntaxKind,
 } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { findNodes, insertImport } from '@schematics/angular/utility/ast-utils';
 import { applyToUpdateRecorder, type Change, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
@@ -26,11 +26,11 @@ export const deployFiles = (templateOptions = {}, source = './files', destinatio
         apply(url(source), [
             applyTemplates({
                 utils: strings,
-                ...templateOptions
+                ...templateOptions,
             }),
-            move(normalize(destination))
+            move(normalize(destination)),
         ]),
-        strategy
+        strategy,
     );
 
 /**

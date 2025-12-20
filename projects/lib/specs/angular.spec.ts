@@ -1,8 +1,8 @@
 import { tags } from '@angular-devkit/core';
-import { Rule } from '@angular-devkit/schematics';
-import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import type { Rule } from '@angular-devkit/schematics';
+import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
@@ -10,7 +10,7 @@ import {
     ensureIsAngularApplication, ensureIsAngularLibrary, ensureIsAngularWorkspace, getAngularVersion, getProjectFromWorkspace,
     getProjectMainFilePath, getProjectOutputPath, isAngularVersion, isProjectStandalone, removeAngularJsonAsset,
     removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule, removeExportFromNgModule,
-    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
+    removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule,
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -38,7 +38,7 @@ const expectRemoveFromNgModule = async (
     ngModuleProperty: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rule: (...args: any[]) => Rule,
-    schematicOptions: { filePath: string; classifiedName: string }
+    schematicOptions: { filePath: string; classifiedName: string },
 ): Promise<void> => {
     // Before
     const fileContent = tree.readContent(schematicOptions.filePath);
@@ -63,7 +63,7 @@ const expectAddToNgModule = async (
     ngModuleProperty: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rule: (...args: any[]) => Rule,
-    schematicOptions: { filePath: string; classifiedName: string; importPath: string }
+    schematicOptions: { filePath: string; classifiedName: string; importPath: string },
 ): Promise<void> => {
     let impt = `import { ${schematicOptions.classifiedName} } from '${schematicOptions.importPath}';`;
     const matches = new RegExp(/(.*)\.(forRoot|forChild)\(/gm).exec(schematicOptions.classifiedName);
@@ -173,7 +173,7 @@ const expectAddToNgModule = async (
                 const spyObject = {
                     callback: (): void => {
                         console.log('it works');
-                    }
+                    },
                 };
                 const spy = spyOn(spyObject, 'callback');
 
@@ -237,7 +237,7 @@ const expectAddToNgModule = async (
                 const asset = {
                     'glob': '**/*',
                     'input': 'node_modules/my-module',
-                    'output': 'my/output'
+                    'output': 'my/output',
                 };
 
                 // Before
@@ -259,7 +259,7 @@ const expectAddToNgModule = async (
                 const asset = {
                     'glob': '**/*',
                     'input': 'node_modules/my-module',
-                    'output': 'my/output'
+                    'output': 'my/output',
                 };
 
                 // Before
@@ -321,7 +321,7 @@ const expectAddToNgModule = async (
                 const style = {
                     'input': 'src/assets/my-style.css',
                     'bundleName': 'my-bundle-name',
-                    'inject': false
+                    'inject': false,
                 };
 
                 // Before
@@ -343,7 +343,7 @@ const expectAddToNgModule = async (
                 const style = {
                     'input': 'src/assets/my-style.css',
                     'bundleName': 'my-bundle-name',
-                    'inject': false
+                    'inject': false,
                 };
 
                 // Before
@@ -406,7 +406,7 @@ const expectAddToNgModule = async (
                 const script = {
                     'input': 'src/my-script.js',
                     'bundleName': 'my-bundle-name',
-                    'inject': false
+                    'inject': false,
                 };
 
                 // Before
@@ -428,7 +428,7 @@ const expectAddToNgModule = async (
                 const script = {
                     'input': 'src/my-script.js',
                     'bundleName': 'my-bundle-name',
-                    'inject': false
+                    'inject': false,
                 };
 
                 // Before
@@ -456,11 +456,11 @@ const expectAddToNgModule = async (
                     await expectAddToNgModule(tree, 'declarations', addDeclarationToNgModule, {
                         filePath,
                         classifiedName: 'TestComponent',
-                        importPath: './components/test'
+                        importPath: './components/test',
                     });
                     await expectRemoveFromNgModule(tree, 'declarations', removeDeclarationFromNgModule, {
                         filePath,
-                        classifiedName: 'TestComponent'
+                        classifiedName: 'TestComponent',
                     });
                 }
             });
@@ -475,11 +475,11 @@ const expectAddToNgModule = async (
                     await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
                         filePath,
                         classifiedName: 'HttpClientModule',
-                        importPath: '@angular/common/http'
+                        importPath: '@angular/common/http',
                     });
                     await expectRemoveFromNgModule(tree, 'imports', removeImportFromNgModule, {
                         filePath,
-                        classifiedName: 'HttpClientModule'
+                        classifiedName: 'HttpClientModule',
                     });
                 }
             });
@@ -498,11 +498,11 @@ const expectAddToNgModule = async (
                                 enabled: environment.production
                             })
                         `,
-                        importPath: 'src/common/test'
+                        importPath: 'src/common/test',
                     });
                     await expectRemoveFromNgModule(tree, 'imports', removeImportFromNgModule, {
                         filePath,
-                        classifiedName: 'TestModule'
+                        classifiedName: 'TestModule',
                     });
                 }
             });
@@ -517,11 +517,11 @@ const expectAddToNgModule = async (
                     await expectAddToNgModule(tree, 'exports', addExportToNgModule, {
                         filePath,
                         classifiedName: 'TestComponent',
-                        importPath: './components/test'
+                        importPath: './components/test',
                     });
                     await expectRemoveFromNgModule(tree, 'exports', removeExportFromNgModule, {
                         filePath,
-                        classifiedName: 'TestComponent'
+                        classifiedName: 'TestComponent',
                     });
                 }
             });
@@ -536,11 +536,11 @@ const expectAddToNgModule = async (
                     await expectAddToNgModule(tree, 'providers', addProviderToNgModule, {
                         filePath,
                         classifiedName: 'TestService',
-                        importPath: './services/test'
+                        importPath: './services/test',
                     });
                     await expectRemoveFromNgModule(tree, 'providers', removeProviderFromNgModule, {
                         filePath,
-                        classifiedName: 'TestService'
+                        classifiedName: 'TestService',
                     });
                 }
             });
@@ -628,7 +628,7 @@ const expectAddToNgModule = async (
                     full: jasmine.any(String),
                     patch: jasmine.any(String),
                     minor: jasmine.any(String),
-                    major: jasmine.any(String)
+                    major: jasmine.any(String),
                 }));
             });
 

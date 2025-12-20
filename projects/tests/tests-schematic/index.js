@@ -1,7 +1,7 @@
 const { chain } = require('@angular-devkit/schematics');
 const {
     spawn, schematic, log, logInfo, logWarning, logError, logAction, modifyJsonFile,
-    runAtEnd, rule, workspace
+    runAtEnd, rule, workspace,
 } = require('../../../dist/src');
 
 exports.default = () => schematic('My Schematic', [
@@ -27,15 +27,15 @@ exports.default = () => schematic('My Schematic', [
             // do something..
             console.log('\nDo something at the end...\n');
         }),
-        logInfo('Run at the end\n')
+        logInfo('Run at the end\n'),
     ])),
 
     workspace()
         .rule(() =>
             // do something...
-            log('Custom rule from chainable\n')
+            log('Custom rule from chainable\n'),
         )
         .log('Log from workspace\n')
         .runAtEnd(logAction('Have a look at `./package.json` file and make modifications as needed.'))
-        .toRule()
+        .toRule(),
 ]);

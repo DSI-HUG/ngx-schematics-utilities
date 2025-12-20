@@ -20,5 +20,5 @@ const getOraFromEsm = async options => (await import('ora')).default(options);
 
 module.exports = {
     getAngularVersionFromEsm,
-    getOraFromEsm
+    getOraFromEsm,
 };

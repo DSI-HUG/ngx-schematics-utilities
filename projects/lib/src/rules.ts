@@ -1,9 +1,9 @@
 import {
-    callRule, chain, type Rule, type SchematicContext, type TaskId, type Tree, UnsuccessfulWorkflowExecution
+    callRule, chain, type Rule, type SchematicContext, type TaskId, type Tree, UnsuccessfulWorkflowExecution,
 } from '@angular-devkit/schematics';
 import type { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import {
-    bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow
+    bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow,
 } from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'node:child_process';
 
@@ -49,7 +49,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
         log(magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)),
         log(''),
         ...rules,
-        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__')
+        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__'),
     ]);
 };
 
@@ -111,7 +111,7 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
         return new Promise((resolve, reject) => {
             const childProcess = childProcessSpawn(command, args, {
                 stdio: (verbose) ? 'inherit' : 'pipe',
-                shell: true
+                shell: true,
             });
             childProcess.once('disconnect', resolve);
             childProcess.once('error', error => {
@@ -138,10 +138,10 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
             });
             if (!verbose) {
                 childProcess.stdout?.on('data', (data: Buffer) =>
-                    bufferedOutput.push({ stream: process.stdout, data: data })
+                    bufferedOutput.push({ stream: process.stdout, data: data }),
                 );
                 childProcess.stderr?.on('data', (data: Buffer) =>
-                    bufferedOutput.push({ stream: process.stderr, data: data })
+                    bufferedOutput.push({ stream: process.stderr, data: data }),
                 );
             }
         });
@@ -165,13 +165,13 @@ export const runAtEnd = (rule: Rule, taskName?: string): Rule =>
         if (!_context._scheduledTasks[name]) {
             _context.engine._host.registerTaskExecutor({
                 // @ts-expect-error: `callRule` returns Observable<Tree> where Observable<void> is expected, but that's acceptable
-                name, create: async () => Promise.resolve(() => callRule(rule, tree, context))
+                name, create: async () => Promise.resolve(() => callRule(rule, tree, context)),
             });
 
             // Schedule the task
             _context._scheduledTasks[name] = _context.addTask(
                 { toConfiguration: () => ({ name }) },
-                Object.values(_context._scheduledTasks)
+                Object.values(_context._scheduledTasks),
             );
         }
     };

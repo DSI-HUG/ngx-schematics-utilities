@@ -19,7 +19,7 @@ const config = {
     favicon: 'img/favicon.ico',
     i18n: {
         defaultLocale: 'en-US',
-        locales: ['en-US']
+        locales: ['en-US'],
     },
     themes: [
         [
@@ -29,9 +29,9 @@ const config = {
                 docsRouteBasePath: '/',
                 hashed: true,
                 language: 'en',
-                searchBarShortcut: false
-            }
-        ]
+                searchBarShortcut: false,
+            },
+        ],
     ],
     presets: [
         [
@@ -42,16 +42,16 @@ const config = {
                     routeBasePath: '/',
                     breadcrumbs: false,
                     sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl: 'https://github.com/dsi-hug/ngx-schematics-utilities/edit/main/docs/'
+                    editUrl: 'https://github.com/dsi-hug/ngx-schematics-utilities/edit/main/docs/',
                 },
                 theme: {
                     customCss: [
                         require.resolve('./src/css/custom.css'),
-                        require.resolve('./src/css/search.css')
-                    ]
-                }
-            })
-        ]
+                        require.resolve('./src/css/search.css'),
+                    ],
+                },
+            }),
+        ],
     ],
 
     themeConfig:
@@ -62,15 +62,15 @@ const config = {
                 hideOnScroll: false,
                 logo: {
                     alt: 'logo',
-                    src: 'img/logo.svg'
+                    src: 'img/logo.svg',
                 },
                 items: [{
                     href: 'https://github.com/dsi-hug/ngx-schematics-utilities',
                     label: ' ',
                     position: 'right',
                     className: 'header-github-link',
-                    'aria-label': 'GitHub repository'
-                }]
+                    'aria-label': 'GitHub repository',
+                }],
             },
             footer: {
                 style: 'dark',
@@ -78,32 +78,32 @@ const config = {
                     title: 'Docs',
                     items: [{
                         label: 'Installation',
-                        to: '/'
+                        to: '/',
                     }, {
                         label: 'APIs',
-                        to: '/apis/core'
-                    }]
+                        to: '/apis/core',
+                    }],
                 }, {
                     title: 'Community',
                     items: [{
                         label: 'Stack Overflow',
-                        href: 'https://stackoverflow.com/questions/tagged/ngx-schematics-utilities'
-                    }]
+                        href: 'https://stackoverflow.com/questions/tagged/ngx-schematics-utilities',
+                    }],
                 }, {
                     title: 'More',
                     items: [{
                         label: 'GitHub',
-                        href: 'https://github.com/dsi-hug/ngx-schematics-utilities'
-                    }]
+                        href: 'https://github.com/dsi-hug/ngx-schematics-utilities',
+                    }],
                 }],
-                copyright: 'Copyright © 2021 HUG'
+                copyright: 'Copyright © 2021 HUG',
             },
             prism: {
                 theme: lightCodeTheme,
                 darkTheme: darkCodeTheme,
-                additionalLanguages: ['bash', 'diff', 'json']
-            }
-        })
+                additionalLanguages: ['bash', 'diff', 'json'],
+            },
+        }),
 };
 
 module.exports = config;

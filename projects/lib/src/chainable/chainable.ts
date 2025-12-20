@@ -8,14 +8,14 @@ import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { ensureIsAngularWorkspace, isAngularVersion } from '../angular';
 import {
     addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, modifyImportInFile, modifyJsonFile,
-    removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile
+    removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile,
 } from '../file';
 import { log, logAction, logError, logInfo, logWarning, runAtEnd, spawn } from '../rules';
 
 export enum ChainableType {
     WORKSPACE,
     APPLICATION,
-    LIBRARY
+    LIBRARY,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -33,7 +33,7 @@ export class Chainable<T> {
     protected _workspace?: WorkspaceDefinition;
 
     public constructor(
-        protected chainableType: ChainableType
+        protected chainableType: ChainableType,
     ) {
         this.init();
     }

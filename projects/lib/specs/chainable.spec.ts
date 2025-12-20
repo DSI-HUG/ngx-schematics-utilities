@@ -1,9 +1,10 @@
-import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import { join } from 'path';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { join } from 'node:path';
 
 import {
-    application, ApplicationDefinition, ChainableApplicationContext, ChainableLibraryContext, ChainableWorkspaceContext,
-    createOrUpdateFile, deleteFiles, getProjectFromWorkspace, library, workspace
+    application, type ApplicationDefinition, type ChainableApplicationContext, type ChainableLibraryContext, type ChainableWorkspaceContext,
+    createOrUpdateFile, deleteFiles, getProjectFromWorkspace, library, workspace,
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
@@ -147,9 +148,13 @@ import { customMatchers } from './jasmine.matchers';
                 expect(tree.exists(fileFromRoot)).toBeTruthy();
 
                 const rule = application(appTest1.name)
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeTruthy();
+                    })
                     .deleteFiles(['__MAIN__'])
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeFalsy();
+                    })
                     .toRule();
                 await callRule(rule, tree);
 
@@ -217,9 +222,13 @@ import { customMatchers } from './jasmine.matchers';
                 expect(tree.exists(fileFromRoot)).toBeFalsy();
 
                 const rule = application(appTest1.name)
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeFalsy();
+                    })
                     .rule(({ project }) => createOrUpdateFile(project.pathFromRoot(file), 'hello world'))
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeTruthy();
+                    })
                     .toRule();
                 await callRule(rule, tree);
 
@@ -233,12 +242,16 @@ import { customMatchers } from './jasmine.matchers';
                 expect(tree.exists(fileFromRoot)).toBeTruthy();
 
                 const rule = workspace()
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeTruthy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeTruthy();
+                    })
                     .rule(async () => {
                         const projectRoot = (await getProjectFromWorkspace(tree, projectDef.name)).root;
                         return deleteFiles([join(projectRoot, file)]);
                     })
-                    .rule(() => expect(tree.exists(fileFromRoot)).toBeFalsy())
+                    .rule(() => {
+                        expect(tree.exists(fileFromRoot)).toBeFalsy();
+                    })
                     .toRule();
                 await callRule(rule, tree);
 
@@ -269,7 +282,9 @@ import { customMatchers } from './jasmine.matchers';
                 const fileFromRoot = join(projectDef.root, sourceFile);
 
                 const rule = application(appTest1.name)
-                    .rule(context => expect(context.project.pathFromRoot(sourceFile)).toEqual(fileFromRoot))
+                    .rule(context => {
+                        expect(context.project.pathFromRoot(sourceFile)).toEqual(fileFromRoot);
+                    })
                     .toRule();
                 await callRule(rule, tree);
             });
@@ -280,7 +295,9 @@ import { customMatchers } from './jasmine.matchers';
                 const fileFromRoot = join(projectDef.root, sourceFile);
 
                 const rule = application(appTest1.name)
-                    .rule(context => expect(context.project.pathFromSourceRoot(file)).toEqual(fileFromRoot))
+                    .rule(context => {
+                        expect(context.project.pathFromSourceRoot(file)).toEqual(fileFromRoot);
+                    })
                     .toRule();
                 await callRule(rule, tree);
             });
@@ -291,7 +308,7 @@ import { customMatchers } from './jasmine.matchers';
                 const spyObject = {
                     callback: (): void => {
                         console.log('it works');
-                    }
+                    },
                 };
                 const spy = spyOn(spyObject, 'callback');
 

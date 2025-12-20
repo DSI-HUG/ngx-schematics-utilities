@@ -1,10 +1,10 @@
-import { Rule } from '@angular-devkit/schematics';
-import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import type { Rule } from '@angular-devkit/schematics';
+import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 
 import {
-    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, PackageItem,
-    removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies
+    addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, type PackageItem,
+    removePackageJsonDependencies, removePackageJsonDevDependencies, removePackageJsonPeerDependencies,
 } from '../src';
 import { callRule, getCleanAppTree } from './common.spec';
 
@@ -33,18 +33,24 @@ const test = async (
     addRule: (...args: any[]) => Rule,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     removeRule: (...args: any[]) => Rule,
-    devType: string
+    devType: string,
 ): Promise<void> => {
     // Before
-    deps.forEach(dep => expectDep(tree, devType, dep, false));
+    deps.forEach(dep => {
+        expectDep(tree, devType, dep, false);
+    });
 
     // Add
     await callRule(addRule(deps), tree);
-    deps.forEach(dep => expectDep(tree, devType, dep, true));
+    deps.forEach(dep => {
+        expectDep(tree, devType, dep, true);
+    });
 
     // Remove
     await callRule(removeRule(deps), tree);
-    deps.forEach(dep => expectDep(tree, devType, dep, false));
+    deps.forEach(dep => {
+        expectDep(tree, devType, dep, false);
+    });
 };
 
 // ---- TEST(s) ----

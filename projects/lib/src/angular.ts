@@ -3,7 +3,7 @@ import type { JsonObject, JsonValue } from '@angular-devkit/core';
 import { noop, type Rule, SchematicsException, type Tree } from '@angular-devkit/schematics';
 import {
     addDeclarationToModule, addExportToModule, addImportToModule, addProviderToModule,
-    addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport
+    addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport,
 } from '@schematics/angular/utility/ast-utils';
 import { NoopChange } from '@schematics/angular/utility/change';
 import { JSONFile } from '@schematics/angular/utility/json-file';
@@ -16,7 +16,7 @@ import { satisfies } from 'semver';
 
 import {
     addProviderToStandaloneApplication, getStandaloneApplicationConfig, removeProviderFromStandaloneApplication,
-    removeSymbolFromNgModuleMetadata
+    removeSymbolFromNgModuleMetadata,
 } from './ast-utils';
 import type { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
 import { getAngularVersionFromEsm } from './esm-wrapper';
@@ -201,18 +201,18 @@ export const addImportToNgModule = (filePath: string, classifiedName: string, im
 
             // Remove any entry first
             commitChanges(tree, filePath, [
-                removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'imports', realClassifiedName)
+                removeSymbolFromNgModuleMetadata(sourceFile, filePath, 'imports', realClassifiedName),
             ]);
 
             // Refresh source and add import + metadata
             sourceFile = getTsSourceFile(tree, filePath);
             commitChanges(tree, filePath, [
                 insertImport(sourceFile, filePath, realClassifiedName, importPath),
-                ...addSymbolToNgModuleMetadata(sourceFile, filePath, 'imports', classifiedName)
+                ...addSymbolToNgModuleMetadata(sourceFile, filePath, 'imports', classifiedName),
             ]);
         } else {
             commitChanges(tree, filePath,
-                addImportToModule(sourceFile, filePath, classifiedName, importPath)
+                addImportToModule(sourceFile, filePath, classifiedName, importPath),
             );
         }
     };
@@ -329,7 +329,7 @@ export const addProviderToBootstrapApplication = (filePath: string, providerName
         const sourceFile = getTsSourceFile(tree, filePathToUse);
         commitChanges(tree, filePathToUse, [
             insertImport(sourceFile, filePathToUse, realProviderName, importPath),
-            (useImportProvidersFrom) ? insertImport(sourceFile, filePathToUse, 'importsProvidersFrom', '@angular/core') : new NoopChange()
+            (useImportProvidersFrom) ? insertImport(sourceFile, filePathToUse, 'importsProvidersFrom', '@angular/core') : new NoopChange(),
         ]);
     };
 
@@ -414,7 +414,7 @@ export const getProjectFromWorkspace = async <T extends LibraryDefinition | Appl
         name: projectName,
         ...project,
         pathFromRoot: (path: string): string => join(project.root ?? '', path),
-        pathFromSourceRoot: (path: string): string => join(project.sourceRoot ?? 'src', path)
+        pathFromSourceRoot: (path: string): string => join(project.sourceRoot ?? 'src', path),
     };
 
     if (project.extensions['projectType'] === ProjectType.Application) {
@@ -435,7 +435,7 @@ export const getProjectFromWorkspace = async <T extends LibraryDefinition | Appl
             mainFilePath: getProjectMainFilePath(tree, projectName),
             mainConfigFilePath: getProjectMainConfigFilePath(tree, projectName),
             outputPath: getProjectOutputPath(tree, projectName),
-            assetsPath
+            assetsPath,
         } as T;
     }
     return options as T;

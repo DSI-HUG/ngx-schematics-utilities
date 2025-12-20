@@ -46,7 +46,7 @@ export const getSchematicSchemaOptions = async (
     packageName?: string,
     external = false,
     retries = 3,
-    backoff = 300
+    backoff = 300,
 ): Promise<NgCliOption[]> => {
     let schemaJson: JsonObject | undefined;
     if (!packageName) {

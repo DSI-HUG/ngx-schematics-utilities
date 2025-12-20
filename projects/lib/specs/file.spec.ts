@@ -1,18 +1,18 @@
-import { Rule } from '@angular-devkit/schematics';
-import { UnitTestTree } from '@angular-devkit/schematics/testing';
+import type { Rule } from '@angular-devkit/schematics';
+import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
-import { join } from 'path';
+import { join } from 'node:path';
 
 import {
     addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace, modifyImportInFile,
-    modifyJsonFile, removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile, schematic
+    modifyJsonFile, removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile, schematic,
 } from '../src';
 import { appTest1, callRule, getCleanAppTree, runner } from './common.spec';
 import { customMatchers } from './jasmine.matchers';
 
 export const deployFilesSchematic = (options: { templateOptions: Record<string, unknown>; source: string; destination: string }): Rule =>
     schematic('deployFilesSchematic', [
-        deployFiles(options.templateOptions, options.source, options.destination)
+        deployFiles(options.templateOptions, options.source, options.destination),
     ]);
 
 [false, true].forEach(useStandalone => {
@@ -79,13 +79,17 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const files = ['./README.md', 'package.json'];
 
                 // Before
-                files.forEach(file => expect(tree.exists(file)).toBeTruthy());
+                files.forEach(file => {
+                    expect(tree.exists(file)).toBeTruthy();
+                });
                 expect(tree.files.length).toEqual(nbFiles);
 
                 // After
                 const rule = deleteFiles(files);
                 await callRule(rule, tree);
-                files.forEach(file => expect(tree.exists(file)).toBeFalsy());
+                files.forEach(file => {
+                    expect(tree.exists(file)).toBeFalsy();
+                });
                 expect(tree.files.length).toEqual(nbFiles - files.length);
             });
 
@@ -93,14 +97,18 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const files = ['nonExistingFile'];
 
                 // Before
-                files.forEach(file => expect(tree.exists(file)).toBeFalsy());
+                files.forEach(file => {
+                    expect(tree.exists(file)).toBeFalsy();
+                });
                 expect(tree.files.length).toEqual(nbFiles);
 
                 // After
                 const rule = deleteFiles(files);
                 const test$ = callRule(rule, tree);
                 await expectAsync(test$).toBeResolved();
-                files.forEach(file => expect(tree.exists(file)).toBeFalsy());
+                files.forEach(file => {
+                    expect(tree.exists(file)).toBeFalsy();
+                });
                 expect(tree.files.length).toEqual(nbFiles);
             });
 
@@ -109,7 +117,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const files = [
                     { from: './README.md', to: './README2' },
                     { from: 'package.json', to: 'package2.json' },
-                    { from: project.pathFromSourceRoot('index.html'), to: '/test/index2.html' }
+                    { from: project.pathFromSourceRoot('index.html'), to: '/test/index2.html' },
                 ];
                 // Before
                 files.forEach(file => {
@@ -186,7 +194,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             it('rule: downloadFile - existing source', async () => {
                 const rule = downloadFile(
                     'https://raw.githubusercontent.com/DSI-HUG/ngx-sentry/master/.eslintrc.json',
-                    './test.json'
+                    './test.json',
                 );
                 await callRule(rule, tree);
                 expect(tree.exists('./test.json')).toBeTruthy();
@@ -256,7 +264,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                     filePath: join(project.root, 'src/main.ts'),
                     symbolName: (useStandalone) ? 'App' : 'AppModule',
                     newSymbolName: 'NewName',
-                    fileName: (useStandalone) ? './app/app' : './app/app-module'
+                    fileName: (useStandalone) ? './app/app' : './app/app-module',
                 };
                 const impt = `import { ${options.symbolName} } from '${options.fileName}';`;
                 const newImpt = `import { ${options.newSymbolName} } from '${options.fileName}';`;
@@ -278,7 +286,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const options = {
                     filePath: join(project.root, 'src/main.ts'),
                     symbolName: (useStandalone) ? 'App' : 'AppModule',
-                    fileName: (useStandalone) ? './app/app' : './app/app-module'
+                    fileName: (useStandalone) ? './app/app' : './app/app-module',
                 };
                 const impt = `import { ${options.symbolName} } from '${options.fileName}';`;
 

@@ -14,7 +14,7 @@ declare global {
  */
 export const customMatchers = {
     toContainTimes: (util: jasmine.MatchersUtil): jasmine.CustomMatcher => ({
-        compare: (actual: string | any[], expected: any, times = 0): jasmine.CustomMatcherResult => {
+        compare: (actual: string | any[], expected: any, times: number): jasmine.CustomMatcherResult => {
             let count = 0;
             if (typeof actual === 'string') {
                 const preservedExpected = (expected as string).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
@@ -28,8 +28,8 @@ export const customMatchers = {
             }
             return {
                 pass: (count === times),
-                message: `Expect ${util.pp(actual)} (not) to contains "${expected as string}" more than (${times}) times.`
+                message: `Expect ${util.pp(actual)} (not) to contains "${expected as string}" more than (${times}) times.`,
             };
-        }
-    })
+        },
+    }),
 };

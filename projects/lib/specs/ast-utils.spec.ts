@@ -1,5 +1,5 @@
-import { UnitTestTree } from '@angular-devkit/schematics/testing';
-import { sep } from 'path';
+import type { UnitTestTree } from '@angular-devkit/schematics/testing';
+import { sep } from 'node:path';
 
 import { getProjectFromWorkspace } from '../src';
 import { addProviderToStandaloneApplication, removeProviderFromStandaloneApplication } from '../src/ast-utils';
@@ -22,7 +22,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '  providers: [\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideA()',
     state1: '',
@@ -30,7 +30,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '  providers: [\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideB()',
     indent: 4,
@@ -44,7 +44,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '        provideB(),\n' +
     '        provideA()\n' +
     '    ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideB()',
     state1: '{\n' +
@@ -57,7 +57,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '    provideB(),\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideB(ARG1, ARG2, { test: \'test\' })',
     realProviderName: 'provideB',
@@ -71,7 +71,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '    provideB(ARG1, ARG2, { test: \'test\' }),\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideRouter(appRoutes,\n' +
     '  withDebugTracing()\n' +
@@ -89,7 +89,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '    ),\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideB',
     useImportProvidersFrom: true,
@@ -103,7 +103,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '    importProvidersFrom(provideB),\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, {
     providerName: 'provideC',
     useImportProvidersFrom: true,
@@ -118,7 +118,7 @@ const ADD_USE_CASES: UseCase[] = [{
     '    provideA(),\n' +
     '    importProvidersFrom(provideC, provideB)\n' +
     '  ]\n' +
-    '}'
+    '}',
 }];
 
 const REMOVE_USE_CASES: UseCase[] = [{
@@ -131,7 +131,7 @@ const REMOVE_USE_CASES: UseCase[] = [{
     '  providers: [\n' +
     '    provideA()\n' +
     '  ]\n' +
-    '}'
+    '}',
 }, ...ADD_USE_CASES.slice(1)];
 
 describe('ast-utils - using standalone project', () => {
@@ -151,7 +151,9 @@ describe('ast-utils - using standalone project', () => {
         expect(notStandaloneTree.readContent(filePath)).not.toContain('bootstrapApplication');
 
         // After
-        expect(() => addProviderToStandaloneApplication(notStandaloneTree, filePath, 'providerA'))
+        expect(() => {
+            addProviderToStandaloneApplication(notStandaloneTree, filePath, 'providerA');
+        })
             .toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
     });
 
@@ -162,17 +164,17 @@ describe('ast-utils - using standalone project', () => {
 
             tree.overwrite(mainFilePath, tree.readContent(mainFilePath).replace(
                 ', appConfig',
-                (useCase.state1 !== '') ? `, ${useCase.state1}` : ''
+                (useCase.state1 !== '') ? `, ${useCase.state1}` : '',
             ));
 
             // Before
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(App${(useCase.state1 !== '') ? `, ${useCase.state1}` : ''})`
+                `bootstrapApplication(App${(useCase.state1 !== '') ? `, ${useCase.state1}` : ''})`,
             );
 
             // After
             addProviderToStandaloneApplication(
-                tree, mainFilePath, useCase.providerName, useCase.useImportProvidersFrom, useCase.indent
+                tree, mainFilePath, useCase.providerName, useCase.useImportProvidersFrom, useCase.indent,
             );
             expect(tree.readContent(mainFilePath)).toContain(`bootstrapApplication(App, ${useCase.state2})`);
         });
@@ -184,17 +186,17 @@ describe('ast-utils - using standalone project', () => {
 
             tree.overwrite(configFilePath, tree.readContent(configFilePath).replace(
                 /ApplicationConfig = {.*};$/gms,
-                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{}'};`
+                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{}'};`,
             ));
 
             // Before
             expect(tree.readContent(configFilePath)).toContain(
-                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{}'};`
+                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{}'};`,
             );
 
             // After
             addProviderToStandaloneApplication(
-                tree, mainFilePath, useCase.providerName, useCase.useImportProvidersFrom, useCase.indent
+                tree, mainFilePath, useCase.providerName, useCase.useImportProvidersFrom, useCase.indent,
             );
             expect(tree.readContent(configFilePath)).toContain(`ApplicationConfig = ${useCase.state2};`);
         });
@@ -207,18 +209,18 @@ describe('ast-utils - using standalone project', () => {
 
             tree.overwrite(mainFilePath, tree.readContent(mainFilePath).replace(
                 ', appConfig',
-                (useCase.state2 !== '') ? `, ${useCase.state2}` : ''
+                (useCase.state2 !== '') ? `, ${useCase.state2}` : '',
             ));
 
             // Before
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(App${(useCase.state2 !== '') ? `, ${useCase.state2}` : ''})`
+                `bootstrapApplication(App${(useCase.state2 !== '') ? `, ${useCase.state2}` : ''})`,
             );
 
             // After
             removeProviderFromStandaloneApplication(tree, mainFilePath, useCase.realProviderName ?? useCase.providerName);
             expect(tree.readContent(mainFilePath)).toContain(
-                `bootstrapApplication(App, ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n})'}`
+                `bootstrapApplication(App, ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n})'}`,
             );
         });
 
@@ -229,18 +231,18 @@ describe('ast-utils - using standalone project', () => {
 
             tree.overwrite(configFilePath, tree.readContent(configFilePath).replace(
                 /ApplicationConfig = {.*};$/gms,
-                `ApplicationConfig = ${(useCase.state2 !== '') ? useCase.state2 : '{}'};`
+                `ApplicationConfig = ${(useCase.state2 !== '') ? useCase.state2 : '{}'};`,
             ));
 
             // Before
             expect(tree.readContent(configFilePath)).toContain(
-                `ApplicationConfig = ${(useCase.state2 !== '') ? useCase.state2 : '{}'};`
+                `ApplicationConfig = ${(useCase.state2 !== '') ? useCase.state2 : '{}'};`,
             );
 
             // After
             removeProviderFromStandaloneApplication(tree, mainFilePath, useCase.realProviderName ?? useCase.providerName);
             expect(tree.readContent(configFilePath)).toContain(
-                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n}'};`
+                `ApplicationConfig = ${(useCase.state1 !== '') ? useCase.state1 : '{\n  providers: [\n  ]\n}'};`,
             );
         });
     });

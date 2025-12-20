@@ -10,7 +10,7 @@ import {
     addImportToNgModule, addProviderToBootstrapApplication, addProviderToNgModule, addRouteDeclarationToNgModule,
     ensureIsAngularApplication, ensureIsAngularLibrary, ensureProjectIsDefined, getProjectFromWorkspace,
     removeAngularJsonAsset, removeAngularJsonScript, removeAngularJsonStyle, removeDeclarationFromNgModule,
-    removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule
+    removeExportFromNgModule, removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule,
 } from '../angular';
 import { Chainable, ChainableType } from './chainable';
 import type { ChainableWorkspaceContext } from './chainable-workspace';
@@ -20,7 +20,7 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
 
     public constructor(
         protected override chainableType: ChainableType,
-        protected projectName: string
+        protected projectName: string,
     ) {
         super(chainableType);
 
@@ -184,7 +184,7 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
         return {
             ...super.getContext(),
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            project: this._project!
+            project: this._project!,
         };
     }
 
