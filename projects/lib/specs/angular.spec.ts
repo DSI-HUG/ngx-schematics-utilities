@@ -219,14 +219,22 @@ const expectAddToNgModule = async (
                 }
                 const asset = { glob: '**/*', input };
 
+                // Get test builder
+                const angularJson = new JSONFile(tree, 'angular.json');
+                const testBuilder = angularJson.get(['projects', appTest1.name, 'architect', 'test', 'builder']);
+
                 // Before
                 expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
+                }
 
                 // After
                 await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                }
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
@@ -303,14 +311,22 @@ const expectAddToNgModule = async (
                     style = style.substring(1, style.length);
                 }
 
+                // Get test builder
+                const angularJson = new JSONFile(tree, 'angular.json');
+                const testBuilder = angularJson.get(['projects', appTest1.name, 'architect', 'test', 'builder']);
+
                 // Before
                 expect(getValues(tree, 'build', 'styles')).toContain(style);
-                expect(getValues(tree, 'test', 'styles')).toContain(style);
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'styles')).toContain(style);
+                }
 
                 // After
                 await callRule(removeAngularJsonStyle(style, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'styles')).not.toContain(style);
-                expect(getValues(tree, 'test', 'styles')).not.toContain(style);
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'styles')).not.toContain(style);
+                }
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonStyle(style, appTest1.name), tree);
@@ -387,15 +403,23 @@ const expectAddToNgModule = async (
                     script = script.substring(1, script.length);
                 }
 
+                // Get test builder
+                const angularJson = new JSONFile(tree, 'angular.json');
+                const testBuilder = angularJson.get(['projects', appTest1.name, 'architect', 'test', 'builder']);
+
                 // Before
                 await callRule(addAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).toEqual([script]);
-                expect(getValues(tree, 'test', 'scripts')).toEqual([script]);
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'scripts')).toEqual([script]);
+                }
 
                 // After
                 await callRule(removeAngularJsonScript(script, appTest1.name), tree);
                 expect(getValues(tree, 'build', 'scripts')).not.toContain(script);
-                expect(getValues(tree, 'test', 'scripts')).not.toContain(script);
+                if (testBuilder !== '@angular/build:unit-test') {
+                    expect(getValues(tree, 'test', 'scripts')).not.toContain(script);
+                }
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonScript(script, appTest1.name), tree);

@@ -473,17 +473,23 @@ const customizeAngularJsonBuildAndTestSection = (action: 'add' | 'remove', optio
     const architectPath = ['projects', projectName, 'architect'];
 
     ['build', 'test'].forEach(configName => {
-        const path = [...architectPath, configName, 'options', option];
-        const values = (angularJson.get(path) ?? []) as (string | JsonValue)[];
+        const optionsPath = [...architectPath, configName, 'options'];
+        const options = (angularJson.get(optionsPath) ?? {}) as JsonObject;
+        const values = (options[option] ?? []) as (string | JsonValue)[];
         const stringifiedValue = values.map(opt => JSON.stringify(opt));
+
         if ((action === 'add') && !stringifiedValue.includes(JSON.stringify(value))) {
+            // Since Angular v21, the test builder has changed and no longer supports styles, scripts and assets.
+            if (configName === 'test' && options['builder'] === '@angular/build:unit-test') {
+                return;
+            }
             values.push(value);
-            angularJson.modify(path, values);
+            angularJson.modify([...optionsPath, option], values);
         } else if (action === 'remove') {
             const valueIndex = stringifiedValue.indexOf(JSON.stringify(value));
             if (valueIndex !== -1) {
                 values.splice(valueIndex, 1);
-                angularJson.modify(path, values);
+                angularJson.modify([...optionsPath, option], values);
             }
         }
     });

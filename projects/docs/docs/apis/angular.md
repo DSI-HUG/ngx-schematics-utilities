@@ -87,7 +87,11 @@ export default (options: any): Rule =>
 
 ### `addAngularJsonAsset`
 
-Adds a new asset to a project `build` and `test` sections of the `angular.json` file.
+Adds a new asset to a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also adds it to the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { addAngularJsonAsset, schematic, application } from '@hug/ngx-schematics-utilities';
@@ -106,7 +110,11 @@ export default (options: any): Rule =>
 
 ### `removeAngularJsonAsset`
 
-Removes an asset from a project `build` and `test` sections of the `angular.json` file.
+Removes an asset from a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also removes it from the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { removeAngularJsonAsset, schematic, application } from '@hug/ngx-schematics-utilities';
@@ -125,7 +133,11 @@ export default (options: any): Rule =>
 
 ### `addAngularJsonStyle`
 
-Adds a new style to a project `build` and `test` sections of the `angular.json` file.
+Adds a new style to a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also adds it to the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { addAngularJsonStyle, schematic, application } from '@hug/ngx-schematics-utilities';
@@ -144,7 +156,11 @@ export default (options: any): Rule =>
 
 ### `removeAngularJsonStyle`
 
-Removes a style from a project `build` and `test` sections of the `angular.json` file.
+Removes a style from a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also removes it from the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { removeAngularJsonStyle, schematic, application } from '@hug/ngx-schematics-utilities';
@@ -163,7 +179,11 @@ export default (options: any): Rule =>
 
 ### `addAngularJsonScript`
 
-Adds a new script to a project `build` and `test` sections of the `angular.json` file.
+Adds a new script to a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also adds it to the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { addAngularJsonScript, schematic, application } from '@hug/ngx-schematics-utilities';
@@ -182,7 +202,11 @@ export default (options: any): Rule =>
 
 ### `removeAngularJsonScript`
 
-Removes a script from a project `build` and `test` sections of the `angular.json` file.
+Removes a script from a project `build` section of the `angular.json` file.
+
+:::tip Tip
+Also removes it from the `test` section if the test builder is not `@angular/build:unit-test`.
+:::
 
 ```ts {6,10}
 import { removeAngularJsonScript, schematic, application } from '@hug/ngx-schematics-utilities';
