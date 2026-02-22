@@ -56,10 +56,10 @@
         "@angular/cli": ">= 14",
         "@angular/core": ">= 14",
         "@schematics/angular": ">= 17",
-        "@badisi/latest-version": "^8.0.2",
+        "@badisi/latest-version": "^8.0.3",
         "@colors/colors": "^1.6.0",
-        "ora": "^9.0.0",
-        "semver": "^7.7.3"
+        "ora": "^9.3.0",
+        "semver": "^7.7.4"
     },
     "engines": {
         "node": ">= 18.13.0"
