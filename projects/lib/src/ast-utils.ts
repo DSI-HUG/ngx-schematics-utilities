@@ -1,15 +1,24 @@
-/* eslint-disable jsdoc/require-param, jsdoc/require-returns */
+/* eslint-disable jsdoc/require-param, jsdoc/require-returns, no-loops/no-loops */
 import { SchematicsException, type Tree } from '@angular-devkit/schematics';
 import {
-    type ArrayLiteralExpression, type CallExpression, isArrayLiteralExpression, isCallExpression, isIdentifier,
-    isObjectLiteralExpression, isPropertyAssignment, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile,
+    type ArrayLiteralExpression, type CallExpression, type Expression, isArrayLiteralExpression, isCallExpression,
+    isIdentifier, isImportDeclaration, isNamedImports, isObjectLiteralExpression, isPropertyAssignment,
+    isStringLiteralLike, isVariableStatement, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile,
 } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { getDecoratorMetadata, getMetadataField } from '@schematics/angular/utility/ast-utils';
 import { type Change, InsertChange, NoopChange, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
-import { findAppConfig, type ResolvedAppConfig } from '@schematics/angular/utility/standalone/app_config';
-import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
+import { findBootstrapApplicationCall, getSourceFile } from '@schematics/angular/utility/standalone/util';
+import { dirname, join } from 'node:path';
 
 import { commitChanges, getTsSourceFile } from './file';
+
+/**
+ * @internal
+ */
+interface AppConfig {
+    filePath: string;
+    node: Expression | null;
+}
 
 /**
  * @internal
@@ -68,23 +77,15 @@ export const removeProviderFromStandaloneApplication = (
     providerName: string,
 ): void => {
     const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
-    if (bootstrapApplicationCall) {
-        const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
-
-        // Options is a variable => new appConfig object introduces with ng16
-        if (boostrapApplicationOptions && isIdentifier(boostrapApplicationOptions)) {
-            const appConfig = findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
-            if (appConfig) {
-                commitChanges(tree, appConfig.filePath, removeProviderFromConfig(appConfig.filePath, appConfig.node, providerName));
-            } else {
-                throw new SchematicsException('Could not find application config');
-            }
-        // Options is an object
-        } else if (boostrapApplicationOptions && isObjectLiteralExpression(boostrapApplicationOptions)) {
-            commitChanges(tree, mainFilePath, removeProviderFromConfig(mainFilePath, boostrapApplicationOptions, providerName));
+    const appConfig = findAppConfig(tree, mainFilePath, bootstrapApplicationCall);
+    if (appConfig?.node) {
+        if (isObjectLiteralExpression(appConfig.node)) {
+            commitChanges(tree, appConfig.filePath, removeProviderFromConfig(appConfig.filePath, appConfig.node, providerName));
+        } else {
+            throw new SchematicsException(`Application config is not an object literal in ${appConfig.filePath}`);
         }
     } else {
-        throw new SchematicsException(`Could not find bootstrapApplication call in ${mainFilePath}`);
+        throw new SchematicsException(`Could not find application config in ${mainFilePath}`);
     }
 };
 
@@ -99,51 +100,49 @@ export const addProviderToStandaloneApplication = (
     indent = 2,
 ): void => {
     const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
-    if (bootstrapApplicationCall) {
-        const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
 
-        // Options is a variable => new appConfig object introduced with ng16
-        if (boostrapApplicationOptions && isIdentifier(boostrapApplicationOptions)) {
-            const appConfig = findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
-            if (appConfig) {
+    // No config at all, we will add one
+    if (bootstrapApplicationCall.arguments.length === 1) {
+        const indentBy = getIndentBy(tree, mainFilePath, bootstrapApplicationCall.getStart());
+        const indentedProviderName = providerName.replace(/\r?\n|\r/gm, `$&${indentBy(indent * 2)}`);
+        const toAdd = `, {\n${indentBy(indent)}providers: [\n${indentBy(indent * 2)}${indentedProviderName}\n${indentBy(indent)}]\n${indentBy(0)}}`;
+        commitChanges(tree, mainFilePath, [new InsertChange(
+            mainFilePath, bootstrapApplicationCall.arguments?.[0].getEnd(), toAdd,
+        )]);
+    // otherwise, look for the config and add the provider to it
+    } else {
+        const appConfig = findAppConfig(tree, mainFilePath, bootstrapApplicationCall);
+        if (appConfig?.node) {
+            if (isObjectLiteralExpression(appConfig.node)) {
                 commitChanges(tree, appConfig.filePath, [addProviderToConfig(
                     tree, appConfig.filePath, appConfig.node, providerName, useImportProvidersFrom, indent,
                 )]);
             } else {
-                throw new SchematicsException(`Could not find application config from ${mainFilePath}`);
+                throw new SchematicsException(`Application config is not an object literal in ${appConfig.filePath}`);
             }
-        // Options is an object
-        } else if (boostrapApplicationOptions && isObjectLiteralExpression(boostrapApplicationOptions)) {
-            commitChanges(tree, mainFilePath, [addProviderToConfig(
-                tree, mainFilePath, boostrapApplicationOptions, providerName, useImportProvidersFrom, indent,
-            )]);
-        // No options
         } else {
-            const indentBy = getIndentBy(tree, mainFilePath, bootstrapApplicationCall.getStart());
-            const indentedProviderName = providerName.replace(/\r?\n|\r/gm, `$&${indentBy(indent * 2)}`);
-            const toAdd = `, {\n${indentBy(indent)}providers: [\n${indentBy(indent * 2)}${indentedProviderName}\n${indentBy(indent)}]\n${indentBy(0)}}`;
-            commitChanges(tree, mainFilePath, [new InsertChange(
-                mainFilePath, bootstrapApplicationCall.arguments?.[0].getEnd(), toAdd,
-            )]);
+            throw new SchematicsException(`Could not find application config in ${mainFilePath}`);
         }
-    } else {
-        throw new SchematicsException(`Could not find bootstrapApplication call in ${mainFilePath}`);
     }
 };
 
 /**
  * @internal
  */
-export const getStandaloneApplicationConfig = (tree: Tree, mainFilePath: string): ResolvedAppConfig | null => {
+export const findAppConfig = (tree: Tree, mainFilePath: string, bootstrapApplicationCall?: CallExpression): AppConfig | null => {
     try {
-        const bootstrapApplicationCall = findBootstrapApplicationCall(tree, mainFilePath);
-        if (bootstrapApplicationCall) {
-            const boostrapApplicationOptions = bootstrapApplicationCall.arguments?.[1] as ObjectLiteralExpression;
-            if (boostrapApplicationOptions && !isObjectLiteralExpression(boostrapApplicationOptions)) {
-                return findAppConfig(bootstrapApplicationCall, tree, mainFilePath);
+        bootstrapApplicationCall ??= findBootstrapApplicationCall(tree, mainFilePath);
+        if (bootstrapApplicationCall?.arguments.length > 1) {
+            const configNode = bootstrapApplicationCall.arguments[1];
+            if (isObjectLiteralExpression(configNode)) {
+                return { filePath: mainFilePath, node: configNode };
+            } else if (isIdentifier(configNode)) {
+                return resolveAppConfig(configNode.getSourceFile(), configNode.text, tree, mainFilePath);
+            } else if (isCallExpression(configNode)) {
+                return resolveAppConfig(configNode.getSourceFile(), configNode.expression.getText(), tree, mainFilePath);
             }
         }
-        return null;
+        return { filePath: mainFilePath, node: null };
     } catch {
         return null;
     }
@@ -244,4 +243,61 @@ const addProviderToConfig = (
             (config.properties.length) ? `${toAdd},` : `${toAdd}\n`,
         );
     }
+};
+
+/**
+ * @internal
+ */
+const findAppConfigFromVariableName = (sourceFile: SourceFile, variableName: string): Expression | null => {
+    for (const node of sourceFile.statements) {
+        if (isVariableStatement(node)) {
+            for (const decl of node.declarationList.declarations) {
+                if (isIdentifier(decl.name) &&
+                    (decl.name.text === variableName) &&
+                    decl.initializer
+                ) {
+                    return decl.initializer;
+                }
+            }
+        }
+    }
+    return null;
+};
+
+/**
+ * @internal
+ */
+const resolveAppConfig = (sourceFile: SourceFile, variableName: string, tree: Tree, bootstapFilePath: string): AppConfig => {
+    for (const node of sourceFile.statements) {
+        // Only look at relative imports. This will break if the app uses a path mapping to refer to the import, but in
+        // order to resolve those, we would need knowledge about the entire program.
+        if (
+            !isImportDeclaration(node) ||
+            !node.importClause?.namedBindings ||
+            !isNamedImports(node.importClause.namedBindings) ||
+            !isStringLiteralLike(node.moduleSpecifier) ||
+            !node.moduleSpecifier.text.startsWith('.')
+        ) {
+            continue;
+        }
+
+        for (const specifier of node.importClause.namedBindings.elements) {
+            if (specifier.name.text !== variableName) {
+                continue;
+            }
+
+            // Look for a variable with the imported name in the file. Note that ideally we would use the type checker to resolve
+            // this, but we can't because these utilities are set up to operate on individual files, not the entire program.
+            const filePath = join(dirname(bootstapFilePath), `${node.moduleSpecifier.text}.ts`);
+            return {
+                filePath,
+                node: findAppConfigFromVariableName(getSourceFile(tree, filePath), (specifier.propertyName ?? specifier.name).text),
+            };
+        }
+    }
+
+    return {
+        filePath: bootstapFilePath,
+        node: findAppConfigFromVariableName(sourceFile, variableName),
+    };
 };

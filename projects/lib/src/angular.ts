@@ -7,7 +7,6 @@ import {
 } from '@schematics/angular/utility/ast-utils';
 import { NoopChange } from '@schematics/angular/utility/change';
 import { JSONFile } from '@schematics/angular/utility/json-file';
-import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
 import { findBootstrapApplicationCall } from '@schematics/angular/utility/standalone/util';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
 import { Builders, ProjectType } from '@schematics/angular/utility/workspace-models';
@@ -15,7 +14,7 @@ import { join } from 'node:path';
 import { satisfies } from 'semver';
 
 import {
-    addProviderToStandaloneApplication, getStandaloneApplicationConfig, removeProviderFromStandaloneApplication,
+    addProviderToStandaloneApplication, findAppConfig, removeProviderFromStandaloneApplication,
     removeSymbolFromNgModuleMetadata,
 } from './ast-utils';
 import type { ApplicationDefinition, LibraryDefinition } from './chainable/chainable-project';
@@ -314,23 +313,24 @@ export const addProviderToBootstrapApplication = (filePath: string, providerName
         const matches = new RegExp(/(.*)\(/gm).exec(providerName);
         if (matches?.length) {
             realProviderName = matches[1].trim();
-
-            // Remove any entry first
-            removeProviderFromStandaloneApplication(tree, filePath, realProviderName);
         }
 
-        // Add provider
-        addProviderToStandaloneApplication(tree, filePath, providerName, useImportProvidersFrom, indent);
-
         // Manage import(s)
-        const bootstrapApplicationCall = findBootstrapApplicationCall(tree, filePath);
-        const appConfig = findAppConfig(bootstrapApplicationCall, tree, filePath);
+        const appConfig = findAppConfig(tree, filePath);
         const filePathToUse = (appConfig) ? appConfig.filePath : filePath;
         const sourceFile = getTsSourceFile(tree, filePathToUse);
         commitChanges(tree, filePathToUse, [
             insertImport(sourceFile, filePathToUse, realProviderName, importPath),
             (useImportProvidersFrom) ? insertImport(sourceFile, filePathToUse, 'importsProvidersFrom', '@angular/core') : new NoopChange(),
         ]);
+
+        // Remove any entry first (in case of provider import with arguments)
+        if (matches?.length) {
+            removeProviderFromStandaloneApplication(tree, filePath, realProviderName);
+        }
+
+        // Add provider
+        addProviderToStandaloneApplication(tree, filePath, providerName, useImportProvidersFrom, indent);
     };
 
 /**
@@ -390,7 +390,7 @@ export const getProjectMainFilePath = (tree: Tree, projectName: string): string 
  */
 export const getProjectMainConfigFilePath = (tree: Tree, projectName: string): string | null => {
     ensureProjectIsDefined(projectName);
-    const appConfig = getStandaloneApplicationConfig(tree, getProjectMainFilePath(tree, projectName));
+    const appConfig = findAppConfig(tree, getProjectMainFilePath(tree, projectName));
     return appConfig ? appConfig.filePath : null;
 };
 

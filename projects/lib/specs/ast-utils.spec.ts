@@ -142,7 +142,7 @@ describe('ast-utils - using standalone project', () => {
         tree = await getCleanAppTree(false, true);
     });
 
-    it('addProviderToStandaloneApplication: not found', async () => {
+    it('addProviderToStandaloneApplication: bootstrap not found', async () => {
         const notStandaloneTree = await getCleanAppTree(false, false);
         const project = await getProjectFromWorkspace(notStandaloneTree, appTest1.name);
         const filePath = project.pathFromSourceRoot('main.ts');
@@ -153,8 +153,45 @@ describe('ast-utils - using standalone project', () => {
         // After
         expect(() => {
             addProviderToStandaloneApplication(notStandaloneTree, filePath, 'providerA');
-        })
-            .toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
+        }).toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
+    });
+
+    it('removeProviderFromStandaloneApplication: bootstrap not found', async () => {
+        const notStandaloneTree = await getCleanAppTree(false, false);
+        const project = await getProjectFromWorkspace(notStandaloneTree, appTest1.name);
+        const filePath = project.pathFromSourceRoot('main.ts');
+
+        // Before
+        expect(notStandaloneTree.readContent(filePath)).not.toContain('bootstrapApplication');
+
+        // After
+        expect(() => {
+            removeProviderFromStandaloneApplication(notStandaloneTree, filePath, 'providerA');
+        }).toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
+    });
+
+    it('addProviderToStandaloneApplication: config not found', async () => {
+        const project = await getProjectFromWorkspace(tree, appTest1.name);
+        const mainFilePath = project.pathFromSourceRoot('main.ts');
+
+        tree.overwrite(mainFilePath, tree.readContent(mainFilePath).replace(', appConfig', ', getAppConfig()'));
+
+        // After
+        expect(() => {
+            addProviderToStandaloneApplication(tree, mainFilePath, 'providerA');
+        }).toThrowError(`Could not find application config in src${sep}main.ts`);
+    });
+
+    it('removeProviderFromStandaloneApplication: config not found', async () => {
+        const project = await getProjectFromWorkspace(tree, appTest1.name);
+        const mainFilePath = project.pathFromSourceRoot('main.ts');
+
+        tree.overwrite(mainFilePath, tree.readContent(mainFilePath).replace(', appConfig', ', getAppConfig()'));
+
+        // After
+        expect(() => {
+            removeProviderFromStandaloneApplication(tree, mainFilePath, 'providerA');
+        }).toThrowError(`Could not find application config in src${sep}main.ts`);
     });
 
     ADD_USE_CASES.forEach((useCase, index) => {
