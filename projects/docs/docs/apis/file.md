@@ -211,7 +211,7 @@ export default (options: any): Rule =>
 
 Adds, modifies or removes an element in a JSON file.
 
-```ts {7,10,13,17}
+```ts {7,10,13,16,20}
 import { modifyJsonFile, schematic, workspace } from '@hug/ngx-schematics-utilities';
 import { Rule } from '@angular-devkit/schematics';
 
@@ -225,6 +225,9 @@ export default (options: any): Rule =>
 
     // Add an element at the beginning
     modifyJsonFile('tsconfig.json', ['extends'], './my-tsconfig.json', () => 0),
+
+    // Add an element at the end
+    modifyJsonFile('tsconfig.json', ['extends'], './my-tsconfig.json', false),
 
     // Using chainable
     workspace()
