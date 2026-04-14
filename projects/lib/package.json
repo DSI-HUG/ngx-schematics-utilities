@@ -56,7 +56,7 @@
         "@angular/cli": ">= 14",
         "@angular/core": ">= 14",
         "@schematics/angular": ">= 17",
-        "@badisi/latest-version": "^8.0.4",
+        "@badisi/latest-version": "^8.0.5",
         "@colors/colors": "^1.6.0",
         "ora": "^9.3.0",
         "semver": "^7.7.4"
