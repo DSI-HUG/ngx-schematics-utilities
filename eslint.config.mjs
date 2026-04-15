@@ -4,6 +4,7 @@ export default [
     hug.configs.stylistic,
     ...hug.overrides.typescript({
         '@typescript-eslint/no-unnecessary-condition': 'off',
+        'rxjs-x/finnish': 'off',
         'jsdoc/require-returns-description': 'off',
         'jsdoc/no-defaults': 'off',
         'jsdoc/no-types': 'off',
