@@ -32,6 +32,11 @@
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.9"
     },
+    "overrides": {
+        "@docusaurus/bundler": {
+            "webpackbar": "^7.0.0"
+        }
+    },
     "commitlint": {
         "extends": [
             "@commitlint/config-conventional"
