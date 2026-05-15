@@ -120,7 +120,6 @@ import { customMatchers } from './jasmine.matchers';
                         expect(project?.name).toEqual(libTest.name);
                         expect(project?.root).toEqual(`projects/${libTest.name}`);
                         expect(project?.sourceRoot).toEqual(`projects/${libTest.name}/src`);
-
                     }).toRule();
                 await callRule(rule, tree);
             });

@@ -70,7 +70,7 @@ export const getSchematicSchemaOptions = async (
             // Feat: add support for "hint" property
             // Fix: @angular/cli is not handling "required" and "default" properties
             .forEach(option => {
-                const props = ((schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject);
+                const props = (schemaJson?.['properties'] as JsonObject)[option.name] as JsonObject;
                 if (props?.['hint']) {
                     option.hint = props?.['hint'] as string;
                 }

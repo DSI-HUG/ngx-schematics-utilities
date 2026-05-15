@@ -159,10 +159,10 @@ const removeProviderFromConfig = (
     providerName: string,
 ): Change[] => {
     const providersArrayProp = config.properties?.find(prop => (
-        isPropertyAssignment(prop) &&
-        isIdentifier(prop.name) &&
-        isArrayLiteralExpression(prop.initializer) &&
-        (prop.name.text === 'providers')
+        isPropertyAssignment(prop)
+        && isIdentifier(prop.name)
+        && isArrayLiteralExpression(prop.initializer)
+        && (prop.name.text === 'providers')
     )) as PropertyAssignment;
     if (providersArrayProp) {
         const providersArray = providersArrayProp.initializer as ArrayLiteralExpression;
@@ -201,18 +201,18 @@ const addProviderToConfig = (
     const indentBy = getIndentBy(tree, filePath, config.getStart());
 
     const providersArrayProp = config.properties?.find(prop => (
-        isPropertyAssignment(prop) &&
-        isIdentifier(prop.name) &&
-        isArrayLiteralExpression(prop.initializer) &&
-        (prop.name.text === 'providers')
+        isPropertyAssignment(prop)
+        && isIdentifier(prop.name)
+        && isArrayLiteralExpression(prop.initializer)
+        && (prop.name.text === 'providers')
     )) as PropertyAssignment;
     if (providersArrayProp) {
         const providersArray = providersArrayProp.initializer as ArrayLiteralExpression;
         if (useImportProvidersFrom) {
             const importProvidersFromProp = providersArray.elements.find(prop =>
-                isCallExpression(prop) &&
-                    isIdentifier(prop.expression) &&
-                    (prop.expression.text === 'importProvidersFrom')) as CallExpression;
+                isCallExpression(prop)
+                && isIdentifier(prop.expression)
+                && (prop.expression.text === 'importProvidersFrom')) as CallExpression;
             if (!importProvidersFromProp) {
                 const toAdd = `\n${indentBy(indent * 2)}importProvidersFrom(${providerName})`;
                 return new InsertChange(
@@ -252,9 +252,9 @@ const findAppConfigFromVariableName = (sourceFile: SourceFile, variableName: str
     for (const node of sourceFile.statements) {
         if (isVariableStatement(node)) {
             for (const decl of node.declarationList.declarations) {
-                if (isIdentifier(decl.name) &&
-                    (decl.name.text === variableName) &&
-                    decl.initializer
+                if (isIdentifier(decl.name)
+                  && (decl.name.text === variableName)
+                  && decl.initializer
                 ) {
                     return decl.initializer;
                 }
@@ -272,11 +272,11 @@ const resolveAppConfig = (sourceFile: SourceFile, variableName: string, tree: Tr
         // Only look at relative imports. This will break if the app uses a path mapping to refer to the import, but in
         // order to resolve those, we would need knowledge about the entire program.
         if (
-            !isImportDeclaration(node) ||
-            !node.importClause?.namedBindings ||
-            !isNamedImports(node.importClause.namedBindings) ||
-            !isStringLiteralLike(node.moduleSpecifier) ||
-            !node.moduleSpecifier.text.startsWith('.')
+            !isImportDeclaration(node)
+            || !node.importClause?.namedBindings
+            || !isNamedImports(node.importClause.namedBindings)
+            || !isStringLiteralLike(node.moduleSpecifier)
+            || !node.moduleSpecifier.text.startsWith('.')
         ) {
             continue;
         }

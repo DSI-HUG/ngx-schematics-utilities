@@ -243,9 +243,9 @@ const expectAddToNgModule = async (
 
             it('rule: addAngularJsonAsset(JsonValue)', async () => {
                 const asset = {
-                    'glob': '**/*',
-                    'input': 'node_modules/my-module',
-                    'output': 'my/output',
+                    glob: '**/*',
+                    input: 'node_modules/my-module',
+                    output: 'my/output',
                 };
 
                 // Before
@@ -265,9 +265,9 @@ const expectAddToNgModule = async (
 
             it('rule: removeAngularJsonAsset(JsonValue)', async () => {
                 const asset = {
-                    'glob': '**/*',
-                    'input': 'node_modules/my-module',
-                    'output': 'my/output',
+                    glob: '**/*',
+                    input: 'node_modules/my-module',
+                    output: 'my/output',
                 };
 
                 // Before
@@ -335,9 +335,9 @@ const expectAddToNgModule = async (
 
             it('rule: addAngularJsonStyle(JsonValue)', async () => {
                 const style = {
-                    'input': 'src/assets/my-style.css',
-                    'bundleName': 'my-bundle-name',
-                    'inject': false,
+                    input: 'src/assets/my-style.css',
+                    bundleName: 'my-bundle-name',
+                    inject: false,
                 };
 
                 // Before
@@ -357,9 +357,9 @@ const expectAddToNgModule = async (
 
             it('rule: removeAngularJsonStyle(JsonValue)', async () => {
                 const style = {
-                    'input': 'src/assets/my-style.css',
-                    'bundleName': 'my-bundle-name',
-                    'inject': false,
+                    input: 'src/assets/my-style.css',
+                    bundleName: 'my-bundle-name',
+                    inject: false,
                 };
 
                 // Before
@@ -428,9 +428,9 @@ const expectAddToNgModule = async (
 
             it('rule: addAngularJsonScript(JsonValue)', async () => {
                 const script = {
-                    'input': 'src/my-script.js',
-                    'bundleName': 'my-bundle-name',
-                    'inject': false,
+                    input: 'src/my-script.js',
+                    bundleName: 'my-bundle-name',
+                    inject: false,
                 };
 
                 // Before
@@ -450,9 +450,9 @@ const expectAddToNgModule = async (
 
             it('rule: removeAngularJsonScript(JsonValue)', async () => {
                 const script = {
-                    'input': 'src/my-script.js',
-                    'bundleName': 'my-bundle-name',
-                    'inject': false,
+                    input: 'src/my-script.js',
+                    bundleName: 'my-bundle-name',
+                    inject: false,
                 };
 
                 // Before
