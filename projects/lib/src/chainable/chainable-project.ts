@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-param, jsdoc/require-returns */
-import type { JsonObject } from '@angular-devkit/core';
-import type { ProjectDefinition } from '@angular-devkit/core/src/workspace';
+import type { JsonObject, workspaces } from '@angular-devkit/core';
 import { SchematicsException, type Tree } from '@angular-devkit/schematics';
 import { ProjectType } from '@schematics/angular/utility/workspace-models';
 import { join } from 'node:path';
@@ -207,7 +206,7 @@ class ChainableProject<P extends ApplicationDefinition | LibraryDefinition, C ex
     }
 }
 
-export interface LibraryDefinition extends ProjectDefinition {
+export interface LibraryDefinition extends workspaces.ProjectDefinition {
     name: string;
     pathFromRoot: (path: string) => string;
     pathFromSourceRoot: (path: string) => string;

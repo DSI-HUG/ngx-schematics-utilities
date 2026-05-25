@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-param */
-import type { JsonObject } from '@angular-devkit/core';
-import type { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
+import type { JsonObject, workspaces } from '@angular-devkit/core';
 import type { SchematicContext, TaskId, Tree } from '@angular-devkit/schematics';
 
 import {
@@ -121,7 +120,7 @@ export class ChainableWorkspace extends Chainable<ChainableWorkspaceContext> {
 export interface ChainableWorkspaceContext {
     tree: Tree;
     schematicContext: SchematicContext;
-    workspace: WorkspaceDefinition;
+    workspace: workspaces.WorkspaceDefinition;
 }
 
 export const workspace = (): ChainableWorkspace => new ChainableWorkspace(ChainableType.WORKSPACE);

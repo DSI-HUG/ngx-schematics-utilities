@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-param */
-import type { JsonValue } from '@angular-devkit/core';
-import type { WorkspaceDefinition } from '@angular-devkit/core/src/workspace';
+import type { JsonValue, workspaces } from '@angular-devkit/core';
 import { chain, MergeStrategy, type Rule, type SchematicContext, type Tree } from '@angular-devkit/schematics';
 import type { InsertionIndex, JSONPath } from '@schematics/angular/utility/json-file';
 import { getWorkspace } from '@schematics/angular/utility/workspace';
@@ -30,7 +29,7 @@ export class Chainable<T> {
 
     protected _tree?: Tree;
     protected _schematicContext?: SchematicContext;
-    protected _workspace?: WorkspaceDefinition;
+    protected _workspace?: workspaces.WorkspaceDefinition;
 
     public constructor(
         protected chainableType: ChainableType,

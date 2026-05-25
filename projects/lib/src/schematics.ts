@@ -1,6 +1,5 @@
 import { type Option, parseJsonSchemaToOptions } from '@angular/cli/src/command-builder/utilities/json-schema';
-import type { JsonObject } from '@angular-devkit/core';
-import { CoreSchemaRegistry } from '@angular-devkit/core/src/json/schema/index';
+import { json, type JsonObject } from '@angular-devkit/core';
 import type { SchematicContext } from '@angular-devkit/schematics';
 import type { NodeWorkflow } from '@angular-devkit/schematics/tools';
 import { dirname as pathDirname, posix } from 'node:path';
@@ -61,7 +60,7 @@ export const getSchematicSchemaOptions = async (
     }
     if (schemaJson?.['properties']) {
         const schemaPropertiesOrdered = Object.keys(schemaJson?.['properties'] as JsonObject);
-        const registry = (context.engine.workflow as NodeWorkflow)?.registry ?? new CoreSchemaRegistry();
+        const registry = (context.engine.workflow as NodeWorkflow)?.registry ?? new json.schema.CoreSchemaRegistry();
         const options = await parseJsonSchemaToOptions(registry, schemaJson) as NgCliOption[];
         options
             // Fix: @angular/cli is not keeping the options in the same order as they are declared in schema.json
