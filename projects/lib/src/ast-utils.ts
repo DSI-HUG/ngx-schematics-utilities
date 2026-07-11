@@ -1,14 +1,14 @@
 /* eslint-disable jsdoc/require-param, jsdoc/require-returns, no-loops/no-loops */
 import { SchematicsException, type Tree } from '@angular-devkit/schematics';
-import {
-    type ArrayLiteralExpression, type CallExpression, type Expression, isArrayLiteralExpression, isCallExpression,
-    isIdentifier, isImportDeclaration, isNamedImports, isObjectLiteralExpression, isPropertyAssignment,
-    isStringLiteralLike, isVariableStatement, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile,
-} from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { getDecoratorMetadata, getMetadataField } from '@schematics/angular/utility/ast-utils';
 import { type Change, InsertChange, NoopChange, RemoveChange, ReplaceChange } from '@schematics/angular/utility/change';
 import { findBootstrapApplicationCall, getSourceFile } from '@schematics/angular/utility/standalone/util';
 import { dirname, join } from 'node:path';
+import {
+    type ArrayLiteralExpression, type CallExpression, type Expression, isArrayLiteralExpression, isCallExpression,
+    isIdentifier, isImportDeclaration, isNamedImports, isObjectLiteralExpression, isPropertyAssignment,
+    isStringLiteralLike, isVariableStatement, type ObjectLiteralExpression, type PropertyAssignment, type SourceFile,
+} from 'typescript';
 
 import { commitChanges, getTsSourceFile } from './file';
 
