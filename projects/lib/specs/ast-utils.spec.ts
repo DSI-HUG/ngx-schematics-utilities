@@ -1,10 +1,10 @@
 import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { sep } from 'node:path';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { getProjectFromWorkspace } from '../src';
 import { addProviderToStandaloneApplication, removeProviderFromStandaloneApplication } from '../src/ast-utils';
 import { appTest1, getCleanAppTree } from './common.spec';
-import { customMatchers } from './jasmine.matchers';
 
 interface UseCase {
     providerName: string;
@@ -138,7 +138,6 @@ describe('ast-utils - using standalone project', () => {
     let tree: UnitTestTree;
 
     beforeEach(async () => {
-        jasmine.addMatchers(customMatchers);
         tree = await getCleanAppTree(false, true);
     });
 
@@ -153,7 +152,7 @@ describe('ast-utils - using standalone project', () => {
         // After
         expect(() => {
             addProviderToStandaloneApplication(notStandaloneTree, filePath, 'providerA');
-        }).toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
+        }).toThrow(`Could not find bootstrapApplication call in src${sep}main.ts`);
     });
 
     it('removeProviderFromStandaloneApplication: bootstrap not found', async () => {
@@ -167,7 +166,7 @@ describe('ast-utils - using standalone project', () => {
         // After
         expect(() => {
             removeProviderFromStandaloneApplication(notStandaloneTree, filePath, 'providerA');
-        }).toThrowError(`Could not find bootstrapApplication call in src${sep}main.ts`);
+        }).toThrow(`Could not find bootstrapApplication call in src${sep}main.ts`);
     });
 
     it('addProviderToStandaloneApplication: config not found', async () => {
@@ -179,7 +178,7 @@ describe('ast-utils - using standalone project', () => {
         // After
         expect(() => {
             addProviderToStandaloneApplication(tree, mainFilePath, 'providerA');
-        }).toThrowError(`Could not find application config in src${sep}main.ts`);
+        }).toThrow(`Could not find application config in src${sep}main.ts`);
     });
 
     it('removeProviderFromStandaloneApplication: config not found', async () => {
@@ -191,7 +190,7 @@ describe('ast-utils - using standalone project', () => {
         // After
         expect(() => {
             removeProviderFromStandaloneApplication(tree, mainFilePath, 'providerA');
-        }).toThrowError(`Could not find application config in src${sep}main.ts`);
+        }).toThrow(`Could not find application config in src${sep}main.ts`);
     });
 
     ADD_USE_CASES.forEach((useCase, index) => {

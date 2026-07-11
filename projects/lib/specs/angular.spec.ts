@@ -1,8 +1,11 @@
+import './custom-matchers';
+
 import { tags } from '@angular-devkit/core';
 import type { Rule } from '@angular-devkit/schematics';
 import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'node:path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     addAngularJsonAsset, addAngularJsonScript, addAngularJsonStyle, addDeclarationToNgModule, addExportToNgModule,
@@ -13,15 +16,14 @@ import {
     removeImportFromNgModule, removeProviderFromBootstrapApplication, removeProviderFromNgModule,
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
-import { customMatchers } from './jasmine.matchers';
 
 // --- HELPER(s) ---
 
-const getValues = (tree: UnitTestTree, configName: 'build' | 'test', optionName: 'assets' | 'styles' | 'scripts'): string[] => {
+const getValues = (tree: UnitTestTree, configName: 'build' | 'test', optionName: 'assets' | 'styles' | 'scripts'): string[] | undefined => {
     const angularJson = new JSONFile(tree, 'angular.json');
     const architectPath = ['projects', appTest1.name, 'architect'];
     const optionPath = [...architectPath, configName, 'options', optionName];
-    return angularJson.get(optionPath) as string[];
+    return angularJson.get(optionPath) as string[] | undefined;
 };
 
 const getNgModule = (property: string, fileContent: string): string[] => {
@@ -44,18 +46,18 @@ const expectRemoveFromNgModule = async (
     const fileContent = tree.readContent(schematicOptions.filePath);
     const items = getNgModule(ngModuleProperty, fileContent);
     // use `includes` in case of `forRoot/forChild` items
-    expect(items.some(item => item.includes(schematicOptions.classifiedName))).toBeTrue();
+    expect(items.some(item => item.includes(schematicOptions.classifiedName))).toBe(true);
 
     // After
     await callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree);
     const newFileContent = tree.readContent(schematicOptions.filePath);
     const newItems = getNgModule(ngModuleProperty, newFileContent);
     // use `includes` in case of `forRoot/forChild` items
-    expect(newItems.some(item => item.includes(schematicOptions.classifiedName))).toBeFalse();
+    expect(newItems.some(item => item.includes(schematicOptions.classifiedName))).toBe(false);
 
     // Twice (expect no error)
     const test$ = callRule(rule(schematicOptions.filePath, schematicOptions.classifiedName), tree);
-    await expectAsync(test$).toBeResolved();
+    await test$;
 };
 
 const expectAddToNgModule = async (
@@ -100,7 +102,6 @@ const expectAddToNgModule = async (
             let tree: UnitTestTree;
 
             beforeEach(async () => {
-                jasmine.addMatchers(customMatchers);
                 tree = await getCleanAppTree(useWorkspace, useStandalone);
             });
 
@@ -109,62 +110,62 @@ const expectAddToNgModule = async (
                 const options = { project: undefined as unknown as string };
 
                 let test$: Promise<unknown> = callRule(ensureIsAngularApplication(options.project), tree);
-                await expectAsync(test$).withContext('rule: ensureIsAngularApplication').toBeRejectedWithError(error);
+                await expect(test$, 'rule: ensureIsAngularApplication').rejects.toThrow(error);
 
                 test$ = callRule(ensureIsAngularLibrary(options.project), tree);
-                await expectAsync(test$).withContext('rule: ensureIsAngularLibrary').toBeRejectedWithError(error);
+                await expect(test$, 'rule: ensureIsAngularLibrary').rejects.toThrow(error);
 
                 test$ = callRule(addAngularJsonAsset('', options.project), tree);
-                await expectAsync(test$).withContext('rule: addAngularJsonAsset').toBeRejectedWithError(error);
+                await expect(test$, 'rule: addAngularJsonAsset').rejects.toThrow(error);
 
                 test$ = callRule(removeAngularJsonAsset('', options.project), tree);
-                await expectAsync(test$).withContext('rule: removeAngularJsonAsset').toBeRejectedWithError(error);
+                await expect(test$, 'rule: removeAngularJsonAsset').rejects.toThrow(error);
 
                 test$ = callRule(addAngularJsonStyle('', options.project), tree);
-                await expectAsync(test$).withContext('rule: addAngularJsonStyle').toBeRejectedWithError(error);
+                await expect(test$, 'rule: addAngularJsonStyle').rejects.toThrow(error);
 
                 test$ = callRule(removeAngularJsonStyle('', options.project), tree);
-                await expectAsync(test$).withContext('rule: removeAngularJsonStyle').toBeRejectedWithError(error);
+                await expect(test$, 'rule: removeAngularJsonStyle').rejects.toThrow(error);
 
                 test$ = callRule(addAngularJsonScript('', options.project), tree);
-                await expectAsync(test$).withContext('rule: addAngularJsonScript').toBeRejectedWithError(error);
+                await expect(test$, 'rule: addAngularJsonScript').rejects.toThrow(error);
 
                 test$ = callRule(removeAngularJsonScript('', options.project), tree);
-                await expectAsync(test$).withContext('rule: removeAngularJsonScript').toBeRejectedWithError(error);
+                await expect(test$, 'rule: removeAngularJsonScript').rejects.toThrow(error);
 
                 test$ = getProjectFromWorkspace(tree, options.project);
-                await expectAsync(test$).withContext('helper: getProjectFromWorkspace').toBeRejectedWithError(error);
+                await expect(test$, 'helper: getProjectFromWorkspace').rejects.toThrow(error);
 
-                expect(() => getProjectOutputPath(tree, options.project)).withContext('helper: getProjectOutputPath').toThrowError(error);
+                expect(() => getProjectOutputPath(tree, options.project), 'helper: getProjectOutputPath').toThrow(error);
             });
 
             it('rule: ensureIsAngularWorkspace', async () => {
                 const ok$ = callRule(ensureIsAngularWorkspace(), tree);
-                await expectAsync(ok$).toBeResolved();
+                await ok$;
 
                 tree.delete('angular.json');
                 const ko$ = callRule(ensureIsAngularWorkspace(), tree);
-                await expectAsync(ko$).toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
+                await expect(ko$).rejects.toThrow('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
             });
 
             it('rule: ensureIsAngularApplication', async () => {
                 const ok$ = callRule(ensureIsAngularApplication(appTest1.name), tree);
-                await expectAsync(ok$).toBeResolved();
+                await ok$;
 
                 const angularJson = new JSONFile(tree, 'angular.json');
                 angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
                 const ko$ = callRule(ensureIsAngularApplication(appTest1.name), tree);
-                await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular application.');
+                await expect(ko$).rejects.toThrow('Project is not an Angular application.');
             });
 
             it('rule: ensureIsAngularLibrary', async () => {
                 const ko$ = callRule(ensureIsAngularLibrary(appTest1.name), tree);
-                await expectAsync(ko$).toBeRejectedWithError('Project is not an Angular library.');
+                await expect(ko$).rejects.toThrow('Project is not an Angular library.');
 
                 const angularJson = new JSONFile(tree, 'angular.json');
                 angularJson.modify(['projects', appTest1.name, 'projectType'], 'library');
                 const ok$ = callRule(ensureIsAngularLibrary(appTest1.name), tree);
-                await expectAsync(ok$).toBeResolved();
+                await ok$;
             });
 
             it('rule: isAngularVersion', async () => {
@@ -172,10 +173,10 @@ const expectAddToNgModule = async (
                 const ngVersion = (await import(angularPkgJsonPath) as { version: string }).version;
                 const spyObject = {
                     callback: (): void => {
-                        console.log('it works');
+                        // console.log('it works');
                     },
                 };
-                const spy = spyOn(spyObject, 'callback');
+                const spy = vi.spyOn(spyObject, 'callback');
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [ngVersion, `>= ${ngVersion}`]) {
@@ -183,7 +184,7 @@ const expectAddToNgModule = async (
                     expect(spyObject.callback).toHaveBeenCalled();
                 }
 
-                spy.calls.reset();
+                spy.mockReset();
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [`> ${ngVersion}`, `< ${ngVersion}`]) {
@@ -197,13 +198,13 @@ const expectAddToNgModule = async (
                 const asset = join(project.root, 'src/manifest.webmanifest');
 
                 // Before
-                expect(getValues(tree, 'build', 'assets')).not.toContain(asset);
-                expect(getValues(tree, 'test', 'assets')).not.toContain(asset);
+                expect(getValues(tree, 'build', 'assets')?.includes(asset)).toBeFalsy();
+                expect(getValues(tree, 'test', 'assets')?.includes(asset)).toBeFalsy();
 
                 // After
                 await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).toContain(asset);
-                expect(getValues(tree, 'test', 'assets')).toContain(asset);
+                expect(getValues(tree, 'build', 'assets')?.includes(asset)).toBeTruthy();
+                expect(getValues(tree, 'test', 'assets')?.includes(asset)).toBeTruthy();
 
                 // Twice (expect no duplicates)
                 await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
@@ -224,21 +225,21 @@ const expectAddToNgModule = async (
                 const testBuilder = angularJson.get(['projects', appTest1.name, 'architect', 'test', 'builder']);
 
                 // Before
-                expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets')).toContainEqual(expect.objectContaining(asset));
                 if (testBuilder !== '@angular/build:unit-test') {
-                    expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
+                    expect(getValues(tree, 'test', 'assets')).toContainEqual(expect.objectContaining(asset));
                 }
 
                 // After
                 await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets')).not.toContainEqual(expect.objectContaining(asset));
                 if (testBuilder !== '@angular/build:unit-test') {
-                    expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                    expect(getValues(tree, 'test', 'assets')).not.toContainEqual(expect.objectContaining(asset));
                 }
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: addAngularJsonAsset(JsonValue)', async () => {
@@ -249,13 +250,13 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets') ?? []).not.toContainEqual(expect.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets') ?? []).not.toContainEqual(expect.objectContaining(asset));
 
                 // After
                 await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets') ?? []).toContainEqual(expect.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets') ?? []).toContainEqual(expect.objectContaining(asset));
 
                 // Twice (expect no duplicates)
                 await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
@@ -272,17 +273,17 @@ const expectAddToNgModule = async (
 
                 // Before
                 await callRule(addAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets')).toContainEqual(expect.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets')).toContainEqual(expect.objectContaining(asset));
 
                 // After
                 await callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'assets')).not.toContain(jasmine.objectContaining(asset));
-                expect(getValues(tree, 'test', 'assets')).not.toContain(jasmine.objectContaining(asset));
+                expect(getValues(tree, 'build', 'assets')).not.toContainEqual(expect.objectContaining(asset));
+                expect(getValues(tree, 'test', 'assets')).not.toContainEqual(expect.objectContaining(asset));
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonAsset(asset, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: addAngularJsonStyle(string)', async () => {
@@ -290,13 +291,13 @@ const expectAddToNgModule = async (
                 const style = join(project.root, 'src/assets/my-styles.css');
 
                 // Before
-                expect(getValues(tree, 'build', 'styles')).not.toContain(style);
-                expect(getValues(tree, 'test', 'styles')).not.toContain(style);
+                expect(getValues(tree, 'build', 'styles')?.includes(style)).toBeFalsy();
+                expect(getValues(tree, 'test', 'styles')?.includes(style)).toBeFalsy();
 
                 // After
                 await callRule(addAngularJsonStyle(style, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'styles')).toContain(style);
-                expect(getValues(tree, 'test', 'styles')).toContain(style);
+                expect(getValues(tree, 'build', 'styles')?.includes(style)).toBeTruthy();
+                expect(getValues(tree, 'test', 'styles')?.includes(style)).toBeTruthy();
 
                 // Twice (expect no duplicates)
                 await callRule(addAngularJsonStyle(style, appTest1.name), tree);
@@ -330,7 +331,7 @@ const expectAddToNgModule = async (
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonStyle(style, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: addAngularJsonStyle(JsonValue)', async () => {
@@ -341,13 +342,13 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                expect(getValues(tree, 'build', 'styles')).not.toContain(jasmine.objectContaining(style));
-                expect(getValues(tree, 'test', 'styles')).not.toContain(jasmine.objectContaining(style));
+                expect(getValues(tree, 'build', 'styles') ?? []).not.toContainEqual(expect.objectContaining(style));
+                expect(getValues(tree, 'test', 'styles') ?? []).not.toContainEqual(expect.objectContaining(style));
 
                 // After
                 await callRule(addAngularJsonStyle(style, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'styles')).toContain(jasmine.objectContaining(style));
-                expect(getValues(tree, 'test', 'styles')).toContain(jasmine.objectContaining(style));
+                expect(getValues(tree, 'build', 'styles') ?? []).toContainEqual(expect.objectContaining(style));
+                expect(getValues(tree, 'test', 'styles') ?? []).toContainEqual(expect.objectContaining(style));
 
                 // Twice (expect no duplicates)
                 await callRule(addAngularJsonStyle(style, appTest1.name), tree);
@@ -364,17 +365,17 @@ const expectAddToNgModule = async (
 
                 // Before
                 await callRule(addAngularJsonStyle(style, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'styles')).toContain(jasmine.objectContaining(style));
-                expect(getValues(tree, 'test', 'styles')).toContain(jasmine.objectContaining(style));
+                expect(getValues(tree, 'build', 'styles')).toContainEqual(expect.objectContaining(style));
+                expect(getValues(tree, 'test', 'styles')).toContainEqual(expect.objectContaining(style));
 
                 // After
                 await callRule(removeAngularJsonStyle(style, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'styles')).not.toContain(jasmine.objectContaining(style));
-                expect(getValues(tree, 'test', 'styles')).not.toContain(jasmine.objectContaining(style));
+                expect(getValues(tree, 'build', 'styles')).not.toContainEqual(expect.objectContaining(style));
+                expect(getValues(tree, 'test', 'styles')).not.toContainEqual(expect.objectContaining(style));
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonStyle(style, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: addAngularJsonScript(string)', async () => {
@@ -423,7 +424,7 @@ const expectAddToNgModule = async (
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonScript(script, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: addAngularJsonScript(JsonValue)', async () => {
@@ -434,13 +435,13 @@ const expectAddToNgModule = async (
                 };
 
                 // Before
-                expect(getValues(tree, 'build', 'scripts')).not.toContain(jasmine.objectContaining(script));
-                expect(getValues(tree, 'test', 'scripts')).not.toContain(jasmine.objectContaining(script));
+                expect(getValues(tree, 'build', 'scripts') ?? []).not.toContainEqual(expect.objectContaining(script));
+                expect(getValues(tree, 'test', 'scripts') ?? []).not.toContainEqual(expect.objectContaining(script));
 
                 // After
                 await callRule(addAngularJsonScript(script, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'scripts')).toContain(jasmine.objectContaining(script));
-                expect(getValues(tree, 'test', 'scripts')).toContain(jasmine.objectContaining(script));
+                expect(getValues(tree, 'build', 'scripts') ?? []).toContainEqual(expect.objectContaining(script));
+                expect(getValues(tree, 'test', 'scripts') ?? []).toContainEqual(expect.objectContaining(script));
 
                 // Twice (expect no duplicates)
                 await callRule(addAngularJsonScript(script, appTest1.name), tree);
@@ -457,17 +458,17 @@ const expectAddToNgModule = async (
 
                 // Before
                 await callRule(addAngularJsonScript(script, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'scripts')).toContain(jasmine.objectContaining(script));
-                expect(getValues(tree, 'test', 'scripts')).toContain(jasmine.objectContaining(script));
+                expect(getValues(tree, 'build', 'scripts')).toContainEqual(expect.objectContaining(script));
+                expect(getValues(tree, 'test', 'scripts')).toContainEqual(expect.objectContaining(script));
 
                 // After
                 await callRule(removeAngularJsonScript(script, appTest1.name), tree);
-                expect(getValues(tree, 'build', 'scripts')).not.toContain(jasmine.objectContaining(script));
-                expect(getValues(tree, 'test', 'scripts')).not.toContain(jasmine.objectContaining(script));
+                expect(getValues(tree, 'build', 'scripts')).not.toContainEqual(expect.objectContaining(script));
+                expect(getValues(tree, 'test', 'scripts')).not.toContainEqual(expect.objectContaining(script));
 
                 // Twice (expect no error)
                 const test$ = callRule(removeAngularJsonScript(script, appTest1.name), tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
             });
 
             it('rule: add/remove declaration in NgModule', async () => {
@@ -475,7 +476,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     await expectAddToNgModule(tree, 'declarations', addDeclarationToNgModule, {
                         filePath,
@@ -494,7 +495,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
                         filePath,
@@ -513,7 +514,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     await expectAddToNgModule(tree, 'imports', addImportToNgModule, {
                         filePath,
@@ -536,7 +537,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     await expectAddToNgModule(tree, 'exports', addExportToNgModule, {
                         filePath,
@@ -555,7 +556,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     await expectAddToNgModule(tree, 'providers', addProviderToNgModule, {
                         filePath,
@@ -574,7 +575,7 @@ const expectAddToNgModule = async (
                 const filePath = join(project.root, 'src/app/app-routing-module.ts');
 
                 if (useStandalone) {
-                    expect(tree.exists(filePath)).toBeFalse();
+                    expect(tree.exists(filePath)).toBe(false);
                 } else {
                     const route1 = '{ path: \'route1\', component: \'src/home/home.component.ts\' }';
                     const route2 = '{ path: \'route2\', loadChildren: \'() => import(\'./pages/home/home.module\').then(m => m.HomeModule)\'; }';
@@ -646,13 +647,13 @@ const expectAddToNgModule = async (
                 });
             }
 
-            it('helper: getAngularVersion', async () => {
-                const version = await getAngularVersion();
-                expect(version).toEqual(jasmine.objectContaining({
-                    full: jasmine.any(String),
-                    patch: jasmine.any(String),
-                    minor: jasmine.any(String),
-                    major: jasmine.any(String),
+            it('helper: getAngularVersion', () => {
+                const version = getAngularVersion();
+                expect(version).toEqual(expect.objectContaining({
+                    full: expect.any(String) as unknown as string,
+                    patch: expect.any(String) as unknown as string,
+                    minor: expect.any(String) as unknown as string,
+                    major: expect.any(String) as unknown as string,
                 }));
             });
 
@@ -674,16 +675,16 @@ const expectAddToNgModule = async (
             });
 
             it('helper: getProjectFromWorkspace', async () => {
-                await expectAsync(getProjectFromWorkspace(tree, appTest1.name)).toBeResolved();
+                await getProjectFromWorkspace(tree, appTest1.name);
                 if (useWorkspace) {
-                    await expectAsync(getProjectFromWorkspace(tree, appTest2.name)).toBeResolved();
+                    await getProjectFromWorkspace(tree, appTest2.name);
                 } else {
-                    await expectAsync(getProjectFromWorkspace(tree, appTest2.name))
-                        .toBeRejectedWithError(`Project "${appTest2.name}" was not found in the current workspace.`);
+                    await expect(getProjectFromWorkspace(tree, appTest2.name))
+                        .rejects.toThrow(`Project "${appTest2.name}" was not found in the current workspace.`);
                 }
-                await expectAsync(getProjectFromWorkspace(tree, libTest.name)).toBeResolved();
-                await expectAsync(getProjectFromWorkspace(tree, 'non-existing-name'))
-                    .toBeRejectedWithError('Project "non-existing-name" was not found in the current workspace.');
+                await getProjectFromWorkspace(tree, libTest.name);
+                await expect(getProjectFromWorkspace(tree, 'non-existing-name'))
+                    .rejects.toThrow('Project "non-existing-name" was not found in the current workspace.');
             });
 
             it('helper: isProjectStandalone', () => {
@@ -691,7 +692,7 @@ const expectAddToNgModule = async (
                 if (useWorkspace) {
                     expect(isProjectStandalone(tree, appTest2.name)).toEqual(useStandalone);
                 }
-                expect(isProjectStandalone(tree, libTest.name)).withContext('Library should not be standalone').toBeFalse();
+                expect(isProjectStandalone(tree, libTest.name), 'Library should not be standalone').toBe(false);
             });
         });
     });

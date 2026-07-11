@@ -2,12 +2,9 @@ import {
     callRule, chain, type Rule, type SchematicContext, type TaskId, type Tree, UnsuccessfulWorkflowExecution,
 } from '@angular-devkit/schematics';
 import type { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
-import {
-    bgBlue, bgGreen, bgMagenta, bgRed, bgYellow, black, blue, cyan, gray, green, magenta, red, white, yellow,
-} from '@colors/colors/safe';
 import { spawn as childProcessSpawn } from 'node:child_process';
-
-import { getOraFromEsm } from './esm-wrapper';
+import { styleText } from 'node:util';
+import ora from 'ora';
 
 interface BufferOutput {
     stream: NodeJS.WriteStream;
@@ -46,10 +43,10 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
     const opts = process.argv.includes('--verbose') ? JSON.stringify(options) : undefined;
     return chain([
         log(''),
-        log(magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)),
+        log(`${styleText(['bgMagenta', 'black'], ' SCHEMATIC ')} 🚀 ${styleText('white', '[')} ${styleText('magenta', name)}${(opts) ? styleText('gray', `, ${opts}`) : ''} ${styleText('white', ']')}`),
         log(''),
         ...rules,
-        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__'),
+        runAtEnd(chain([log(''), log(`${styleText('green', '>')} ${styleText(['bgGreen', 'black'], ' DONE ')}\n`)]), '__task_done__'),
     ]);
 };
 
@@ -59,7 +56,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
  * @returns {Rule}
  */
 export const logInfo = (message: string): Rule =>
-    log(`${blue('>')} ${black(bgBlue(' INFO '))} ${blue(message)}`);
+    log(`${styleText('blue', '>')} ${styleText(['bgBlue', 'black'], ' INFO ')} ${styleText('blue', message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
@@ -67,7 +64,7 @@ export const logInfo = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logWarning = (message: string): Rule =>
-    log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}`);
+    log(`${styleText('yellow', '>')} ${styleText(['bgYellow', 'black'], ' WARNING ')} ${styleText('yellow', message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ERROR" printed in red.
@@ -75,7 +72,7 @@ export const logWarning = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logError = (message: string): Rule =>
-    log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}`);
+    log(`${styleText('red', '>')} ${styleText(['bgRed', 'black'], ' ERROR ')} ${styleText('red', message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
@@ -83,7 +80,7 @@ export const logError = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logAction = (message: string): Rule =>
-    log(`${yellow('>')} ${black(bgYellow(' ACTION '))} ${yellow(message)}`);
+    log(`${styleText('yellow', '>')} ${styleText(['bgYellow', 'black'], ' ACTION ')} ${styleText('yellow', message)}`);
 
 /**
  * Spawns a new process using the given command and arguments.
@@ -103,7 +100,7 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
         const cmdText = `${command} ${args.join(' ')}`;
         const verbose = showOutput || process.argv.includes('--verbose');
 
-        const spinner = await getOraFromEsm({ text: cyan(cmdText) });
+        const spinner = ora({ text: styleText('cyan', cmdText) });
         if (!verbose) {
             spinner.start();
         }
@@ -120,14 +117,14 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
             childProcess.on('close', (code: number) => {
                 if (code === 0) {
                     if (!verbose) {
-                        spinner.succeed(cyan(cmdText));
+                        spinner.succeed(styleText('cyan', cmdText));
                         spinner.stop();
                     }
                     resolve();
                     return;
                 } else {
                     if (!verbose) {
-                        spinner.fail(red(`${cmdText}\n`));
+                        spinner.fail(styleText('red', `${cmdText}\n`));
                         bufferedOutput.forEach(({ stream, data }) => {
                             stream.write(data);
                         });

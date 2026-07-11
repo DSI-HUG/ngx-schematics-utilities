@@ -1,6 +1,6 @@
 import { type Rule, type SchematicContext, SchematicsException, type TaskId, type Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import latestVersion from '@badisi/latest-version';
+import { latestVersion } from '@badisi/latest-version';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 
 export interface PackageItem {

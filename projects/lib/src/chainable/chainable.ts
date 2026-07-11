@@ -41,7 +41,7 @@ export class Chainable<T> {
      * @see {@link deployFiles}
      * @returns {this}
      */
-    public deployFiles(templateOptions = {}, source = './files', destination = '', strategy = MergeStrategy.Overwrite): this {
+    public deployFiles(templateOptions = {}, source = './files', destination = '', strategy: MergeStrategy = MergeStrategy.Overwrite): this {
         return this.addRuleToChain(() => deployFiles(templateOptions, source, this.pathFromRoot(destination), strategy));
     }
 

@@ -43,9 +43,9 @@ export const appTest2: ApplicationOptions = {
     standalone: false,
 };
 
-export const collectionPath = join(__dirname, './collection.json');
+export const collectionPath: string = join(__dirname, './collection.json');
 
-export const runner = new SchematicTestRunner('ngx-schematics-utilities', collectionPath);
+export const runner: SchematicTestRunner = new SchematicTestRunner('ngx-schematics-utilities', collectionPath);
 
 export const callRule = (rule: Rule, tree: Tree, parentContext?: Partial<SchematicContext>): Promise<Tree | undefined> =>
     lastValueFrom(runner.callRule(rule, tree, parentContext));

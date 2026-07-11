@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { join } from 'node:path';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
     application, type ApplicationDefinition, type ChainableApplicationContext, type ChainableLibraryContext, type ChainableWorkspaceContext,
     createOrUpdateFile, deleteFiles, getProjectFromWorkspace, library, workspace,
 } from '../src';
 import { appTest1, appTest2, callRule, getCleanAppTree, libTest } from './common.spec';
-import { customMatchers } from './jasmine.matchers';
 
 [false, true].forEach(useStandalone => {
     [false, true].forEach(useWorkspace => {
@@ -16,7 +16,6 @@ import { customMatchers } from './jasmine.matchers';
             let projectDef: ApplicationDefinition;
 
             beforeEach(async () => {
-                jasmine.addMatchers(customMatchers);
                 tree = await getCleanAppTree(useWorkspace, useStandalone);
                 projectDef = await getProjectFromWorkspace(tree, appTest1.name);
             });
@@ -24,25 +23,25 @@ import { customMatchers } from './jasmine.matchers';
             it('should throw if not an Angular workspace', async () => {
                 tree.delete('angular.json');
                 const test$ = callRule(workspace().toRule(), tree);
-                await expectAsync(test$)
-                    .toBeRejectedWithError('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
+                await expect(test$)
+                    .rejects.toThrow('Unable to locate a workspace file, are you missing an `angular.json` or `.angular.json` file ?.');
             });
 
             it('should throw if not an Angular application', async () => {
                 const test$ = callRule(application(libTest.name).toRule(), tree);
-                await expectAsync(test$).toBeRejectedWithError('Project is not an Angular application.');
+                await expect(test$).rejects.toThrow('Project is not an Angular application.');
             });
 
             it('should throw if not an Angular library', async () => {
                 const test$ = callRule(library(appTest1.name).toRule(), tree);
-                await expectAsync(test$).toBeRejectedWithError('Project is not an Angular library.');
+                await expect(test$).rejects.toThrow('Project is not an Angular library.');
             });
 
             it('should throw if no project could be found', () => {
                 const error = 'Project cannot be determined and no --project option was provided.';
                 const options = { project: undefined as unknown as string };
-                expect(() => application(options.project)).withContext('application').toThrowError(error);
-                expect(() => library(options.project)).withContext('library').toThrowError(error);
+                expect(() => application(options.project), 'application').toThrow(error);
+                expect(() => library(options.project), 'library').toThrow(error);
             });
 
             it('should get application context info', async () => {
@@ -306,10 +305,10 @@ import { customMatchers } from './jasmine.matchers';
                 const ngVersion = (await import(angularPkgJsonPath) as { version: string }).version;
                 const spyObject = {
                     callback: (): void => {
-                        console.log('it works');
+                        // console.log('it works');
                     },
                 };
-                const spy = spyOn(spyObject, 'callback');
+                const spy = vi.spyOn(spyObject, 'callback');
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [ngVersion, `>= ${ngVersion}`]) {
@@ -318,7 +317,7 @@ import { customMatchers } from './jasmine.matchers';
                     expect(spyObject.callback).toHaveBeenCalled();
                 }
 
-                spy.calls.reset();
+                spy.mockReset();
 
                 // eslint-disable-next-line no-loops/no-loops
                 for (const range of [`> ${ngVersion}`, `< ${ngVersion}`]) {

@@ -31,23 +31,22 @@
         "tooling",
         "code generation"
     ],
-    "main": "src/index.js",
-    "typings": "src/index.d.ts",
+    "type": "commonjs",
+    "main": "./index.cjs",
+    "types": "./index.d.cts",
     "exports": {
         ".": {
-            "require": "./src/index.js",
-            "types": "./src/index.d.ts",
-            "default": "./src/index.js"
+            "types": "./index.d.cts",
+            "default": "./index.cjs"
         },
         "./package.json": "./package.json"
     },
     "scripts": {
-        "start": "node ./make.mjs watch",
-        "lint": "node ./make.mjs lint",
-        "test": "node ./make.mjs test-lib",
-        "test:ci": "node ./make.mjs test-ci",
-        "build": "node ./make.mjs build",
-        "build:global": "node ./make.mjs build-global",
+        "start": "tsx src/index.ts",
+        "lint": "eslint .",
+        "test": "vitest --passWithNoTests",
+        "test:ci": "vitest run --passWithNoTests",
+        "build": "tsc --noEmit && tsdown",
         "release": "npm publish ../../dist --access=public --workspaces=false"
     },
     "dependencies": {
@@ -56,10 +55,9 @@
         "@angular/cli": ">= 14",
         "@angular/core": ">= 14",
         "@schematics/angular": ">= 17",
-        "@badisi/latest-version": "^8.0.6",
-        "@colors/colors": "^1.6.0",
-        "ora": "^9.4.0",
-        "semver": "^7.8.1",
+        "@badisi/latest-version": "^9.0.0",
+        "ora": "^9.4.1",
+        "semver": "^7.8.5",
         "typescript": "^5.9.3"
     },
     "engines": {

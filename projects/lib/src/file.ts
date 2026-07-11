@@ -21,7 +21,7 @@ import { getDataFromUrl } from './request';
  * @param {MergeStrategy} [strategy=MergeStrategy.Overwrite] The merge strategy to apply on the files to deploy.
  * @returns {Rule}
  */
-export const deployFiles = (templateOptions = {}, source = './files', destination = '', strategy = MergeStrategy.Overwrite): Rule =>
+export const deployFiles = (templateOptions = {}, source = './files', destination = '', strategy: MergeStrategy = MergeStrategy.Overwrite): Rule =>
     mergeWith(
         apply(url(source), [
             applyTemplates({

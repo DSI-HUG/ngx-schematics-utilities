@@ -3,7 +3,7 @@
     "schematics": {
         "deployFilesSchematic": {
             "description": "deployFilesSchematic",
-            "factory": "./file.spec#deployFilesSchematic"
+            "factory": "./deploy-files-schematic#deployFilesSchematic"
         }
     }
 }

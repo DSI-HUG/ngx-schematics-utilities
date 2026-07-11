@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 
 import { getDataFromUrl, getJsonFromUrl } from '../src';
 
@@ -9,7 +10,7 @@ describe('request', () => {
 
     it('helper: getDataFromUrl - non existing url', async () => {
         const test$ = getDataFromUrl('http://non-existing-url', 0);
-        await expectAsync(test$).toBeRejected();
+        await expect(test$).rejects.toThrow();
     });
 
     it('helper: getJsonFromUrl - existing url', async () => {
@@ -19,6 +20,6 @@ describe('request', () => {
 
     it('helper: getJsonFromUrl - non existing url', async () => {
         const test$ = getJsonFromUrl('http://non-existing-url', 0);
-        await expectAsync(test$).toBeRejected();
+        await expect(test$).rejects.toThrow();
     });
 });

@@ -1,19 +1,13 @@
-import type { Rule } from '@angular-devkit/schematics';
 import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
 import { join } from 'node:path';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
-    addImportToFile, createOrUpdateFile, deleteFiles, deployFiles, downloadFile, getProjectFromWorkspace, modifyImportInFile,
-    modifyJsonFile, removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile, schematic,
+    addImportToFile, createOrUpdateFile, deleteFiles, downloadFile, getProjectFromWorkspace, modifyImportInFile,
+    modifyJsonFile, removeFromJsonFile, removeImportFromFile, renameFile, replaceInFile,
 } from '../src';
 import { appTest1, callRule, getCleanAppTree, runner } from './common.spec';
-import { customMatchers } from './jasmine.matchers';
-
-export const deployFilesSchematic = (options: { templateOptions: Record<string, unknown>; source: string; destination: string }): Rule =>
-    schematic('deployFilesSchematic', [
-        deployFiles(options.templateOptions, options.source, options.destination),
-    ]);
 
 [false, true].forEach(useStandalone => {
     [false, true].forEach(useWorkspace => {
@@ -22,7 +16,6 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             let nbFiles: number;
 
             beforeEach(async () => {
-                jasmine.addMatchers(customMatchers);
                 tree = await getCleanAppTree(useWorkspace, useStandalone);
                 nbFiles = tree.files.length;
             });
@@ -31,7 +24,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const options = { source: './files' };
                 /** use `runner.runSchematic` as `callRule` isn't working in this case */
                 const test$ = runner.runSchematic('deployFilesSchematic', options, tree);
-                await expectAsync(test$).toBeRejectedWithError('myParam is not defined');
+                await expect(test$).rejects.toThrow('myParam is not defined');
             });
 
             it('rule: deployFiles - with template options', async () => {
@@ -47,7 +40,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 const options = { source: './nonExistingFolder' };
                 /** use `runner.runSchematic` as `callRule` isn't working in this case */
                 const test$ = runner.runSchematic('deployFilesSchematic', options, tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
                 expect(tree.exists('./test-file')).toBeFalsy();
                 expect(tree.files.length).toEqual(nbFiles);
             });
@@ -105,7 +98,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 // After
                 const rule = deleteFiles(files);
                 const test$ = callRule(rule, tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
                 files.forEach(file => {
                     expect(tree.exists(file)).toBeFalsy();
                 });
@@ -131,7 +124,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 for (const file of files) {
                     const rule = renameFile(file.from, file.to);
                     const test$ = callRule(rule, tree);
-                    await expectAsync(test$).toBeResolved();
+                    await test$;
                     expect(tree.exists(file.from)).toBeFalsy();
                     expect(tree.exists(file.to)).toBeTruthy();
                 }
@@ -149,7 +142,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 // After
                 const rule = renameFile(file.from, file.to);
                 const test$ = callRule(rule, tree);
-                await expectAsync(test$).toBeResolved();
+                await test$;
                 expect(tree.exists(file.from)).toBeFalsy();
                 expect(tree.exists(file.to)).toBeFalsy();
                 expect(tree.files.length).toEqual(nbFiles);
@@ -165,7 +158,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
                 // After
                 const rule = renameFile(file.from, file.to);
                 const test$ = callRule(rule, tree);
-                await expectAsync(test$).toBeRejectedWithError('Path "/package.json" already exist.');
+                await expect(test$).rejects.toThrow('Path "/package.json" already exist.');
             });
 
             it('rule: createOrUpdateFile - create file', async () => {
@@ -204,7 +197,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
             it('rule: downloadFile - non existing source', async () => {
                 const rule = downloadFile('http://non-existing-file', './test.json', false, 0);
                 const test$ = callRule(rule, tree);
-                await expectAsync(test$).toBeRejected();
+                await expect(test$).rejects.toThrow();
             });
 
             it('rule: replaceInFile', async () => {
@@ -313,7 +306,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);
-                expect(jsonFile.get(options.jsonPath)).toBeTrue();
+                expect(jsonFile.get(options.jsonPath)).toBe(true);
 
                 // After
                 const rule = modifyJsonFile(options.filePath, options.jsonPath, options.value);
@@ -328,7 +321,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);
-                expect(jsonFile.get(options.jsonPath)).toBeTrue();
+                expect(jsonFile.get(options.jsonPath)).toBe(true);
 
                 // After
                 const rule = modifyJsonFile(options.filePath, options.jsonPath, options.value);
@@ -343,7 +336,7 @@ export const deployFilesSchematic = (options: { templateOptions: Record<string, 
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);
-                expect(jsonFile.get(options.jsonPath)).toBeTrue();
+                expect(jsonFile.get(options.jsonPath)).toBe(true);
 
                 // After
                 const rule = removeFromJsonFile(options.filePath, options.jsonPath);

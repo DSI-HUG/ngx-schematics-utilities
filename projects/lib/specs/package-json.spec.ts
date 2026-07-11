@@ -1,6 +1,7 @@
 import type { Rule } from '@angular-devkit/schematics';
 import type { UnitTestTree } from '@angular-devkit/schematics/testing';
 import { JSONFile } from '@schematics/angular/utility/json-file';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
     addPackageJsonDependencies, addPackageJsonDevDependencies, addPackageJsonPeerDependencies, type PackageItem,

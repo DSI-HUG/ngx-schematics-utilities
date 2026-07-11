@@ -24,9 +24,7 @@ export default defineConfig(
             },
         },
         jsdoc: {
-            // @ts-expect-error Incompatible type
             js: jsdocConfig,
-            // @ts-expect-error Incompatible type
             ts: jsdocConfig,
         },
     }),
