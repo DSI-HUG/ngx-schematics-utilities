@@ -3,23 +3,22 @@ import {
 } from '@angular-devkit/schematics';
 import type { FileSystemEngineHostBase } from '@angular-devkit/schematics/tools';
 import { spawn as childProcessSpawn } from 'node:child_process';
-import { styleText } from 'node:util';
 import ora from 'ora';
 
-const bgBlue = (value: string): string => styleText('bgBlue', value);
-const bgGreen = (value: string): string => styleText('bgGreen', value);
-const bgMagenta = (value: string): string => styleText('bgMagenta', value);
-const bgRed = (value: string): string => styleText('bgRed', value);
-const bgYellow = (value: string): string => styleText('bgYellow', value);
-const black = (value: string): string => styleText('black', value);
-const blue = (value: string): string => styleText('blue', value);
-const cyan = (value: string): string => styleText('cyan', value);
-const gray = (value: string): string => styleText('gray', value);
-const green = (value: string): string => styleText('green', value);
-const magenta = (value: string): string => styleText('magenta', value);
-const red = (value: string): string => styleText('red', value);
-const white = (value: string): string => styleText('white', value);
-const yellow = (value: string): string => styleText('yellow', value);
+const bgBlue = (value: string): string => `\x1b[44m${value}\x1b[49m`;
+const bgGreen = (value: string): string => `\x1b[42m${value}\x1b[49m`;
+const bgMagenta = (value: string): string => `\x1b[45m${value}\x1b[49m`;
+const bgRed = (value: string): string => `\x1b[41m${value}\x1b[49m`;
+const bgYellow = (value: string): string => `\x1b[43m${value}\x1b[49m`;
+const black = (value: string): string => `\x1b[30m${value}\x1b[39m`;
+const blue = (value: string): string => `\x1b[34m${value}\x1b[39m`;
+const cyan = (value: string): string => `\x1b[36m${value}\x1b[39m`;
+const gray = (value: string): string => `\x1b[90m${value}\x1b[39m`;
+const green = (value: string): string => `\x1b[32m${value}\x1b[39m`;
+const magenta = (value: string): string => `\x1b[35m${value}\x1b[39m`;
+const red = (value: string): string => `\x1b[31m${value}\x1b[39m`;
+const white = (value: string): string => `\x1b[37m${value}\x1b[39m`;
+const yellow = (value: string): string => `\x1b[33m${value}\x1b[39m`;
 
 interface BufferOutput {
     stream: NodeJS.WriteStream;
