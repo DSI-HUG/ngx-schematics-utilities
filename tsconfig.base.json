@@ -6,7 +6,7 @@
             "ESNext"
         ],
         "module": "commonjs",
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "skipLibCheck": true,
         "esModuleInterop": true,
         "noEmitOnError": true,
