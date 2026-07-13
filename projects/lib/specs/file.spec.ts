@@ -302,7 +302,7 @@ import { appTest1, callRule, getCleanAppTree, runner } from './common.spec';
             });
 
             it('rule: modifyJsonFile - update', async () => {
-                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'strict'], value: false };
+                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'skipLibCheck'], value: false };
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);
@@ -317,7 +317,7 @@ import { appTest1, callRule, getCleanAppTree, runner } from './common.spec';
             });
 
             it('rule: modifyJsonFile - remove', async () => {
-                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'strict'], value: undefined };
+                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'skipLibCheck'], value: undefined };
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);
@@ -332,7 +332,7 @@ import { appTest1, callRule, getCleanAppTree, runner } from './common.spec';
             });
 
             it('rule: removeFromJsonFile', async () => {
-                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'strict'] };
+                const options = { filePath: 'tsconfig.json', jsonPath: ['compilerOptions', 'skipLibCheck'] };
 
                 // Before
                 let jsonFile = new JSONFile(tree, options.filePath);

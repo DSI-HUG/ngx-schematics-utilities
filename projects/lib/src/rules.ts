@@ -6,6 +6,21 @@ import { spawn as childProcessSpawn } from 'node:child_process';
 import { styleText } from 'node:util';
 import ora from 'ora';
 
+const bgBlue = (value: string): string => styleText('bgBlue', value);
+const bgGreen = (value: string): string => styleText('bgGreen', value);
+const bgMagenta = (value: string): string => styleText('bgMagenta', value);
+const bgRed = (value: string): string => styleText('bgRed', value);
+const bgYellow = (value: string): string => styleText('bgYellow', value);
+const black = (value: string): string => styleText('black', value);
+const blue = (value: string): string => styleText('blue', value);
+const cyan = (value: string): string => styleText('cyan', value);
+const gray = (value: string): string => styleText('gray', value);
+const green = (value: string): string => styleText('green', value);
+const magenta = (value: string): string => styleText('magenta', value);
+const red = (value: string): string => styleText('red', value);
+const white = (value: string): string => styleText('white', value);
+const yellow = (value: string): string => styleText('yellow', value);
+
 interface BufferOutput {
     stream: NodeJS.WriteStream;
     data: Buffer;
@@ -43,10 +58,10 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
     const opts = process.argv.includes('--verbose') ? JSON.stringify(options) : undefined;
     return chain([
         log(''),
-        log(`${styleText(['bgMagenta', 'black'], ' SCHEMATIC ')} 🚀 ${styleText('white', '[')} ${styleText('magenta', name)}${(opts) ? styleText('gray', `, ${opts}`) : ''} ${styleText('white', ']')}`),
+        log(magenta(`${black(bgMagenta(' SCHEMATIC '))} 🚀 ${white('[')} ${magenta(name)}${(opts) ? gray(`, ${opts}`) : ''} ${white(']')}`)),
         log(''),
         ...rules,
-        runAtEnd(chain([log(''), log(`${styleText('green', '>')} ${styleText(['bgGreen', 'black'], ' DONE ')}\n`)]), '__task_done__'),
+        runAtEnd(chain([log(''), log(`${green('>')} ${black(bgGreen(' DONE '))}\n`)]), '__task_done__'),
     ]);
 };
 
@@ -56,7 +71,7 @@ export const schematic = (name: string, rules: Rule[], options?: unknown): Rule 
  * @returns {Rule}
  */
 export const logInfo = (message: string): Rule =>
-    log(`${styleText('blue', '>')} ${styleText(['bgBlue', 'black'], ' INFO ')} ${styleText('blue', message)}`);
+    log(`${blue('>')} ${black(bgBlue(' INFO '))} ${blue(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "WARNING" printed in yellow.
@@ -64,7 +79,7 @@ export const logInfo = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logWarning = (message: string): Rule =>
-    log(`${styleText('yellow', '>')} ${styleText(['bgYellow', 'black'], ' WARNING ')} ${styleText('yellow', message)}`);
+    log(`${yellow('>')} ${black(bgYellow(' WARNING '))} ${yellow(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ERROR" printed in red.
@@ -72,7 +87,7 @@ export const logWarning = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logError = (message: string): Rule =>
-    log(`${styleText('red', '>')} ${styleText(['bgRed', 'black'], ' ERROR ')} ${styleText('red', message)}`);
+    log(`${red('>')} ${black(bgRed(' ERROR '))} ${red(message)}`);
 
 /**
  * Outputs a message to the console, prefixed by the word "ACTION" printed in yellow.
@@ -80,7 +95,7 @@ export const logError = (message: string): Rule =>
  * @returns {Rule}
  */
 export const logAction = (message: string): Rule =>
-    log(`${styleText('yellow', '>')} ${styleText(['bgYellow', 'black'], ' ACTION ')} ${styleText('yellow', message)}`);
+    log(`${yellow('>')} ${black(bgYellow(' ACTION '))} ${yellow(message)}`);
 
 /**
  * Spawns a new process using the given command and arguments.
@@ -100,7 +115,7 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
         const cmdText = `${command} ${args.join(' ')}`;
         const verbose = showOutput || process.argv.includes('--verbose');
 
-        const spinner = ora({ text: styleText('cyan', cmdText) });
+        const spinner = ora({ text: cyan(cmdText) });
         if (!verbose) {
             spinner.start();
         }
@@ -117,14 +132,14 @@ export const spawn = (command: string, args: string[], showOutput = false): Rule
             childProcess.on('close', (code: number) => {
                 if (code === 0) {
                     if (!verbose) {
-                        spinner.succeed(styleText('cyan', cmdText));
+                        spinner.succeed(cyan(cmdText));
                         spinner.stop();
                     }
                     resolve();
                     return;
                 } else {
                     if (!verbose) {
-                        spinner.fail(styleText('red', `${cmdText}\n`));
+                        spinner.fail(red(`${cmdText}\n`));
                         bufferedOutput.forEach(({ stream, data }) => {
                             stream.write(data);
                         });
