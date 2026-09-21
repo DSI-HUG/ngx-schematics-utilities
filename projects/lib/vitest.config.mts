@@ -7,7 +7,7 @@ export default defineConfig({
             '**/*.spec.ts',
         ],
         setupFiles: [
-            'vitest.setup.ts',
+            'vitest.setup.mts',
         ],
     },
 });

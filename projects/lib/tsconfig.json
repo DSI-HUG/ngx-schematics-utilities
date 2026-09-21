@@ -14,6 +14,8 @@
     },
     "include": [
         "tsdown.config.mts",
+        "vitest.config.mts",
+        "vitest.setup.mts",
         "**/*.ts"
     ]
 }

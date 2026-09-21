@@ -5,8 +5,8 @@
         "lib": [
             "ESNext"
         ],
-        "module": "commonjs",
-        "moduleResolution": "bundler",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "skipLibCheck": true,
         "esModuleInterop": true,
         "noEmitOnError": true,
